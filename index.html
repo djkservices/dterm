@@ -31,7 +31,7 @@
 
     /* Left Panel */
     #left-panel {
-      width: 280px;
+      width: 400px;
       min-width: 200px;
       max-width: 500px;
       background: #0a0a0a;
@@ -53,12 +53,80 @@
 
     /* File Manager */
     #file-manager {
-      flex: 1;
+      flex: 3;
       background: #0a0a0a;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      min-height: 0;
     }
+
+    /* Mini Browser */
+    #mini-browser {
+      flex: 1;
+      min-height: 450px;
+      background: #0a0a0a;
+      border-top: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #mini-browser-toolbar {
+      padding: 6px;
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid #222;
+    }
+
+    #mini-browser-toolbar button {
+      padding: 5px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    #mini-browser-toolbar button:hover {
+      background: #2a2a2a;
+      border-color: #444;
+    }
+
+    #mini-browser-url {
+      flex: 1;
+      padding: 4px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 11px;
+      outline: none;
+    }
+
+    #mini-browser-url:focus {
+      border-color: #0066cc;
+    }
+
+    #mini-browser-frame {
+      flex: 1;
+      border: none;
+      background: #fff;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Left panel resizer between file manager and mini browser */
+    #left-panel-resizer {
+      height: 4px;
+      background: #222;
+      cursor: ns-resize;
+      flex-shrink: 0;
+    }
+    #left-panel-resizer:hover { background: #0066cc; }
 
     #fm-toolbar {
       padding: 6px;
@@ -126,6 +194,15 @@
       align-items: center;
       gap: 8px;
       font-size: 12px;
+      user-select: none;
+    }
+
+    .file-item[draggable="true"] {
+      cursor: grab;
+    }
+
+    .file-item.dragging {
+      opacity: 0.5;
     }
 
     .file-item:hover { background: #1a1a1a; }
@@ -249,6 +326,11 @@
       flex: 1;
       position: relative;
       background: #000000;
+    }
+
+    #terminal-container.drag-over {
+      outline: 2px dashed #0066cc;
+      outline-offset: -2px;
     }
 
     /* Right Panel */
@@ -611,6 +693,22 @@
         <button onclick="newFolder()">+ Folder</button>
       </div>
     </div>
+
+    <!-- Left Panel Resizer -->
+    <div id="left-panel-resizer"></div>
+
+    <!-- Mini Browser -->
+    <div id="mini-browser">
+      <div id="mini-browser-toolbar">
+        <button onclick="miniBrowserBack()">←</button>
+        <button onclick="miniBrowserForward()">→</button>
+        <button onclick="miniBrowserRefresh()">↻</button>
+        <button onclick="miniBrowserHome()">⌂</button>
+        <input type="text" id="mini-browser-url" placeholder="Enter URL..." value="" onkeydown="if(event.key==='Enter')miniBrowserGo()">
+        <button onclick="miniBrowserGo()">Go</button>
+      </div>
+      <webview id="mini-browser-frame" allowpopups></webview>
+    </div>
   </div>
 
   <!-- Left Resizer -->
@@ -652,9 +750,9 @@
         <button class="right-tab" onclick="showRightTab('ai')">AI</button>
         <button class="right-tab" onclick="showRightTab('ftp')">FTP</button>
       </div>
-      <select id="ai-select" onchange="switchAI()" style="display:none;">
-        <option value="https://copilot.microsoft.com">Copilot</option>
+      <select id="ai-select" onchange="switchAI()">
         <option value="https://chatgpt.com">ChatGPT</option>
+        <option value="https://copilot.microsoft.com">Copilot</option>
         <option value="https://claude.ai">Claude</option>
         <option value="https://gemini.google.com">Gemini</option>
         <option value="https://poe.com">Poe</option>
@@ -724,6 +822,10 @@
           <option value="light">Light</option>
         </select>
       </div>
+      <div class="settings-group">
+        <label>Browser Home Page</label>
+        <input type="text" id="setting-browser-home" value="https://duckduckgo.com" placeholder="https://duckduckgo.com" style="width:100%; padding:6px 8px; background:#1a1a1a; border:1px solid #333; border-radius:4px; color:#ccc; font-size:12px;">
+      </div>
       <div class="btn-row">
         <button class="secondary" onclick="closeSettings()">Cancel</button>
         <button class="primary" onclick="saveSettings()">Save</button>
@@ -790,7 +892,8 @@
     let settings = {
       fontSize: 14,
       shell: '/bin/zsh',
-      theme: 'dark'
+      theme: 'dark',
+      browserHome: 'https://duckduckgo.com'
     };
 
     // Load settings
@@ -803,17 +906,34 @@
         document.getElementById('setting-theme').value = settings.theme;
         applyTheme();
       }
+      // Always apply browser home page setting to the input field
+      document.getElementById('setting-browser-home').value = settings.browserHome;
+      // Apply browser home page to webview
+      const webview = document.getElementById('mini-browser-frame');
+      const urlInput = document.getElementById('mini-browser-url');
+      if (webview) webview.src = settings.browserHome;
+      if (urlInput) urlInput.value = settings.browserHome;
     }
 
     function saveSettings() {
       settings.fontSize = parseInt(document.getElementById('setting-font-size').value);
       settings.shell = document.getElementById('setting-shell').value;
       settings.theme = document.getElementById('setting-theme').value;
+      let browserHome = document.getElementById('setting-browser-home').value.trim();
+      if (browserHome && !browserHome.startsWith('http://') && !browserHome.startsWith('https://')) {
+        browserHome = 'https://' + browserHome;
+      }
+      settings.browserHome = browserHome || 'https://duckduckgo.com';
       localStorage.setItem('dterm-settings', JSON.stringify(settings));
       applyTheme();
       if (monacoEditor) {
         monacoEditor.updateOptions({ fontSize: settings.fontSize });
       }
+      // Apply new home page to browser
+      const webview = document.getElementById('mini-browser-frame');
+      const urlInput = document.getElementById('mini-browser-url');
+      if (webview) webview.src = settings.browserHome;
+      if (urlInput) urlInput.value = settings.browserHome;
       closeSettings();
     }
 
@@ -853,6 +973,8 @@
       createTerminal();
       setupResizer();
       setupPanelResizers();
+      setupTerminalDropZone();
+      showRightTab('notes');
     }
 
     // File Manager
@@ -884,6 +1006,7 @@
         filtered.forEach(file => {
           const div = document.createElement('div');
           div.className = 'file-item';
+          div.draggable = true;
           if (clipboard.file && clipboard.file.path === file.path && clipboard.action === 'cut') {
             div.classList.add('cut');
           }
@@ -897,6 +1020,8 @@
           div.onclick = (e) => handleClick(file, e);
           div.ondblclick = () => handleDoubleClick(file);
           div.oncontextmenu = (e) => showContextMenu(e, file);
+          div.ondragstart = (e) => handleDragStart(e, file);
+          div.ondragend = (e) => handleDragEnd(e);
           fileList.appendChild(div);
         });
       } catch (err) {
@@ -935,6 +1060,56 @@
       } else {
         await openFileInEditor(file);
       }
+    }
+
+    // Drag and drop for terminal
+    function handleDragStart(e, file) {
+      e.dataTransfer.setData('text/plain', file.path);
+      e.dataTransfer.setData('application/x-dterm-file', JSON.stringify(file));
+      e.dataTransfer.effectAllowed = 'copy';
+      e.currentTarget.classList.add('dragging');
+    }
+
+    function handleDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+    }
+
+    function setupTerminalDropZone() {
+      const container = document.getElementById('terminal-container');
+
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        container.classList.add('drag-over');
+      });
+
+      container.addEventListener('dragleave', (e) => {
+        container.classList.remove('drag-over');
+      });
+
+      container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        container.classList.remove('drag-over');
+
+        const filePath = e.dataTransfer.getData('text/plain');
+        if (filePath) {
+          // Escape spaces and special characters for shell
+          const escapedPath = escapePathForShell(filePath);
+          // Write to active terminal
+          const activeTerminal = terminals.find(t =>
+            document.getElementById(t.id).classList.contains('active')
+          );
+          if (activeTerminal) {
+            activeTerminal.term.paste(escapedPath);
+            activeTerminal.term.focus();
+          }
+        }
+      });
+    }
+
+    function escapePathForShell(path) {
+      // Escape special characters for shell: spaces, quotes, parentheses, etc.
+      return path.replace(/([ '"\\()&;|<>$`!#*?[\]{}])/g, '\\$1');
     }
 
     // Clipboard operations
@@ -1237,7 +1412,35 @@
       document.addEventListener('mouseup', () => {
         leftResizing = false;
         rightResizing = false;
+        leftPanelResizing = false;
         document.body.style.cursor = '';
+      });
+
+      // Left panel internal resizer (between file manager and mini browser)
+      const leftPanelResizer = document.getElementById('left-panel-resizer');
+      const fileManager = document.getElementById('file-manager');
+      const miniBrowser = document.getElementById('mini-browser');
+      let leftPanelResizing = false;
+
+      leftPanelResizer.addEventListener('mousedown', () => {
+        leftPanelResizing = true;
+        document.body.style.cursor = 'ns-resize';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (leftPanelResizing) {
+          const leftPanel = document.getElementById('left-panel');
+          const rect = leftPanel.getBoundingClientRect();
+          const offsetY = e.clientY - rect.top;
+          const totalHeight = rect.height;
+          const minHeight = 100;
+
+          if (offsetY >= minHeight && offsetY <= totalHeight - minHeight) {
+            fileManager.style.flex = 'none';
+            fileManager.style.height = offsetY + 'px';
+            miniBrowser.style.flex = '1';
+          }
+        }
       });
     }
 
@@ -1245,6 +1448,59 @@
       currentPath = await window.api.fs.getHome();
       loadFiles();
     }
+
+    // Mini Browser functions
+    function miniBrowserGo() {
+      const webview = document.getElementById('mini-browser-frame');
+      let url = document.getElementById('mini-browser-url').value.trim();
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      webview.src = url;
+    }
+
+    function miniBrowserBack() {
+      const webview = document.getElementById('mini-browser-frame');
+      if (webview.canGoBack()) webview.goBack();
+    }
+
+    function miniBrowserForward() {
+      const webview = document.getElementById('mini-browser-frame');
+      if (webview.canGoForward()) webview.goForward();
+    }
+
+    function miniBrowserRefresh() {
+      const webview = document.getElementById('mini-browser-frame');
+      webview.reload();
+    }
+
+    function miniBrowserHome() {
+      const webview = document.getElementById('mini-browser-frame');
+      webview.src = settings.browserHome;
+      document.getElementById('mini-browser-url').value = settings.browserHome;
+    }
+
+    // Load saved home page immediately and update URL bar on navigation
+    (function() {
+      const saved = localStorage.getItem('dterm-settings');
+      const homePage = saved ? (JSON.parse(saved).browserHome || 'https://duckduckgo.com') : 'https://duckduckgo.com';
+      const webview = document.getElementById('mini-browser-frame');
+      const urlInput = document.getElementById('mini-browser-url');
+      if (webview) webview.src = homePage;
+      if (urlInput) urlInput.value = homePage;
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const webview = document.getElementById('mini-browser-frame');
+      if (webview) {
+        webview.addEventListener('did-navigate', (e) => {
+          document.getElementById('mini-browser-url').value = e.url;
+        });
+        webview.addEventListener('did-navigate-in-page', (e) => {
+          document.getElementById('mini-browser-url').value = e.url;
+        });
+      }
+    });
 
     function goUp() {
       const parent = currentPath.split('/').slice(0, -1).join('/') || '/';
@@ -1624,6 +1880,46 @@
       if (e.key === 'Escape') {
         closeSettings();
         closeShortcuts();
+      }
+      // Cmd+Left - Go to beginning of line (send Ctrl+A to terminal)
+      if (e.metaKey && !e.altKey && e.key === 'ArrowLeft') {
+        const activeTerminal = terminals.find(t =>
+          document.getElementById(t.id)?.classList.contains('active')
+        );
+        if (activeTerminal) {
+          e.preventDefault();
+          window.api.terminal.write(activeTerminal.id, '\x01');
+        }
+      }
+      // Cmd+Right - Go to end of line (send Ctrl+E to terminal)
+      if (e.metaKey && !e.altKey && e.key === 'ArrowRight') {
+        const activeTerminal = terminals.find(t =>
+          document.getElementById(t.id)?.classList.contains('active')
+        );
+        if (activeTerminal) {
+          e.preventDefault();
+          window.api.terminal.write(activeTerminal.id, '\x05');
+        }
+      }
+      // Cmd+Option+Left - Go one word back (send Alt+B to terminal)
+      if (e.metaKey && e.altKey && e.key === 'ArrowLeft') {
+        const activeTerminal = terminals.find(t =>
+          document.getElementById(t.id)?.classList.contains('active')
+        );
+        if (activeTerminal) {
+          e.preventDefault();
+          window.api.terminal.write(activeTerminal.id, '\x1bb');
+        }
+      }
+      // Cmd+Option+Right - Go one word forward (send Alt+F to terminal)
+      if (e.metaKey && e.altKey && e.key === 'ArrowRight') {
+        const activeTerminal = terminals.find(t =>
+          document.getElementById(t.id)?.classList.contains('active')
+        );
+        if (activeTerminal) {
+          e.preventDefault();
+          window.api.terminal.write(activeTerminal.id, '\x1bf');
+        }
       }
     });
 
