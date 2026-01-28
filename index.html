@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>dTerm</title>
+  <link rel="stylesheet" href="node_modules/xterm/css/xterm.css">
+  <link rel="stylesheet" href="node_modules/monaco-editor/min/vs/editor/editor.main.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #000000;
+      color: #ccc;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #app-container {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Left Panel */
+    #left-panel {
+      width: 280px;
+      min-width: 200px;
+      max-width: 500px;
+      background: #0a0a0a;
+      border-right: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    /* Panel Resizers */
+    .panel-resizer {
+      width: 4px;
+      background: #222;
+      cursor: ew-resize;
+      flex-shrink: 0;
+    }
+    .panel-resizer:hover { background: #0066cc; }
+
+    /* File Manager */
+    #file-manager {
+      flex: 1;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #fm-toolbar {
+      padding: 6px;
+      border-bottom: 1px solid #222;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    #fm-toolbar button, #fm-bottom-toolbar button {
+      padding: 5px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 11px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      white-space: nowrap;
+    }
+
+    #fm-toolbar button:hover, #fm-bottom-toolbar button:hover {
+      background: #2a2a2a;
+      border-color: #444;
+    }
+
+    #fm-toolbar button.active {
+      background: #0066cc;
+      border-color: #0066cc;
+    }
+
+    #fm-search {
+      flex: 1;
+      min-width: 60px;
+      padding: 4px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 11px;
+      outline: none;
+    }
+
+    #fm-search:focus { border-color: #0066cc; }
+
+    #fm-path {
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #666;
+      border-bottom: 1px solid #222;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #file-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .file-item {
+      padding: 4px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .file-item:hover { background: #1a1a1a; }
+    .file-item.selected { background: #0066cc; }
+    .file-item.cut { opacity: 0.5; }
+
+    .file-item .file-info {
+      margin-left: auto;
+      font-size: 10px;
+      color: #666;
+    }
+
+    #fm-bottom-toolbar {
+      padding: 6px;
+      border-top: 1px solid #222;
+      display: flex;
+      gap: 4px;
+    }
+
+    /* Main Area */
+    #main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Editor Area */
+    #editor-area {
+      display: none;
+      flex-direction: column;
+      border-bottom: 1px solid #222;
+    }
+
+    #editor-area.visible {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    #editor-tabs {
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+    }
+
+    #editor-container {
+      flex: 1;
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Terminal Area */
+    #terminal-area {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #terminal-area.with-editor {
+      flex: none;
+      height: 250px;
+      border-top: 1px solid #222;
+    }
+
+    /* Tabs */
+    #terminal-tabs {
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: center;
+    }
+
+    .tab {
+      padding: 8px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      border-right: 1px solid #222;
+    }
+
+    .tab.active { background: #000000; }
+    .tab:hover:not(.active) { background: #1a1a1a; }
+    .tab.modified span:first-child::before { content: '● '; color: #0af; }
+
+    .tab-close {
+      opacity: 0.6;
+      font-size: 12px;
+    }
+
+    .tab-close:hover { opacity: 1; }
+
+    #new-term-btn, .term-profile-btn {
+      padding: 8px 12px;
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #new-term-btn:hover, .term-profile-btn:hover { color: #ccc; }
+
+    .term-profiles {
+      display: flex;
+      margin-left: auto;
+      border-left: 1px solid #222;
+    }
+
+    /* Terminal Container */
+    #terminal-container {
+      flex: 1;
+      position: relative;
+      background: #000000;
+    }
+
+    /* Right Panel */
+    #right-panel {
+      width: 400px;
+      min-width: 300px;
+      max-width: 700px;
+      background: #0a0a0a;
+      border-left: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    #right-panel-header {
+      padding: 8px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #222;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    #right-panel-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .right-tab {
+      padding: 5px 12px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #888;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .right-tab:hover {
+      background: #2a2a2a;
+      color: #ccc;
+    }
+
+    .right-tab.active {
+      background: #0066cc;
+      border-color: #0066cc;
+      color: #fff;
+    }
+
+    #ai-select {
+      background: #1a1a1a;
+      color: #ccc;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    #ai-select:hover {
+      background: #2a2a2a;
+    }
+
+    #ai-frame {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #000;
+      min-height: 0;
+    }
+
+    /* Right Panel Notes */
+    #right-notes-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #notes-area {
+      flex: 1;
+      background: #000;
+      color: #ccc;
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+      padding: 12px;
+      line-height: 1.5;
+    }
+
+    /* FTP Panel */
+    #right-ftp-panel {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #ftp-connect-form {
+      padding: 12px;
+      border-bottom: 1px solid #222;
+    }
+
+    #ftp-connect-form input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 12px;
+      outline: none;
+    }
+
+    #ftp-connect-form input:focus { border-color: #0066cc; }
+
+    #ftp-connect-form button {
+      width: 100%;
+      padding: 8px;
+      background: #0066cc;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    #ftp-connect-form button:hover { background: #0077dd; }
+
+    #ftp-status {
+      padding: 8px 12px;
+      font-size: 11px;
+      color: #666;
+      border-bottom: 1px solid #222;
+    }
+
+    #ftp-file-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .terminal-panel {
+      position: absolute;
+      inset: 0;
+      display: none;
+    }
+
+    .terminal-panel.active { display: block; }
+
+    /* Context Menu */
+    #context-menu {
+      position: fixed;
+      background: #0a0a0a;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 4px 0;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    #context-menu button {
+      display: block;
+      width: 100%;
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      color: #ccc;
+      text-align: left;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    #context-menu button:hover { background: #0066cc; }
+    #context-menu button.danger { color: #f44; }
+
+    /* Resizer */
+    #resizer {
+      height: 4px;
+      background: #222;
+      cursor: ns-resize;
+    }
+    #resizer:hover { background: #0066cc; }
+
+    /* Settings Panel */
+    #settings-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+
+    #settings-panel {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    #settings-panel h2 {
+      margin-bottom: 16px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .settings-group {
+      margin-bottom: 16px;
+    }
+
+    .settings-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .settings-group input, .settings-group select {
+      width: 100%;
+      padding: 8px;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .settings-group input:focus, .settings-group select:focus {
+      border-color: #0066cc;
+    }
+
+    #settings-panel .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    #settings-panel button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    #settings-panel button.primary {
+      background: #0066cc;
+      color: #fff;
+    }
+
+    #settings-panel button.secondary {
+      background: #333;
+      color: #ccc;
+    }
+
+    /* Shortcuts Panel */
+    #shortcuts-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+    }
+
+    #shortcuts-panel {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      width: 450px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    #shortcuts-panel h2 {
+      margin-bottom: 16px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .shortcut-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #222;
+      font-size: 13px;
+    }
+
+    .shortcut-key {
+      background: #333;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #fff;
+    }
+
+    /* Status Bar */
+    #status-bar {
+      height: 24px;
+      background: #0a0a0a;
+      border-top: 1px solid #222;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 11px;
+      color: #666;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    #status-bar button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 6px;
+    }
+
+    #status-bar button:hover { color: #ccc; }
+  </style>
+</head>
+<body>
+  <!-- App Container -->
+  <div id="app-container">
+  <!-- Left Panel -->
+  <div id="left-panel">
+    <!-- File Manager -->
+    <div id="file-manager">
+      <div id="fm-toolbar">
+        <button onclick="goHome()">Home</button>
+        <button onclick="goUp()">Up</button>
+        <button onclick="openFolder()">Open</button>
+        <button onclick="refresh()">Refresh</button>
+        <button id="hidden-toggle" onclick="toggleHidden()">Hidden</button>
+        <input type="text" id="fm-search" placeholder="Search..." oninput="filterFiles()">
+      </div>
+      <div id="fm-path">Loading...</div>
+      <div id="file-list"></div>
+      <div id="fm-bottom-toolbar">
+        <button onclick="newFile()">+ File</button>
+        <button onclick="newFolder()">+ Folder</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Resizer -->
+  <div class="panel-resizer" id="left-resizer"></div>
+
+  <!-- Main Area -->
+  <div id="main-area">
+    <!-- Editor Area -->
+    <div id="editor-area">
+      <div id="editor-tabs"></div>
+      <div id="editor-container"></div>
+    </div>
+
+    <div id="resizer"></div>
+
+    <!-- Terminal Area -->
+    <div id="terminal-area">
+      <div id="terminal-tabs">
+        <button id="new-term-btn" onclick="createTerminal()">+</button>
+        <div class="term-profiles">
+          <button class="term-profile-btn" onclick="createTerminal('/bin/zsh')" title="Zsh">zsh</button>
+          <button class="term-profile-btn" onclick="createTerminal('/bin/bash')" title="Bash">bash</button>
+          <button class="term-profile-btn" onclick="createTerminal('node')" title="Node">node</button>
+          <button class="term-profile-btn" onclick="createTerminal('python3')" title="Python">py</button>
+        </div>
+      </div>
+      <div id="terminal-container"></div>
+    </div>
+  </div>
+
+  <!-- Right Resizer -->
+  <div class="panel-resizer" id="right-resizer"></div>
+
+  <!-- Right Panel - AI / Notes / FTP -->
+  <div id="right-panel">
+    <div id="right-panel-header">
+      <div id="right-panel-tabs">
+        <button class="right-tab active" onclick="showRightTab('notes')">Notes</button>
+        <button class="right-tab" onclick="showRightTab('ai')">AI</button>
+        <button class="right-tab" onclick="showRightTab('ftp')">FTP</button>
+      </div>
+      <select id="ai-select" onchange="switchAI()" style="display:none;">
+        <option value="https://copilot.microsoft.com">Copilot</option>
+        <option value="https://chatgpt.com">ChatGPT</option>
+        <option value="https://claude.ai">Claude</option>
+        <option value="https://gemini.google.com">Gemini</option>
+        <option value="https://poe.com">Poe</option>
+        <option value="https://perplexity.ai">Perplexity</option>
+      </select>
+    </div>
+    <div id="right-notes-panel">
+      <textarea id="notes-area" placeholder="Quick notes..."></textarea>
+    </div>
+    <div id="right-ftp-panel">
+      <div id="ftp-connect-form">
+        <input type="text" id="ftp-host" placeholder="Host (e.g., ftp.example.com)">
+        <input type="text" id="ftp-port" placeholder="Port (default: 21)" value="21">
+        <input type="text" id="ftp-user" placeholder="Username">
+        <input type="password" id="ftp-pass" placeholder="Password">
+        <button onclick="connectFtp()">Connect</button>
+      </div>
+      <div id="ftp-status">Not connected</div>
+      <div id="ftp-file-list"></div>
+    </div>
+    <webview id="ai-frame" src="about:blank" allowpopups style="display:none;"></webview>
+  </div>
+  </div><!-- End app-container -->
+
+  <!-- Context Menu -->
+  <div id="context-menu">
+    <button onclick="openSelectedFile()">Open</button>
+    <button onclick="copyFile()">Copy</button>
+    <button onclick="cutFile()">Cut</button>
+    <button onclick="pasteFile()">Paste</button>
+    <button onclick="renameFile()">Rename</button>
+    <button onclick="deleteFile()" class="danger">Delete</button>
+  </div>
+
+  <!-- Input Dialog -->
+  <div id="input-dialog" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#1a1a1a; padding:20px; border-radius:8px; border:1px solid #333; min-width:300px;">
+      <div id="input-dialog-title" style="margin-bottom:12px; font-size:14px; color:#ccc;"></div>
+      <input type="text" id="input-dialog-input" style="width:100%; padding:8px; background:#000; border:1px solid #333; border-radius:4px; color:#ccc; font-size:14px; outline:none;">
+      <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
+        <button onclick="closeInputDialog()" style="padding:6px 12px; background:#333; border:none; border-radius:4px; color:#ccc; cursor:pointer;">Cancel</button>
+        <button onclick="confirmInputDialog()" style="padding:6px 12px; background:#0066cc; border:none; border-radius:4px; color:#fff; cursor:pointer;">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Overlay -->
+  <div id="settings-overlay" onclick="if(event.target===this)closeSettings()">
+    <div id="settings-panel">
+      <h2>Settings</h2>
+      <div class="settings-group">
+        <label>Editor Font Size</label>
+        <input type="number" id="setting-font-size" value="14" min="10" max="24">
+      </div>
+      <div class="settings-group">
+        <label>Default Shell</label>
+        <select id="setting-shell">
+          <option value="/bin/zsh">Zsh</option>
+          <option value="/bin/bash">Bash</option>
+          <option value="/bin/sh">Sh</option>
+        </select>
+      </div>
+      <div class="settings-group">
+        <label>Theme</label>
+        <select id="setting-theme">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="secondary" onclick="closeSettings()">Cancel</button>
+        <button class="primary" onclick="saveSettings()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shortcuts Overlay -->
+  <div id="shortcuts-overlay" onclick="if(event.target===this)closeShortcuts()">
+    <div id="shortcuts-panel">
+      <h2>Keyboard Shortcuts</h2>
+      <div class="shortcut-row"><span>Save file</span><span class="shortcut-key">⌘S</span></div>
+      <div class="shortcut-row"><span>New terminal</span><span class="shortcut-key">⌘T</span></div>
+      <div class="shortcut-row"><span>Close tab</span><span class="shortcut-key">⌘W</span></div>
+      <div class="shortcut-row"><span>Find in file</span><span class="shortcut-key">⌘F</span></div>
+      <div class="shortcut-row"><span>Go to line</span><span class="shortcut-key">⌘G</span></div>
+      <div class="shortcut-row"><span>Command palette</span><span class="shortcut-key">⌘⇧P</span></div>
+      <div class="shortcut-row"><span>Toggle sidebar</span><span class="shortcut-key">⌘B</span></div>
+      <div class="shortcut-row"><span>Settings</span><span class="shortcut-key">⌘,</span></div>
+      <div class="shortcut-row"><span>Shortcuts help</span><span class="shortcut-key">⌘/</span></div>
+      <div class="shortcut-row"><span>Copy file</span><span class="shortcut-key">⌘C</span></div>
+      <div class="shortcut-row"><span>Cut file</span><span class="shortcut-key">⌘X</span></div>
+      <div class="shortcut-row"><span>Paste file</span><span class="shortcut-key">⌘V</span></div>
+      <div style="margin-top:16px; text-align:center;">
+        <button class="secondary" onclick="closeShortcuts()" style="padding:8px 20px; background:#333; border:none; border-radius:4px; color:#ccc; cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div id="status-bar">
+    <span id="status-file">No file open</span>
+    <span id="status-line">Ln 1, Col 1</span>
+    <span style="flex:1;"></span>
+    <button onclick="showShortcuts()">Shortcuts</button>
+    <button onclick="showSettings()">Settings</button>
+  </div>
+
+  <script src="node_modules/xterm/lib/xterm.js"></script>
+  <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+  <script>
+    // Monaco Editor loader
+    const monacoLoader = document.createElement('script');
+    monacoLoader.src = 'node_modules/monaco-editor/min/vs/loader.js';
+    monacoLoader.onload = () => {
+      require.config({ paths: { vs: 'node_modules/monaco-editor/min/vs' } });
+      require(['vs/editor/editor.main'], () => {
+        monacoReady = true;
+        monaco.editor.setTheme('vs-dark');
+      });
+    };
+    document.head.appendChild(monacoLoader);
+
+    let monacoReady = false;
+    let monacoEditor = null;
+    let currentPath = '';
+    let selectedFile = null;
+    let terminals = [];
+    let openFiles = [];
+    let activeFileIndex = -1;
+    let showHidden = false;
+    let allFiles = [];
+    let clipboard = { file: null, action: null };
+    let settings = {
+      fontSize: 14,
+      shell: '/bin/zsh',
+      theme: 'dark'
+    };
+
+    // Load settings
+    function loadSettings() {
+      const saved = localStorage.getItem('dterm-settings');
+      if (saved) {
+        settings = { ...settings, ...JSON.parse(saved) };
+        document.getElementById('setting-font-size').value = settings.fontSize;
+        document.getElementById('setting-shell').value = settings.shell;
+        document.getElementById('setting-theme').value = settings.theme;
+        applyTheme();
+      }
+    }
+
+    function saveSettings() {
+      settings.fontSize = parseInt(document.getElementById('setting-font-size').value);
+      settings.shell = document.getElementById('setting-shell').value;
+      settings.theme = document.getElementById('setting-theme').value;
+      localStorage.setItem('dterm-settings', JSON.stringify(settings));
+      applyTheme();
+      if (monacoEditor) {
+        monacoEditor.updateOptions({ fontSize: settings.fontSize });
+      }
+      closeSettings();
+    }
+
+    function applyTheme() {
+      if (settings.theme === 'light') {
+        document.body.style.background = '#f5f5f5';
+        document.body.style.color = '#333';
+        if (monacoReady) monaco.editor.setTheme('vs');
+      } else {
+        document.body.style.background = '#000000';
+        document.body.style.color = '#ccc';
+        if (monacoReady) monaco.editor.setTheme('vs-dark');
+      }
+    }
+
+    function showSettings() {
+      document.getElementById('settings-overlay').style.display = 'flex';
+    }
+
+    function closeSettings() {
+      document.getElementById('settings-overlay').style.display = 'none';
+    }
+
+    function showShortcuts() {
+      document.getElementById('shortcuts-overlay').style.display = 'flex';
+    }
+
+    function closeShortcuts() {
+      document.getElementById('shortcuts-overlay').style.display = 'none';
+    }
+
+    // Initialize
+    async function init() {
+      loadSettings();
+      currentPath = await window.api.fs.getHome();
+      loadFiles();
+      createTerminal();
+      setupResizer();
+      setupPanelResizers();
+    }
+
+    // File Manager
+    async function loadFiles() {
+      document.getElementById('fm-path').textContent = currentPath;
+      const fileList = document.getElementById('file-list');
+      fileList.innerHTML = '';
+
+      try {
+        const files = await window.api.fs.readDir(currentPath);
+        allFiles = files;
+
+        let filtered = files;
+        if (!showHidden) {
+          filtered = files.filter(f => !f.name.startsWith('.'));
+        }
+
+        const searchTerm = document.getElementById('fm-search').value.toLowerCase();
+        if (searchTerm) {
+          filtered = filtered.filter(f => f.name.toLowerCase().includes(searchTerm));
+        }
+
+        filtered.sort((a, b) => {
+          if (a.isDirectory && !b.isDirectory) return -1;
+          if (!a.isDirectory && b.isDirectory) return 1;
+          return a.name.localeCompare(b.name);
+        });
+
+        filtered.forEach(file => {
+          const div = document.createElement('div');
+          div.className = 'file-item';
+          if (clipboard.file && clipboard.file.path === file.path && clipboard.action === 'cut') {
+            div.classList.add('cut');
+          }
+
+          const sizeStr = file.isDirectory ? '' : formatSize(file.size);
+          div.innerHTML = `
+            <span>${file.isDirectory ? '📁' : '📄'}</span>
+            <span>${file.name}</span>
+            <span class="file-info">${sizeStr}</span>
+          `;
+          div.onclick = (e) => handleClick(file, e);
+          div.ondblclick = () => handleDoubleClick(file);
+          div.oncontextmenu = (e) => showContextMenu(e, file);
+          fileList.appendChild(div);
+        });
+      } catch (err) {
+        fileList.innerHTML = `<div style="padding:10px;color:#f44">Error: ${err.message}</div>`;
+      }
+    }
+
+    function formatSize(bytes) {
+      if (!bytes) return '';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      if (bytes < 1024 * 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+      return (bytes / 1024 / 1024 / 1024).toFixed(1) + ' GB';
+    }
+
+    function filterFiles() {
+      loadFiles();
+    }
+
+    function toggleHidden() {
+      showHidden = !showHidden;
+      document.getElementById('hidden-toggle').classList.toggle('active', showHidden);
+      loadFiles();
+    }
+
+    function handleClick(file, e) {
+      document.querySelectorAll('.file-item').forEach(el => el.classList.remove('selected'));
+      e.currentTarget.classList.add('selected');
+      selectedFile = file;
+    }
+
+    async function handleDoubleClick(file) {
+      if (file.isDirectory) {
+        currentPath = file.path;
+        loadFiles();
+      } else {
+        await openFileInEditor(file);
+      }
+    }
+
+    // Clipboard operations
+    function copyFile() {
+      hideContextMenu();
+      if (selectedFile) {
+        clipboard = { file: selectedFile, action: 'copy' };
+        loadFiles();
+      }
+    }
+
+    function cutFile() {
+      hideContextMenu();
+      if (selectedFile) {
+        clipboard = { file: selectedFile, action: 'cut' };
+        loadFiles();
+      }
+    }
+
+    async function pasteFile() {
+      hideContextMenu();
+      if (!clipboard.file) return;
+
+      const destPath = currentPath + '/' + clipboard.file.name;
+      try {
+        if (clipboard.action === 'copy') {
+          await window.api.fs.copy(clipboard.file.path, destPath);
+        } else {
+          await window.api.fs.rename(clipboard.file.path, destPath);
+          clipboard = { file: null, action: null };
+        }
+        loadFiles();
+      } catch (err) {
+        alert('Could not paste: ' + err.message);
+      }
+    }
+
+    // Editor with Monaco
+    async function openFileInEditor(file) {
+      const existingIndex = openFiles.findIndex(f => f.path === file.path);
+      if (existingIndex !== -1) {
+        activateFile(existingIndex);
+        return;
+      }
+
+      try {
+        const content = await window.api.fs.readFile(file.path);
+        openFiles.push({
+          path: file.path,
+          name: file.name,
+          content: content,
+          modified: false
+        });
+        activeFileIndex = openFiles.length - 1;
+        updateEditorTabs();
+        showEditor();
+        setEditorContent(content, file.name);
+        updateStatusBar();
+      } catch (err) {
+        alert('Could not open file: ' + err.message);
+      }
+    }
+
+    function setEditorContent(content, filename) {
+      const container = document.getElementById('editor-container');
+
+      if (!monacoReady) {
+        // Fallback to textarea if Monaco not loaded
+        container.innerHTML = `<textarea id="editor-fallback" style="width:100%;height:100%;background:#000;color:#ccc;border:none;outline:none;resize:none;font-family:Menlo,Monaco,monospace;font-size:13px;padding:10px;">${content}</textarea>`;
+        return;
+      }
+
+      if (monacoEditor) {
+        monacoEditor.dispose();
+      }
+
+      const language = getLanguage(filename);
+      monacoEditor = monaco.editor.create(container, {
+        value: content,
+        language: language,
+        theme: settings.theme === 'light' ? 'vs' : 'vs-dark',
+        fontSize: settings.fontSize,
+        minimap: { enabled: true },
+        automaticLayout: true,
+        scrollBeyondLastLine: false,
+        wordWrap: 'on'
+      });
+
+      monacoEditor.onDidChangeModelContent(() => {
+        if (activeFileIndex >= 0) {
+          openFiles[activeFileIndex].modified = true;
+          openFiles[activeFileIndex].content = monacoEditor.getValue();
+          updateEditorTabs();
+        }
+      });
+
+      monacoEditor.onDidChangeCursorPosition((e) => {
+        document.getElementById('status-line').textContent = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
+      });
+    }
+
+    function getLanguage(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const langMap = {
+        'js': 'javascript',
+        'jsx': 'javascript',
+        'ts': 'typescript',
+        'tsx': 'typescript',
+        'py': 'python',
+        'rb': 'ruby',
+        'java': 'java',
+        'c': 'c',
+        'cpp': 'cpp',
+        'h': 'c',
+        'cs': 'csharp',
+        'go': 'go',
+        'rs': 'rust',
+        'php': 'php',
+        'html': 'html',
+        'htm': 'html',
+        'css': 'css',
+        'scss': 'scss',
+        'less': 'less',
+        'json': 'json',
+        'xml': 'xml',
+        'yaml': 'yaml',
+        'yml': 'yaml',
+        'md': 'markdown',
+        'sql': 'sql',
+        'sh': 'shell',
+        'bash': 'shell',
+        'zsh': 'shell',
+        'ps1': 'powershell',
+        'swift': 'swift',
+        'kt': 'kotlin',
+        'r': 'r',
+        'lua': 'lua',
+        'pl': 'perl',
+        'dockerfile': 'dockerfile'
+      };
+      return langMap[ext] || 'plaintext';
+    }
+
+    function updateEditorTabs() {
+      const tabsContainer = document.getElementById('editor-tabs');
+      tabsContainer.innerHTML = '';
+
+      openFiles.forEach((file, index) => {
+        const tab = document.createElement('div');
+        tab.className = 'tab' + (index === activeFileIndex ? ' active' : '') + (file.modified ? ' modified' : '');
+        tab.innerHTML = `<span>${file.name}</span><span class="tab-close" onclick="closeEditorTab(${index}, event)">✕</span>`;
+        tab.onclick = () => activateFile(index);
+        tabsContainer.appendChild(tab);
+      });
+    }
+
+    function activateFile(index) {
+      if (activeFileIndex >= 0 && openFiles[activeFileIndex] && monacoEditor) {
+        openFiles[activeFileIndex].content = monacoEditor.getValue();
+      }
+
+      activeFileIndex = index;
+      setEditorContent(openFiles[index].content, openFiles[index].name);
+      updateEditorTabs();
+      updateStatusBar();
+    }
+
+    function closeEditorTab(index, e) {
+      e.stopPropagation();
+
+      if (openFiles[index].modified) {
+        if (!confirm(`Save changes to ${openFiles[index].name}?`)) {
+          // Don't save
+        } else {
+          saveCurrentFile();
+        }
+      }
+
+      openFiles.splice(index, 1);
+
+      if (openFiles.length === 0) {
+        activeFileIndex = -1;
+        hideEditor();
+        if (monacoEditor) {
+          monacoEditor.dispose();
+          monacoEditor = null;
+        }
+      } else {
+        activeFileIndex = Math.min(index, openFiles.length - 1);
+        setEditorContent(openFiles[activeFileIndex].content, openFiles[activeFileIndex].name);
+      }
+      updateEditorTabs();
+      updateStatusBar();
+    }
+
+    function showEditor() {
+      document.getElementById('editor-area').classList.add('visible');
+      document.getElementById('terminal-area').classList.add('with-editor');
+      document.getElementById('resizer').style.display = 'block';
+      terminals.forEach(t => t.fitAddon.fit());
+    }
+
+    function hideEditor() {
+      document.getElementById('editor-area').classList.remove('visible');
+      document.getElementById('terminal-area').classList.remove('with-editor');
+      document.getElementById('resizer').style.display = 'none';
+      terminals.forEach(t => t.fitAddon.fit());
+    }
+
+    async function saveCurrentFile() {
+      if (activeFileIndex < 0) return;
+      const file = openFiles[activeFileIndex];
+      if (monacoEditor) {
+        file.content = monacoEditor.getValue();
+      }
+      await window.api.fs.writeFile(file.path, file.content);
+      file.modified = false;
+      updateEditorTabs();
+    }
+
+    function updateStatusBar() {
+      if (activeFileIndex >= 0) {
+        document.getElementById('status-file').textContent = openFiles[activeFileIndex].path;
+      } else {
+        document.getElementById('status-file').textContent = 'No file open';
+        document.getElementById('status-line').textContent = '';
+      }
+    }
+
+    // Resizers
+    function setupResizer() {
+      const resizer = document.getElementById('resizer');
+      const editorArea = document.getElementById('editor-area');
+      let isResizing = false;
+
+      resizer.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.body.style.cursor = 'ns-resize';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const mainArea = document.getElementById('main-area');
+        const rect = mainArea.getBoundingClientRect();
+        const editorHeight = e.clientY - rect.top;
+        const minHeight = 100;
+        const maxHeight = rect.height - 150;
+
+        if (editorHeight > minHeight && editorHeight < maxHeight) {
+          editorArea.style.flex = 'none';
+          editorArea.style.height = editorHeight + 'px';
+          terminals.forEach(t => t.fitAddon.fit());
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.cursor = '';
+      });
+    }
+
+    function setupPanelResizers() {
+      // Left panel resizer
+      const leftResizer = document.getElementById('left-resizer');
+      const leftPanel = document.getElementById('left-panel');
+      let leftResizing = false;
+
+      leftResizer.addEventListener('mousedown', () => {
+        leftResizing = true;
+        document.body.style.cursor = 'ew-resize';
+      });
+
+      // Right panel resizer
+      const rightResizer = document.getElementById('right-resizer');
+      const rightPanel = document.getElementById('right-panel');
+      let rightResizing = false;
+
+      rightResizer.addEventListener('mousedown', () => {
+        rightResizing = true;
+        document.body.style.cursor = 'ew-resize';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (leftResizing) {
+          const width = e.clientX;
+          if (width >= 200 && width <= 500) {
+            leftPanel.style.width = width + 'px';
+            terminals.forEach(t => t.fitAddon.fit());
+          }
+        }
+        if (rightResizing) {
+          const width = window.innerWidth - e.clientX;
+          if (width >= 300 && width <= 700) {
+            rightPanel.style.width = width + 'px';
+            terminals.forEach(t => t.fitAddon.fit());
+          }
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        leftResizing = false;
+        rightResizing = false;
+        document.body.style.cursor = '';
+      });
+    }
+
+    async function goHome() {
+      currentPath = await window.api.fs.getHome();
+      loadFiles();
+    }
+
+    function goUp() {
+      const parent = currentPath.split('/').slice(0, -1).join('/') || '/';
+      currentPath = parent;
+      loadFiles();
+    }
+
+    async function openFolder() {
+      const path = await window.api.dialog.openFolder();
+      if (path) {
+        currentPath = path;
+        loadFiles();
+      }
+    }
+
+    function refresh() {
+      loadFiles();
+    }
+
+    function showContextMenu(e, file) {
+      e.preventDefault();
+      selectedFile = file;
+      const menu = document.getElementById('context-menu');
+      menu.style.display = 'block';
+      menu.style.left = e.clientX + 'px';
+      menu.style.top = e.clientY + 'px';
+    }
+
+    function hideContextMenu() {
+      document.getElementById('context-menu').style.display = 'none';
+    }
+
+    function openSelectedFile() {
+      hideContextMenu();
+      if (selectedFile) {
+        handleDoubleClick(selectedFile);
+      }
+    }
+
+    async function deleteFile() {
+      hideContextMenu();
+      if (selectedFile && confirm(`Delete "${selectedFile.name}"?`)) {
+        await window.api.fs.delete(selectedFile.path);
+        loadFiles();
+      }
+    }
+
+    document.addEventListener('click', hideContextMenu);
+
+    // Input dialog
+    let inputDialogCallback = null;
+
+    function showInputDialog(title, defaultValue = '') {
+      return new Promise((resolve) => {
+        document.getElementById('input-dialog-title').textContent = title;
+        document.getElementById('input-dialog-input').value = defaultValue;
+        document.getElementById('input-dialog').style.display = 'flex';
+        document.getElementById('input-dialog-input').focus();
+        inputDialogCallback = resolve;
+      });
+    }
+
+    function closeInputDialog() {
+      document.getElementById('input-dialog').style.display = 'none';
+      if (inputDialogCallback) {
+        inputDialogCallback(null);
+        inputDialogCallback = null;
+      }
+    }
+
+    function confirmInputDialog() {
+      const value = document.getElementById('input-dialog-input').value;
+      document.getElementById('input-dialog').style.display = 'none';
+      if (inputDialogCallback) {
+        inputDialogCallback(value);
+        inputDialogCallback = null;
+      }
+    }
+
+    document.getElementById('input-dialog-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') confirmInputDialog();
+      if (e.key === 'Escape') closeInputDialog();
+    });
+
+    async function newFile() {
+      const name = await showInputDialog('Enter file name:');
+      if (name && name.trim()) {
+        const filePath = currentPath + '/' + name.trim();
+        try {
+          await window.api.fs.writeFile(filePath, '');
+          loadFiles();
+          await openFileInEditor({ path: filePath, name: name.trim(), isDirectory: false });
+        } catch (err) {
+          alert('Could not create file: ' + err.message);
+        }
+      }
+    }
+
+    async function newFolder() {
+      const name = await showInputDialog('Enter folder name:');
+      if (name && name.trim()) {
+        const folderPath = currentPath + '/' + name.trim();
+        try {
+          await window.api.fs.mkdir(folderPath);
+          loadFiles();
+        } catch (err) {
+          alert('Could not create folder: ' + err.message);
+        }
+      }
+    }
+
+    async function renameFile() {
+      hideContextMenu();
+      if (!selectedFile) return;
+      const newName = await showInputDialog('Enter new name:', selectedFile.name);
+      if (newName && newName.trim() && newName !== selectedFile.name) {
+        const newPath = currentPath + '/' + newName.trim();
+        try {
+          await window.api.fs.rename(selectedFile.path, newPath);
+          loadFiles();
+        } catch (err) {
+          alert('Could not rename: ' + err.message);
+        }
+      }
+    }
+
+    // Terminal
+    function createTerminal(shell) {
+      const id = 'term-' + Date.now();
+      const container = document.createElement('div');
+      container.className = 'terminal-panel';
+      container.id = id;
+      document.getElementById('terminal-container').appendChild(container);
+
+      const term = new Terminal({
+        fontSize: 13,
+        fontFamily: 'Menlo, Monaco, monospace',
+        theme: {
+          background: '#000000',
+          foreground: '#cccccc',
+          cursor: '#ffffff',
+          cursorAccent: '#000000',
+          selectionBackground: '#0066cc'
+        },
+        cursorBlink: true
+      });
+
+      const fitAddon = new FitAddon.FitAddon();
+      term.loadAddon(fitAddon);
+      term.open(container);
+      fitAddon.fit();
+
+      const shellToUse = shell || settings.shell || '/bin/zsh';
+      window.api.terminal.create(id, shellToUse);
+
+      term.onData(data => window.api.terminal.write(id, data));
+      term.onResize(({ cols, rows }) => window.api.terminal.resize(id, cols, rows));
+
+      const shellName = shellToUse.split('/').pop();
+      const termData = { id, term, fitAddon, name: shellName };
+      terminals.push(termData);
+
+      const tab = document.createElement('div');
+      tab.className = 'tab';
+      tab.id = 'tab-' + id;
+      tab.innerHTML = `<span>${shellName}</span><span class="tab-close" onclick="closeTerminal('${id}', event)">✕</span>`;
+      tab.onclick = () => activateTerminal(id);
+      document.getElementById('terminal-tabs').insertBefore(tab, document.getElementById('new-term-btn'));
+
+      activateTerminal(id);
+      new ResizeObserver(() => fitAddon.fit()).observe(container);
+    }
+
+    function activateTerminal(id) {
+      document.querySelectorAll('.terminal-panel').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('#terminal-tabs .tab').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(id).classList.add('active');
+      document.getElementById('tab-' + id).classList.add('active');
+
+      const termData = terminals.find(t => t.id === id);
+      if (termData) {
+        termData.fitAddon.fit();
+        termData.term.focus();
+      }
+    }
+
+    function closeTerminal(id, e) {
+      e.stopPropagation();
+      window.api.terminal.kill(id);
+
+      const idx = terminals.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        terminals[idx].term.dispose();
+        terminals.splice(idx, 1);
+      }
+
+      document.getElementById(id).remove();
+      document.getElementById('tab-' + id).remove();
+
+      if (terminals.length > 0) {
+        activateTerminal(terminals[terminals.length - 1].id);
+      }
+    }
+
+    window.api.terminal.onData((id, data) => {
+      const termData = terminals.find(t => t.id === id);
+      if (termData) termData.term.write(data);
+    });
+
+    window.api.terminal.onExit((id, code) => {
+      const termData = terminals.find(t => t.id === id);
+      if (termData) termData.term.write(`\r\n[Process exited with code ${code}]\r\n`);
+    });
+
+    // Right Panel
+    function showRightTab(tab) {
+      const frame = document.getElementById('ai-frame');
+      const notesPanel = document.getElementById('right-notes-panel');
+      const ftpPanel = document.getElementById('right-ftp-panel');
+      const select = document.getElementById('ai-select');
+      const tabs = document.querySelectorAll('.right-tab');
+
+      tabs.forEach(t => t.classList.remove('active'));
+
+      notesPanel.style.display = 'none';
+      ftpPanel.style.display = 'none';
+      frame.style.display = 'none';
+      select.style.display = 'none';
+
+      if (tab === 'notes') {
+        tabs[0].classList.add('active');
+        notesPanel.style.display = 'flex';
+      } else if (tab === 'ai') {
+        tabs[1].classList.add('active');
+        frame.style.display = 'flex';
+        select.style.display = 'block';
+        if (frame.src === 'about:blank') {
+          frame.src = select.value;
+        }
+      } else if (tab === 'ftp') {
+        tabs[2].classList.add('active');
+        ftpPanel.style.display = 'block';
+      }
+    }
+
+    function switchAI() {
+      const select = document.getElementById('ai-select');
+      const frame = document.getElementById('ai-frame');
+      frame.src = select.value;
+    }
+
+    // FTP
+    let ftpConnected = false;
+    let ftpCurrentPath = '/';
+
+    async function connectFtp() {
+      const host = document.getElementById('ftp-host').value;
+      const port = parseInt(document.getElementById('ftp-port').value) || 21;
+      const user = document.getElementById('ftp-user').value;
+      const pass = document.getElementById('ftp-pass').value;
+
+      if (!host) {
+        alert('Please enter a host');
+        return;
+      }
+
+      document.getElementById('ftp-status').textContent = 'Connecting...';
+
+      try {
+        await window.api.ftp.connect(host, port, user, pass);
+        ftpConnected = true;
+        ftpCurrentPath = '/';
+        document.getElementById('ftp-status').textContent = `Connected to ${host}`;
+        loadFtpFiles();
+      } catch (err) {
+        document.getElementById('ftp-status').textContent = 'Error: ' + err.message;
+      }
+    }
+
+    async function loadFtpFiles() {
+      if (!ftpConnected) return;
+
+      const fileList = document.getElementById('ftp-file-list');
+      fileList.innerHTML = '';
+
+      try {
+        const files = await window.api.ftp.list(ftpCurrentPath);
+
+        // Add parent directory
+        if (ftpCurrentPath !== '/') {
+          const upDiv = document.createElement('div');
+          upDiv.className = 'file-item';
+          upDiv.innerHTML = '<span>📁</span><span>..</span>';
+          upDiv.ondblclick = () => {
+            ftpCurrentPath = ftpCurrentPath.split('/').slice(0, -1).join('/') || '/';
+            loadFtpFiles();
+          };
+          fileList.appendChild(upDiv);
+        }
+
+        files.forEach(file => {
+          const div = document.createElement('div');
+          div.className = 'file-item';
+          div.innerHTML = `<span>${file.isDirectory ? '📁' : '📄'}</span><span>${file.name}</span>`;
+          div.ondblclick = () => {
+            if (file.isDirectory) {
+              ftpCurrentPath = ftpCurrentPath === '/' ? '/' + file.name : ftpCurrentPath + '/' + file.name;
+              loadFtpFiles();
+            }
+          };
+          fileList.appendChild(div);
+        });
+      } catch (err) {
+        fileList.innerHTML = `<div style="padding:10px;color:#f44">Error: ${err.message}</div>`;
+      }
+    }
+
+    // Notes
+    async function initNotes() {
+      const notes = document.getElementById('notes-area');
+      const saved = await window.api.notes.load();
+      if (saved && saved.content) notes.value = saved.content;
+
+      let saveTimeout;
+      notes.addEventListener('input', () => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          window.api.notes.save({ content: notes.value });
+        }, 500);
+      });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Cmd+S - Save
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        saveCurrentFile();
+      }
+      // Cmd+T - New terminal
+      if ((e.metaKey || e.ctrlKey) && e.key === 't') {
+        e.preventDefault();
+        createTerminal();
+      }
+      // Cmd+W - Close tab
+      if ((e.metaKey || e.ctrlKey) && e.key === 'w') {
+        e.preventDefault();
+        if (activeFileIndex >= 0) {
+          closeEditorTab(activeFileIndex, { stopPropagation: () => {} });
+        }
+      }
+      // Cmd+B - Toggle sidebar
+      if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+        e.preventDefault();
+        const left = document.getElementById('left-panel');
+        const resizer = document.getElementById('left-resizer');
+        if (left.style.display === 'none') {
+          left.style.display = 'flex';
+          resizer.style.display = 'block';
+        } else {
+          left.style.display = 'none';
+          resizer.style.display = 'none';
+        }
+      }
+      // Cmd+, - Settings
+      if ((e.metaKey || e.ctrlKey) && e.key === ',') {
+        e.preventDefault();
+        showSettings();
+      }
+      // Cmd+/ - Shortcuts
+      if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+        e.preventDefault();
+        showShortcuts();
+      }
+      // Escape - Close dialogs
+      if (e.key === 'Escape') {
+        closeSettings();
+        closeShortcuts();
+      }
+    });
+
+    // File manager keyboard shortcuts
+    document.getElementById('file-list').addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
+        copyFile();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'x') {
+        cutFile();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'v') {
+        pasteFile();
+      }
+    });
+
+    // Start
+    init();
+    initNotes();
+  </script>
+</body>
+</html>
