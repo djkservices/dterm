@@ -119,6 +119,56 @@
       height: 100%;
     }
 
+    #mini-browser-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #666;
+      font-size: 12px;
+      display: none;
+    }
+
+    #mini-browser-loading.visible {
+      display: block;
+    }
+
+    #mini-browser-content {
+      position: relative;
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #333;
+      border-top-color: #0066cc;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* File list loading */
+    #file-list-loading {
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      display: none;
+    }
+
+    #file-list-loading.visible {
+      display: block;
+    }
+
     /* Left panel resizer between file manager and mini browser */
     #left-panel-resizer {
       height: 4px;
@@ -180,7 +230,142 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+
+    #fm-path span { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+
+    #fm-path button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+    }
+
+    #fm-path button:hover { color: #0066cc; }
+
+    /* Bookmarks */
+    #bookmarks-bar {
+      display: flex;
+      gap: 4px;
+      padding: 4px 6px;
+      border-bottom: 1px solid #222;
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+
+    #bookmarks-bar:empty { display: none; }
+
+    .bookmark-item {
+      padding: 3px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #888;
+      cursor: pointer;
+      font-size: 10px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .bookmark-item:hover { background: #2a2a2a; color: #ccc; }
+
+    .bookmark-item .remove-bookmark {
+      opacity: 0;
+      font-size: 10px;
+    }
+
+    .bookmark-item:hover .remove-bookmark { opacity: 0.6; }
+    .bookmark-item .remove-bookmark:hover { opacity: 1; color: #f44; }
+
+    /* Recent Menu */
+    #recent-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 4px 0;
+      display: none;
+      z-index: 1000;
+      min-width: 200px;
+      max-height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    #recent-menu.visible { display: block; }
+
+    #recent-menu .recent-item {
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #ccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #recent-menu .recent-item:hover { background: #0066cc; }
+
+    #recent-menu .recent-header {
+      padding: 4px 12px;
+      font-size: 10px;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    #recent-menu .recent-clear {
+      padding: 6px 12px;
+      font-size: 11px;
+      color: #888;
+      cursor: pointer;
+      border-top: 1px solid #222;
+      margin-top: 4px;
+    }
+
+    #recent-menu .recent-clear:hover { color: #f44; }
+
+    #fm-toolbar { position: relative; }
+
+    /* Git indicators */
+    #git-branch {
+      padding: 2px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-size: 10px;
+      color: #888;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    #git-branch.visible { display: flex; }
+    #git-branch .branch-icon { color: #f90; }
+
+    .file-item.git-modified .file-name { color: #f90; }
+    .file-item.git-added .file-name { color: #0f0; }
+    .file-item.git-deleted .file-name { color: #f44; text-decoration: line-through; }
+    .file-item.git-untracked .file-name { color: #888; }
+
+    .git-indicator {
+      font-size: 10px;
+      margin-left: auto;
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    .git-indicator.modified { color: #f90; }
+    .git-indicator.added { color: #0f0; }
+    .git-indicator.untracked { color: #888; }
 
     #file-list {
       flex: 1;
@@ -314,6 +499,54 @@
     }
 
     #new-term-btn:hover, .term-profile-btn:hover { color: #ccc; }
+
+    /* Terminal search bar */
+    #terminal-search {
+      display: none;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 6px 8px;
+      z-index: 100;
+      gap: 4px;
+      align-items: center;
+    }
+
+    #terminal-search.visible { display: flex; }
+
+    #terminal-search input {
+      width: 200px;
+      padding: 4px 8px;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 12px;
+      outline: none;
+    }
+
+    #terminal-search input:focus { border-color: #0066cc; }
+
+    #terminal-search button {
+      padding: 4px 8px;
+      background: #333;
+      border: none;
+      border-radius: 4px;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 11px;
+    }
+
+    #terminal-search button:hover { background: #444; }
+
+    #terminal-search .search-count {
+      font-size: 10px;
+      color: #666;
+      min-width: 40px;
+    }
 
     .term-profiles {
       display: flex;
@@ -516,6 +749,85 @@
     #context-menu button:hover { background: #0066cc; }
     #context-menu button.danger { color: #f44; }
 
+    /* Terminal Context Menu */
+    #terminal-context-menu {
+      position: fixed;
+      background: #0a0a0a;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 4px 0;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    #terminal-context-menu button {
+      display: block;
+      width: 100%;
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      color: #ccc;
+      text-align: left;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    #terminal-context-menu button:hover { background: #0066cc; }
+
+    /* Command Palette */
+    #command-palette {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      max-width: 90%;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      display: none;
+      flex-direction: column;
+      z-index: 4000;
+      max-height: 400px;
+    }
+
+    #command-palette.visible { display: flex; }
+
+    #command-palette-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #333;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    #command-palette-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 0;
+    }
+
+    .command-item {
+      padding: 8px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .command-item:hover, .command-item.selected { background: #0066cc; }
+
+    .command-item .command-icon { font-size: 16px; opacity: 0.7; }
+    .command-item .command-name { flex: 1; }
+    .command-item .command-shortcut { font-size: 11px; color: #888; }
+
+    .command-item.selected .command-shortcut { color: #ccc; }
+
     /* Resizer */
     #resizer {
       height: 4px;
@@ -523,6 +835,59 @@
       cursor: ns-resize;
     }
     #resizer:hover { background: #0066cc; }
+
+    /* File Preview */
+    #file-preview-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 4000;
+    }
+
+    #file-preview-overlay.visible { display: flex; }
+
+    #file-preview-container {
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #file-preview-container img {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    #file-preview-container video {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 4px;
+    }
+
+    #file-preview-name {
+      margin-top: 12px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    #file-preview-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    #file-preview-close:hover { color: #fff; }
 
     /* Settings Panel */
     #settings-overlay {
@@ -684,9 +1049,12 @@
         <button onclick="openFolder()">Open</button>
         <button onclick="refresh()">Refresh</button>
         <button id="hidden-toggle" onclick="toggleHidden()">Hidden</button>
+        <button onclick="showRecentMenu(event)">Recent ▾</button>
         <input type="text" id="fm-search" placeholder="Search..." oninput="filterFiles()">
       </div>
-      <div id="fm-path">Loading...</div>
+      <div id="recent-menu"></div>
+      <div id="fm-path"><span>Loading...</span><div id="git-branch"><span class="branch-icon">⎇</span><span id="git-branch-name"></span></div><button onclick="toggleBookmark()" title="Bookmark this folder">☆</button></div>
+      <div id="bookmarks-bar"></div>
       <div id="file-list"></div>
       <div id="fm-bottom-toolbar">
         <button onclick="newFile()">+ File</button>
@@ -707,7 +1075,10 @@
         <input type="text" id="mini-browser-url" placeholder="Enter URL..." value="" onkeydown="if(event.key==='Enter')miniBrowserGo()">
         <button onclick="miniBrowserGo()">Go</button>
       </div>
-      <webview id="mini-browser-frame" allowpopups></webview>
+      <div id="mini-browser-content">
+        <div id="mini-browser-loading"><span class="loading-spinner"></span>Loading...</div>
+        <webview id="mini-browser-frame" allowpopups></webview>
+      </div>
     </div>
   </div>
 
@@ -735,7 +1106,15 @@
           <button class="term-profile-btn" onclick="createTerminal('python3')" title="Python">py</button>
         </div>
       </div>
-      <div id="terminal-container"></div>
+      <div id="terminal-container">
+        <div id="terminal-search">
+          <input type="text" id="terminal-search-input" placeholder="Search..." onkeydown="handleTerminalSearchKey(event)">
+          <button onclick="terminalSearchPrev()">↑</button>
+          <button onclick="terminalSearchNext()">↓</button>
+          <span class="search-count" id="terminal-search-count"></span>
+          <button onclick="closeTerminalSearch()">✕</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -777,14 +1156,35 @@
   </div>
   </div><!-- End app-container -->
 
-  <!-- Context Menu -->
+  <!-- Context Menu (File Manager) -->
   <div id="context-menu">
     <button onclick="openSelectedFile()">Open</button>
+    <button onclick="previewSelectedFile()">Preview</button>
     <button onclick="copyFile()">Copy</button>
     <button onclick="cutFile()">Cut</button>
     <button onclick="pasteFile()">Paste</button>
     <button onclick="renameFile()">Rename</button>
     <button onclick="deleteFile()" class="danger">Delete</button>
+  </div>
+
+  <!-- Terminal Context Menu -->
+  <div id="terminal-context-menu">
+    <button onclick="terminalCopy()">Copy</button>
+    <button onclick="terminalPaste()">Paste</button>
+    <button onclick="terminalSelectAll()">Select All</button>
+    <button onclick="terminalClear()">Clear</button>
+  </div>
+
+  <!-- Command Palette -->
+  <div id="command-palette">
+    <input type="text" id="command-palette-input" placeholder="Type a command or search..." oninput="filterCommands()" onkeydown="handleCommandKey(event)">
+    <div id="command-palette-list"></div>
+  </div>
+
+  <!-- File Preview -->
+  <div id="file-preview-overlay" onclick="if(event.target===this)closeFilePreview()">
+    <button id="file-preview-close" onclick="closeFilePreview()">✕</button>
+    <div id="file-preview-container"></div>
   </div>
 
   <!-- Input Dialog -->
@@ -866,6 +1266,7 @@
 
   <script src="node_modules/xterm/lib/xterm.js"></script>
   <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+  <script src="node_modules/xterm-addon-search/lib/xterm-addon-search.js"></script>
   <script>
     // Monaco Editor loader
     const monacoLoader = document.createElement('script');
@@ -968,6 +1369,7 @@
     // Initialize
     async function init() {
       loadSettings();
+      loadBookmarks();
       currentPath = await window.api.fs.getHome();
       loadFiles();
       createTerminal();
@@ -977,9 +1379,133 @@
       showRightTab('notes');
     }
 
+    // Recent files/folders
+    let recentFolders = JSON.parse(localStorage.getItem('dterm-recent-folders') || '[]');
+    let recentFiles = JSON.parse(localStorage.getItem('dterm-recent-files') || '[]');
+    const MAX_RECENT = 10;
+
+    function addRecentFolder(path) {
+      recentFolders = recentFolders.filter(p => p !== path);
+      recentFolders.unshift(path);
+      if (recentFolders.length > MAX_RECENT) recentFolders.pop();
+      localStorage.setItem('dterm-recent-folders', JSON.stringify(recentFolders));
+    }
+
+    function addRecentFile(path) {
+      recentFiles = recentFiles.filter(p => p !== path);
+      recentFiles.unshift(path);
+      if (recentFiles.length > MAX_RECENT) recentFiles.pop();
+      localStorage.setItem('dterm-recent-files', JSON.stringify(recentFiles));
+    }
+
+    function showRecentMenu(e) {
+      e.stopPropagation();
+      const menu = document.getElementById('recent-menu');
+      menu.innerHTML = '';
+
+      if (recentFolders.length === 0 && recentFiles.length === 0) {
+        menu.innerHTML = '<div class="recent-item" style="color:#666">No recent items</div>';
+      } else {
+        if (recentFolders.length > 0) {
+          menu.innerHTML += '<div class="recent-header">Recent Folders</div>';
+          recentFolders.forEach(path => {
+            const name = path.split('/').pop() || path;
+            const item = document.createElement('div');
+            item.className = 'recent-item';
+            item.textContent = '📁 ' + name;
+            item.title = path;
+            item.onclick = () => { currentPath = path; loadFiles(); hideRecentMenu(); };
+            menu.appendChild(item);
+          });
+        }
+        if (recentFiles.length > 0) {
+          menu.innerHTML += '<div class="recent-header">Recent Files</div>';
+          recentFiles.forEach(path => {
+            const name = path.split('/').pop();
+            const item = document.createElement('div');
+            item.className = 'recent-item';
+            item.textContent = '📄 ' + name;
+            item.title = path;
+            item.onclick = () => { openFileInEditor(path); hideRecentMenu(); };
+            menu.appendChild(item);
+          });
+        }
+        const clear = document.createElement('div');
+        clear.className = 'recent-clear';
+        clear.textContent = 'Clear Recent';
+        clear.onclick = () => {
+          recentFolders = [];
+          recentFiles = [];
+          localStorage.removeItem('dterm-recent-folders');
+          localStorage.removeItem('dterm-recent-files');
+          hideRecentMenu();
+        };
+        menu.appendChild(clear);
+      }
+
+      menu.classList.add('visible');
+    }
+
+    function hideRecentMenu() {
+      document.getElementById('recent-menu').classList.remove('visible');
+    }
+
+    document.addEventListener('click', hideRecentMenu);
+
+    // Bookmarks
+    let bookmarks = JSON.parse(localStorage.getItem('dterm-bookmarks') || '[]');
+
+    function loadBookmarks() {
+      const bar = document.getElementById('bookmarks-bar');
+      bar.innerHTML = '';
+      bookmarks.forEach((path, i) => {
+        const name = path.split('/').pop() || path;
+        const item = document.createElement('div');
+        item.className = 'bookmark-item';
+        item.innerHTML = `<span>📁 ${name}</span><span class="remove-bookmark" onclick="removeBookmark(${i}, event)">✕</span>`;
+        item.onclick = () => goToBookmark(path);
+        item.title = path;
+        bar.appendChild(item);
+      });
+      updateBookmarkButton();
+    }
+
+    function toggleBookmark() {
+      const index = bookmarks.indexOf(currentPath);
+      if (index >= 0) {
+        bookmarks.splice(index, 1);
+      } else {
+        bookmarks.push(currentPath);
+      }
+      localStorage.setItem('dterm-bookmarks', JSON.stringify(bookmarks));
+      loadBookmarks();
+    }
+
+    function removeBookmark(index, e) {
+      e.stopPropagation();
+      bookmarks.splice(index, 1);
+      localStorage.setItem('dterm-bookmarks', JSON.stringify(bookmarks));
+      loadBookmarks();
+    }
+
+    function goToBookmark(path) {
+      currentPath = path;
+      loadFiles();
+    }
+
+    function updateBookmarkButton() {
+      const btn = document.querySelector('#fm-path button');
+      if (btn) {
+        btn.textContent = bookmarks.includes(currentPath) ? '★' : '☆';
+        btn.style.color = bookmarks.includes(currentPath) ? '#f90' : '#666';
+      }
+    }
+
     // File Manager
     async function loadFiles() {
-      document.getElementById('fm-path').textContent = currentPath;
+      document.querySelector('#fm-path span').textContent = currentPath;
+      updateBookmarkButton();
+      addRecentFolder(currentPath);
       const fileList = document.getElementById('file-list');
       fileList.innerHTML = '';
 
@@ -1003,6 +1529,20 @@
           return a.name.localeCompare(b.name);
         });
 
+        // Get git status
+        const gitBranch = await window.api.git.getBranch(currentPath);
+        const gitStatus = await window.api.git.getStatus(currentPath);
+
+        // Update git branch display
+        const branchEl = document.getElementById('git-branch');
+        const branchNameEl = document.getElementById('git-branch-name');
+        if (gitBranch) {
+          branchNameEl.textContent = gitBranch;
+          branchEl.classList.add('visible');
+        } else {
+          branchEl.classList.remove('visible');
+        }
+
         filtered.forEach(file => {
           const div = document.createElement('div');
           div.className = 'file-item';
@@ -1011,10 +1551,33 @@
             div.classList.add('cut');
           }
 
+          // Check git status for this file
+          let gitIndicator = '';
+          if (gitStatus) {
+            const relPath = file.name;
+            const status = gitStatus[relPath] || gitStatus[relPath + '/'];
+            if (status) {
+              if (status.includes('M') || status.includes('m')) {
+                div.classList.add('git-modified');
+                gitIndicator = '<span class="git-indicator modified">M</span>';
+              } else if (status.includes('A')) {
+                div.classList.add('git-added');
+                gitIndicator = '<span class="git-indicator added">A</span>';
+              } else if (status.includes('?')) {
+                div.classList.add('git-untracked');
+                gitIndicator = '<span class="git-indicator untracked">?</span>';
+              } else if (status.includes('D')) {
+                div.classList.add('git-deleted');
+                gitIndicator = '<span class="git-indicator modified">D</span>';
+              }
+            }
+          }
+
           const sizeStr = file.isDirectory ? '' : formatSize(file.size);
           div.innerHTML = `
             <span>${file.isDirectory ? '📁' : '📄'}</span>
-            <span>${file.name}</span>
+            <span class="file-name">${file.name}</span>
+            ${gitIndicator}
             <span class="file-info">${sizeStr}</span>
           `;
           div.onclick = (e) => handleClick(file, e);
@@ -1057,7 +1620,10 @@
       if (file.isDirectory) {
         currentPath = file.path;
         loadFiles();
+      } else if (canPreview(file.name)) {
+        showFilePreview(file);
       } else {
+        addRecentFile(file.path);
         await openFileInEditor(file);
       }
     }
@@ -1492,7 +2058,14 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       const webview = document.getElementById('mini-browser-frame');
+      const loadingEl = document.getElementById('mini-browser-loading');
       if (webview) {
+        webview.addEventListener('did-start-loading', () => {
+          loadingEl.classList.add('visible');
+        });
+        webview.addEventListener('did-stop-loading', () => {
+          loadingEl.classList.remove('visible');
+        });
         webview.addEventListener('did-navigate', (e) => {
           document.getElementById('mini-browser-url').value = e.url;
         });
@@ -1531,12 +2104,254 @@
 
     function hideContextMenu() {
       document.getElementById('context-menu').style.display = 'none';
+      document.getElementById('terminal-context-menu').style.display = 'none';
+    }
+
+    // Terminal context menu
+    let activeTerminalForMenu = null;
+
+    function showTerminalContextMenu(e, termId) {
+      hideContextMenu();
+      activeTerminalForMenu = termId;
+      const menu = document.getElementById('terminal-context-menu');
+      menu.style.display = 'block';
+      menu.style.left = e.clientX + 'px';
+      menu.style.top = e.clientY + 'px';
+    }
+
+    function terminalCopy() {
+      hideContextMenu();
+      const termData = terminals.find(t => t.id === activeTerminalForMenu);
+      if (termData && termData.term.hasSelection()) {
+        navigator.clipboard.writeText(termData.term.getSelection());
+      }
+    }
+
+    function terminalPaste() {
+      hideContextMenu();
+      const termData = terminals.find(t => t.id === activeTerminalForMenu);
+      if (termData) {
+        navigator.clipboard.readText().then(text => {
+          termData.term.paste(text);
+        });
+      }
+    }
+
+    function terminalSelectAll() {
+      hideContextMenu();
+      const termData = terminals.find(t => t.id === activeTerminalForMenu);
+      if (termData) {
+        termData.term.selectAll();
+      }
+    }
+
+    function terminalClear() {
+      hideContextMenu();
+      const termData = terminals.find(t => t.id === activeTerminalForMenu);
+      if (termData) {
+        termData.term.clear();
+      }
+    }
+
+    // Command Palette
+    const commands = [
+      { name: 'New Terminal', icon: '💻', action: () => createTerminal(), shortcut: '⌘T' },
+      { name: 'New File', icon: '📄', action: () => newFile() },
+      { name: 'New Folder', icon: '📁', action: () => newFolder() },
+      { name: 'Open Folder', icon: '📂', action: () => openFolder() },
+      { name: 'Save File', icon: '💾', action: () => saveCurrentFile(), shortcut: '⌘S' },
+      { name: 'Toggle Sidebar', icon: '◀', action: () => toggleSidebar(), shortcut: '⌘B' },
+      { name: 'Settings', icon: '⚙', action: () => showSettings(), shortcut: '⌘,' },
+      { name: 'Keyboard Shortcuts', icon: '⌨', action: () => showShortcuts(), shortcut: '⌘/' },
+      { name: 'Search in Terminal', icon: '🔍', action: () => openTerminalSearch(), shortcut: '⌘F' },
+      { name: 'Clear Terminal', icon: '🧹', action: () => { const t = getActiveTerminalData(); if(t) t.term.clear(); } },
+      { name: 'Go Home', icon: '🏠', action: () => goHome() },
+      { name: 'Refresh Files', icon: '🔄', action: () => refresh() },
+      { name: 'Toggle Hidden Files', icon: '👁', action: () => toggleHidden() },
+      { name: 'Notes', icon: '📝', action: () => showRightTab('notes') },
+      { name: 'AI Chat', icon: '🤖', action: () => showRightTab('ai') },
+      { name: 'FTP', icon: '🌐', action: () => showRightTab('ftp') },
+    ];
+
+    let selectedCommandIndex = 0;
+    let filteredCommands = [...commands];
+
+    function toggleSidebar() {
+      const left = document.getElementById('left-panel');
+      const resizer = document.getElementById('left-resizer');
+      if (left.style.display === 'none') {
+        left.style.display = 'flex';
+        resizer.style.display = 'block';
+      } else {
+        left.style.display = 'none';
+        resizer.style.display = 'none';
+      }
+    }
+
+    function showCommandPalette() {
+      document.getElementById('command-palette').classList.add('visible');
+      document.getElementById('command-palette-input').value = '';
+      document.getElementById('command-palette-input').focus();
+      selectedCommandIndex = 0;
+      filteredCommands = [...commands];
+      renderCommands();
+    }
+
+    function hideCommandPalette() {
+      document.getElementById('command-palette').classList.remove('visible');
+    }
+
+    function filterCommands() {
+      const query = document.getElementById('command-palette-input').value.toLowerCase();
+      filteredCommands = commands.filter(c => c.name.toLowerCase().includes(query));
+      selectedCommandIndex = 0;
+      renderCommands();
+    }
+
+    function renderCommands() {
+      const list = document.getElementById('command-palette-list');
+      list.innerHTML = '';
+      filteredCommands.forEach((cmd, i) => {
+        const div = document.createElement('div');
+        div.className = 'command-item' + (i === selectedCommandIndex ? ' selected' : '');
+        div.innerHTML = `
+          <span class="command-icon">${cmd.icon}</span>
+          <span class="command-name">${cmd.name}</span>
+          ${cmd.shortcut ? `<span class="command-shortcut">${cmd.shortcut}</span>` : ''}
+        `;
+        div.onclick = () => executeCommand(i);
+        div.onmouseenter = () => {
+          selectedCommandIndex = i;
+          renderCommands();
+        };
+        list.appendChild(div);
+      });
+    }
+
+    function executeCommand(index) {
+      const cmd = filteredCommands[index];
+      if (cmd) {
+        hideCommandPalette();
+        cmd.action();
+      }
+    }
+
+    function handleCommandKey(e) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedCommandIndex = Math.min(selectedCommandIndex + 1, filteredCommands.length - 1);
+        renderCommands();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedCommandIndex = Math.max(selectedCommandIndex - 1, 0);
+        renderCommands();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        executeCommand(selectedCommandIndex);
+      } else if (e.key === 'Escape') {
+        hideCommandPalette();
+      }
+    }
+
+    // File Preview
+    const previewableExtensions = {
+      image: ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'ico'],
+      video: ['mp4', 'webm', 'mov', 'avi'],
+      audio: ['mp3', 'wav', 'ogg', 'flac', 'm4a']
+    };
+
+    function canPreview(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      return previewableExtensions.image.includes(ext) ||
+             previewableExtensions.video.includes(ext) ||
+             previewableExtensions.audio.includes(ext);
+    }
+
+    function getFileType(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      if (previewableExtensions.image.includes(ext)) return 'image';
+      if (previewableExtensions.video.includes(ext)) return 'video';
+      if (previewableExtensions.audio.includes(ext)) return 'audio';
+      return null;
+    }
+
+    function showFilePreview(file) {
+      const container = document.getElementById('file-preview-container');
+      const type = getFileType(file.name);
+      const fileUrl = 'file://' + file.path;
+
+      if (type === 'image') {
+        container.innerHTML = `<img src="${fileUrl}" alt="${file.name}"><div id="file-preview-name">${file.name}</div>`;
+      } else if (type === 'video') {
+        container.innerHTML = `<video src="${fileUrl}" controls autoplay><div id="file-preview-name">${file.name}</div>`;
+      } else if (type === 'audio') {
+        container.innerHTML = `<div style="padding:40px;text-align:center;"><div style="font-size:48px;margin-bottom:20px;">🎵</div><audio src="${fileUrl}" controls autoplay></audio><div id="file-preview-name">${file.name}</div></div>`;
+      }
+
+      document.getElementById('file-preview-overlay').classList.add('visible');
+    }
+
+    function closeFilePreview() {
+      document.getElementById('file-preview-overlay').classList.remove('visible');
+      document.getElementById('file-preview-container').innerHTML = '';
+    }
+
+    // Terminal search
+    function openTerminalSearch() {
+      const searchEl = document.getElementById('terminal-search');
+      searchEl.classList.add('visible');
+      document.getElementById('terminal-search-input').focus();
+    }
+
+    function closeTerminalSearch() {
+      document.getElementById('terminal-search').classList.remove('visible');
+      document.getElementById('terminal-search-input').value = '';
+      document.getElementById('terminal-search-count').textContent = '';
+    }
+
+    function getActiveTerminalData() {
+      return terminals.find(t => document.getElementById(t.id)?.classList.contains('active'));
+    }
+
+    function terminalSearchNext() {
+      const termData = getActiveTerminalData();
+      const query = document.getElementById('terminal-search-input').value;
+      if (termData && query) {
+        termData.searchAddon.findNext(query);
+      }
+    }
+
+    function terminalSearchPrev() {
+      const termData = getActiveTerminalData();
+      const query = document.getElementById('terminal-search-input').value;
+      if (termData && query) {
+        termData.searchAddon.findPrevious(query);
+      }
+    }
+
+    function handleTerminalSearchKey(e) {
+      if (e.key === 'Enter') {
+        if (e.shiftKey) {
+          terminalSearchPrev();
+        } else {
+          terminalSearchNext();
+        }
+      } else if (e.key === 'Escape') {
+        closeTerminalSearch();
+      }
     }
 
     function openSelectedFile() {
       hideContextMenu();
       if (selectedFile) {
         handleDoubleClick(selectedFile);
+      }
+    }
+
+    function previewSelectedFile() {
+      hideContextMenu();
+      if (selectedFile && canPreview(selectedFile.name)) {
+        showFilePreview(selectedFile);
       }
     }
 
@@ -1548,7 +2363,12 @@
       }
     }
 
-    document.addEventListener('click', hideContextMenu);
+    document.addEventListener('click', (e) => {
+      hideContextMenu();
+      if (!e.target.closest('#command-palette')) {
+        hideCommandPalette();
+      }
+    });
 
     // Input dialog
     let inputDialogCallback = null;
@@ -1649,7 +2469,9 @@
       });
 
       const fitAddon = new FitAddon.FitAddon();
+      const searchAddon = new SearchAddon.SearchAddon();
       term.loadAddon(fitAddon);
+      term.loadAddon(searchAddon);
       term.open(container);
       fitAddon.fit();
 
@@ -1660,7 +2482,7 @@
       term.onResize(({ cols, rows }) => window.api.terminal.resize(id, cols, rows));
 
       const shellName = shellToUse.split('/').pop();
-      const termData = { id, term, fitAddon, name: shellName };
+      const termData = { id, term, fitAddon, searchAddon, name: shellName };
       terminals.push(termData);
 
       const tab = document.createElement('div');
@@ -1672,6 +2494,12 @@
 
       activateTerminal(id);
       new ResizeObserver(() => fitAddon.fit()).observe(container);
+
+      // Terminal context menu
+      container.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        showTerminalContextMenu(e, id);
+      });
     }
 
     function activateTerminal(id) {
@@ -1876,10 +2704,22 @@
         e.preventDefault();
         showShortcuts();
       }
+      // Cmd+Shift+P - Command Palette
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'p') {
+        e.preventDefault();
+        showCommandPalette();
+      }
+      // Cmd+P - Command Palette (alternative)
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key === 'p') {
+        e.preventDefault();
+        showCommandPalette();
+      }
       // Escape - Close dialogs
       if (e.key === 'Escape') {
         closeSettings();
         closeShortcuts();
+        closeFilePreview();
+        closeTerminalSearch();
       }
       // Cmd+Left - Go to beginning of line (send Ctrl+A to terminal)
       if (e.metaKey && !e.altKey && e.key === 'ArrowLeft') {
@@ -1919,6 +2759,16 @@
         if (activeTerminal) {
           e.preventDefault();
           window.api.terminal.write(activeTerminal.id, '\x1bf');
+        }
+      }
+      // Cmd+F - Search in terminal (when terminal focused)
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        const activeTerminal = terminals.find(t =>
+          document.getElementById(t.id)?.classList.contains('active')
+        );
+        if (activeTerminal && document.activeElement?.closest('#terminal-container')) {
+          e.preventDefault();
+          openTerminalSearch();
         }
       }
     });

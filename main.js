@@ -6,10 +6,41 @@ const pty = require('node-pty');
 let mainWindow = null;
 const terminals = new Map();
 
+// Window state persistence
+const windowStatePath = path.join(app.getPath('userData'), 'window-state.json');
+
+function loadWindowState() {
+  try {
+    const data = fs.readFileSync(windowStatePath, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return { width: 1400, height: 900 };
+  }
+}
+
+function saveWindowState() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  const bounds = mainWindow.getBounds();
+  const state = {
+    x: bounds.x,
+    y: bounds.y,
+    width: bounds.width,
+    height: bounds.height,
+    isMaximized: mainWindow.isMaximized()
+  };
+  try {
+    fs.writeFileSync(windowStatePath, JSON.stringify(state, null, 2));
+  } catch (e) {}
+}
+
 function createWindow() {
+  const windowState = loadWindowState();
+
   mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width,
+    height: windowState.height,
     backgroundColor: '#000000',
     webPreferences: {
       nodeIntegration: false,
@@ -19,7 +50,16 @@ function createWindow() {
     }
   });
 
+  if (windowState.isMaximized) {
+    mainWindow.maximize();
+  }
+
   mainWindow.loadFile('index.html');
+
+  // Save window state on resize/move
+  mainWindow.on('resize', saveWindowState);
+  mainWindow.on('move', saveWindowState);
+  mainWindow.on('close', saveWindowState);
 
   mainWindow.on('closed', () => {
     // Kill all terminals when window closes
@@ -224,4 +264,41 @@ ipcMain.handle('ftp:disconnect', async () => {
     ftpClient = null;
   }
   return true;
+});
+
+// Git handlers
+const { execSync } = require('child_process');
+
+ipcMain.handle('git:getBranch', async (_, dirPath) => {
+  try {
+    const branch = execSync('git rev-parse --abbrev-ref HEAD', {
+      cwd: dirPath,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe']
+    }).trim();
+    return branch;
+  } catch {
+    return null;
+  }
+});
+
+ipcMain.handle('git:getStatus', async (_, dirPath) => {
+  try {
+    const status = execSync('git status --porcelain', {
+      cwd: dirPath,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    const files = {};
+    status.split('\n').forEach(line => {
+      if (line.trim()) {
+        const code = line.substring(0, 2);
+        const file = line.substring(3);
+        files[file] = code;
+      }
+    });
+    return files;
+  } catch {
+    return null;
+  }
 });

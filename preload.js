@@ -38,5 +38,9 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on('terminal:exit', listener);
       return () => ipcRenderer.removeListener('terminal:exit', listener);
     }
+  },
+  git: {
+    getBranch: (path) => ipcRenderer.invoke('git:getBranch', path),
+    getStatus: (path) => ipcRenderer.invoke('git:getStatus', path)
   }
 });
