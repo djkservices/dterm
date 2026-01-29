@@ -14,6 +14,12 @@ contextBridge.exposeInMainWorld('api', {
   ftp: {
     connect: (host, port, user, pass) => ipcRenderer.invoke('ftp:connect', host, port, user, pass),
     list: (path) => ipcRenderer.invoke('ftp:list', path),
+    readFile: (path) => ipcRenderer.invoke('ftp:readFile', path),
+    writeFile: (path, content) => ipcRenderer.invoke('ftp:writeFile', path, content),
+    delete: (path, isDirectory) => ipcRenderer.invoke('ftp:delete', path, isDirectory),
+    mkdir: (path) => ipcRenderer.invoke('ftp:mkdir', path),
+    downloadToLocal: (remotePath, localPath) => ipcRenderer.invoke('ftp:downloadToLocal', remotePath, localPath),
+    uploadFromLocal: (localPath, remotePath) => ipcRenderer.invoke('ftp:uploadFromLocal', localPath, remotePath),
     disconnect: () => ipcRenderer.invoke('ftp:disconnect')
   },
   notes: {
@@ -21,7 +27,9 @@ contextBridge.exposeInMainWorld('api', {
     save: (notes) => ipcRenderer.invoke('notes:save', notes)
   },
   dialog: {
-    openFolder: () => ipcRenderer.invoke('dialog:openFolder')
+    openFolder: () => ipcRenderer.invoke('dialog:openFolder'),
+    saveFile: (defaultName) => ipcRenderer.invoke('dialog:saveFile', defaultName),
+    openFile: () => ipcRenderer.invoke('dialog:openFile')
   },
   terminal: {
     create: (id, shell) => ipcRenderer.invoke('terminal:create', id, shell),

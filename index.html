@@ -559,6 +559,8 @@
       flex: 1;
       position: relative;
       background: #000000;
+      min-height: 0;
+      overflow: hidden;
     }
 
     #terminal-container.drag-over {
@@ -707,11 +709,6 @@
       font-size: 11px;
       color: #666;
       border-bottom: 1px solid #222;
-    }
-
-    #ftp-file-list {
-      flex: 1;
-      overflow-y: auto;
     }
 
     .terminal-panel {
@@ -1034,6 +1031,39 @@
     }
 
     #status-bar button:hover { color: #ccc; }
+
+    /* FTP mode indicator */
+    #ftp-mode-badge {
+      display: none;
+      background: #0066cc;
+      color: #fff;
+      padding: 1px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    #ftp-mode-badge.visible { display: inline-block; }
+
+    /* FTP switch to local button */
+    #ftp-switch-local {
+      display: none;
+      margin-top: 8px;
+    }
+
+    #ftp-switch-local button {
+      width: 100%;
+      padding: 8px;
+      background: #333;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    #ftp-switch-local button:hover { background: #444; }
   </style>
 </head>
 <body>
@@ -1150,7 +1180,7 @@
         <button onclick="connectFtp()">Connect</button>
       </div>
       <div id="ftp-status">Not connected</div>
-      <div id="ftp-file-list"></div>
+      <div id="ftp-switch-local"><button onclick="disconnectFtp()">Disconnect &amp; Switch to Local</button></div>
     </div>
     <webview id="ai-frame" src="about:blank" allowpopups style="display:none;"></webview>
   </div>
@@ -1160,6 +1190,8 @@
   <div id="context-menu">
     <button onclick="openSelectedFile()">Open</button>
     <button onclick="previewSelectedFile()">Preview</button>
+    <button id="ctx-download" style="display:none;" onclick="downloadFtpFile()">Download</button>
+    <button id="ctx-upload" style="display:none;" onclick="uploadFtpFile()">Upload File</button>
     <button onclick="copyFile()">Copy</button>
     <button onclick="cutFile()">Cut</button>
     <button onclick="pasteFile()">Paste</button>
@@ -1257,6 +1289,7 @@
 
   <!-- Status Bar -->
   <div id="status-bar">
+    <span id="ftp-mode-badge">FTP</span>
     <span id="status-file">No file open</span>
     <span id="status-line">Ln 1, Col 1</span>
     <span style="flex:1;"></span>
@@ -1296,6 +1329,103 @@
       theme: 'dark',
       browserHome: 'https://duckduckgo.com'
     };
+
+    // FTP mode state
+    let appMode = 'local'; // 'local' or 'ftp'
+    let ftpRemoteHost = '';
+
+    // Switch to FTP mode - called when connecting from the FTP tab
+    function switchToFtpMode(host) {
+      appMode = 'ftp';
+      ftpRemoteHost = host;
+      currentPath = '/';
+      document.getElementById('ftp-mode-badge').classList.add('visible');
+      loadFtpFileBrowser();
+    }
+
+    // Switch back to local mode
+    function switchToLocalMode() {
+      appMode = 'local';
+      ftpRemoteHost = '';
+      document.getElementById('ftp-mode-badge').classList.remove('visible');
+      window.api.fs.getHome().then(home => {
+        currentPath = home;
+        loadFiles();
+      });
+    }
+
+    async function loadFtpFileBrowser() {
+      const fileList = document.getElementById('file-list');
+      if (!fileList) return;
+
+      const pathEl = document.querySelector('#fm-path span');
+      if (pathEl) pathEl.textContent = `FTP: ${ftpRemoteHost}${currentPath}`;
+
+      fileList.innerHTML = '';
+
+      try {
+        const files = await window.api.ftp.list(currentPath);
+        allFiles = files.map(f => ({
+          name: f.name,
+          path: currentPath === '/' ? '/' + f.name : currentPath + '/' + f.name,
+          isDirectory: f.isDirectory,
+          isFile: !f.isDirectory,
+          size: f.size || 0
+        }));
+
+        // Add parent directory
+        if (currentPath !== '/') {
+          const upDiv = document.createElement('div');
+          upDiv.className = 'file-item';
+          upDiv.innerHTML = '<span>📁</span><span>..</span>';
+          upDiv.ondblclick = () => {
+            currentPath = currentPath.split('/').slice(0, -1).join('/') || '/';
+            loadFtpFileBrowser();
+          };
+          fileList.appendChild(upDiv);
+        }
+
+        const sortedFiles = [...allFiles].filter(f => showHidden || !f.name.startsWith('.'));
+        sortedFiles.sort((a, b) => {
+          if (a.isDirectory && !b.isDirectory) return -1;
+          if (!a.isDirectory && b.isDirectory) return 1;
+          return a.name.localeCompare(b.name);
+        });
+
+        sortedFiles.forEach(file => {
+          const div = document.createElement('div');
+          div.className = 'file-item';
+          const icon = file.isDirectory ? '📁' : '📄';
+          const sizeStr = file.isFile ? formatSize(file.size) : '';
+          div.innerHTML = `<span>${icon}</span><span class="file-name">${file.name}</span><span class="file-info">${sizeStr}</span>`;
+          div.onclick = (e) => handleClick(file, e);
+          div.ondblclick = () => handleDoubleClick(file);
+          div.oncontextmenu = (e) => showContextMenu(e, file);
+          fileList.appendChild(div);
+        });
+      } catch (err) {
+        fileList.innerHTML = `<div style="padding:10px;color:#f44">Error: ${err.message}</div>`;
+      }
+    }
+
+    async function openFtpFile(file) {
+      const existingIndex = openFiles.findIndex(f => f.path === file.path);
+      if (existingIndex !== -1) {
+        activateFile(existingIndex);
+        return;
+      }
+      try {
+        const content = await window.api.ftp.readFile(file.path);
+        openFiles.push({ path: file.path, name: file.name, content: content, modified: false, ftpFile: true });
+        activeFileIndex = openFiles.length - 1;
+        updateEditorTabs();
+        showEditor();
+        setEditorContent(content, file.name);
+        updateStatusBar();
+      } catch (err) {
+        document.getElementById('status-file').textContent = `Error: ${err.message}`;
+      }
+    }
 
     // Load settings
     function loadSettings() {
@@ -1503,6 +1633,10 @@
 
     // File Manager
     async function loadFiles() {
+      if (appMode === 'ftp') {
+        loadFtpFileBrowser();
+        return;
+      }
       document.querySelector('#fm-path span').textContent = currentPath;
       updateBookmarkButton();
       addRecentFolder(currentPath);
@@ -1715,6 +1849,9 @@
 
     // Editor with Monaco
     async function openFileInEditor(file) {
+      if (appMode === 'ftp' || file.ftpFile) {
+        return openFtpFile(file);
+      }
       const existingIndex = openFiles.findIndex(f => f.path === file.path);
       if (existingIndex !== -1) {
         activateFile(existingIndex);
@@ -1891,14 +2028,20 @@
       if (monacoEditor) {
         file.content = monacoEditor.getValue();
       }
-      await window.api.fs.writeFile(file.path, file.content);
+      if (file.ftpFile || appMode === 'ftp') {
+        await window.api.ftp.writeFile(file.path, file.content);
+      } else {
+        await window.api.fs.writeFile(file.path, file.content);
+      }
       file.modified = false;
       updateEditorTabs();
     }
 
     function updateStatusBar() {
       if (activeFileIndex >= 0) {
-        document.getElementById('status-file').textContent = openFiles[activeFileIndex].path;
+        const file = openFiles[activeFileIndex];
+        const prefix = file.ftpFile ? 'FTP: ' : '';
+        document.getElementById('status-file').textContent = prefix + file.path;
       } else {
         document.getElementById('status-file').textContent = 'No file open';
         document.getElementById('status-line').textContent = '';
@@ -2100,6 +2243,9 @@
       menu.style.display = 'block';
       menu.style.left = e.clientX + 'px';
       menu.style.top = e.clientY + 'px';
+      // Show/hide FTP-specific options
+      document.getElementById('ctx-download').style.display = appMode === 'ftp' && !file.isDirectory ? 'block' : 'none';
+      document.getElementById('ctx-upload').style.display = appMode === 'ftp' ? 'block' : 'none';
     }
 
     function hideContextMenu() {
@@ -2358,8 +2504,44 @@
     async function deleteFile() {
       hideContextMenu();
       if (selectedFile && confirm(`Delete "${selectedFile.name}"?`)) {
-        await window.api.fs.delete(selectedFile.path);
+        try {
+          if (appMode === 'ftp') {
+            await window.api.ftp.delete(selectedFile.path, selectedFile.isDirectory);
+          } else {
+            await window.api.fs.delete(selectedFile.path);
+          }
+          loadFiles();
+        } catch (err) {
+          alert('Delete failed: ' + err.message);
+        }
+      }
+    }
+
+    async function downloadFtpFile() {
+      hideContextMenu();
+      if (!selectedFile || selectedFile.isDirectory) return;
+      try {
+        const localPath = await window.api.dialog.saveFile(selectedFile.name);
+        if (!localPath) return;
+        await window.api.ftp.downloadToLocal(selectedFile.path, localPath);
+        document.getElementById('ftp-status').textContent = `Downloaded: ${selectedFile.name}`;
+      } catch (err) {
+        alert('Download failed: ' + err.message);
+      }
+    }
+
+    async function uploadFtpFile() {
+      hideContextMenu();
+      try {
+        const localPath = await window.api.dialog.openFile();
+        if (!localPath) return;
+        const fileName = localPath.split('/').pop();
+        const remotePath = currentPath === '/' ? '/' + fileName : currentPath + '/' + fileName;
+        await window.api.ftp.uploadFromLocal(localPath, remotePath);
+        document.getElementById('ftp-status').textContent = `Uploaded: ${fileName}`;
         loadFiles();
+      } catch (err) {
+        alert('Upload failed: ' + err.message);
       }
     }
 
@@ -2592,59 +2774,36 @@
       const pass = document.getElementById('ftp-pass').value;
 
       if (!host) {
-        alert('Please enter a host');
+        document.getElementById('ftp-status').textContent = 'Please enter a host';
+        document.getElementById('ftp-status').style.color = '#f44';
         return;
       }
 
       document.getElementById('ftp-status').textContent = 'Connecting...';
+      document.getElementById('ftp-status').style.color = '#888';
 
       try {
         await window.api.ftp.connect(host, port, user, pass);
         ftpConnected = true;
         ftpCurrentPath = '/';
         document.getElementById('ftp-status').textContent = `Connected to ${host}`;
-        loadFtpFiles();
+        document.getElementById('ftp-status').style.color = '#4c4';
+        document.getElementById('ftp-switch-local').style.display = 'block';
+        // Switch the left file browser to FTP mode
+        switchToFtpMode(host);
       } catch (err) {
         document.getElementById('ftp-status').textContent = 'Error: ' + err.message;
+        document.getElementById('ftp-status').style.color = '#f44';
       }
     }
 
-    async function loadFtpFiles() {
-      if (!ftpConnected) return;
-
-      const fileList = document.getElementById('ftp-file-list');
-      fileList.innerHTML = '';
-
-      try {
-        const files = await window.api.ftp.list(ftpCurrentPath);
-
-        // Add parent directory
-        if (ftpCurrentPath !== '/') {
-          const upDiv = document.createElement('div');
-          upDiv.className = 'file-item';
-          upDiv.innerHTML = '<span>📁</span><span>..</span>';
-          upDiv.ondblclick = () => {
-            ftpCurrentPath = ftpCurrentPath.split('/').slice(0, -1).join('/') || '/';
-            loadFtpFiles();
-          };
-          fileList.appendChild(upDiv);
-        }
-
-        files.forEach(file => {
-          const div = document.createElement('div');
-          div.className = 'file-item';
-          div.innerHTML = `<span>${file.isDirectory ? '📁' : '📄'}</span><span>${file.name}</span>`;
-          div.ondblclick = () => {
-            if (file.isDirectory) {
-              ftpCurrentPath = ftpCurrentPath === '/' ? '/' + file.name : ftpCurrentPath + '/' + file.name;
-              loadFtpFiles();
-            }
-          };
-          fileList.appendChild(div);
-        });
-      } catch (err) {
-        fileList.innerHTML = `<div style="padding:10px;color:#f44">Error: ${err.message}</div>`;
-      }
+    function disconnectFtp() {
+      window.api.ftp.disconnect();
+      ftpConnected = false;
+      document.getElementById('ftp-status').textContent = 'Not connected';
+      document.getElementById('ftp-status').style.color = '#666';
+      document.getElementById('ftp-switch-local').style.display = 'none';
+      switchToLocalMode();
     }
 
     // Notes

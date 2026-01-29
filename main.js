@@ -170,6 +170,20 @@ ipcMain.handle('dialog:openFolder', async () => {
   return result.canceled ? null : result.filePaths[0];
 });
 
+ipcMain.handle('dialog:saveFile', async (_, defaultName) => {
+  const result = await dialog.showSaveDialog(mainWindow, {
+    defaultPath: defaultName
+  });
+  return result.canceled ? null : result.filePath;
+});
+
+ipcMain.handle('dialog:openFile', async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openFile']
+  });
+  return result.canceled ? null : result.filePaths[0];
+});
+
 // Terminal handlers
 ipcMain.handle('terminal:create', (_, id, shell) => {
   const defaultShell = '/bin/zsh';
@@ -235,7 +249,17 @@ app.on('before-quit', () => {
 const ftp = require('basic-ftp');
 let ftpClient = null;
 
+// Mutex to serialize FTP operations (basic-ftp only supports one at a time)
+let ftpQueue = Promise.resolve();
+function ftpOp(fn) {
+  ftpQueue = ftpQueue.then(fn, fn);
+  return ftpQueue;
+}
+
 ipcMain.handle('ftp:connect', async (_, host, port, user, password) => {
+  if (ftpClient) {
+    try { ftpClient.close(); } catch (e) {}
+  }
   ftpClient = new ftp.Client();
   ftpClient.ftp.verbose = false;
   await ftpClient.access({
@@ -245,17 +269,82 @@ ipcMain.handle('ftp:connect', async (_, host, port, user, password) => {
     password: password || 'anonymous@',
     secure: false
   });
+  ftpQueue = Promise.resolve();
   return true;
 });
 
 ipcMain.handle('ftp:list', async (_, remotePath) => {
   if (!ftpClient) throw new Error('Not connected');
-  const list = await ftpClient.list(remotePath);
-  return list.map(item => ({
-    name: item.name,
-    isDirectory: item.isDirectory,
-    size: item.size
-  }));
+  return ftpOp(async () => {
+    const list = await ftpClient.list(remotePath);
+    return list.map(item => ({
+      name: item.name,
+      isDirectory: item.isDirectory,
+      size: item.size
+    }));
+  });
+});
+
+ipcMain.handle('ftp:readFile', async (_, remotePath) => {
+  if (!ftpClient) throw new Error('Not connected');
+  return ftpOp(async () => {
+    const { Writable } = require('stream');
+    let content = '';
+    const writable = new Writable({
+      write(chunk, encoding, callback) {
+        content += chunk.toString();
+        callback();
+      }
+    });
+    await ftpClient.downloadTo(writable, remotePath);
+    return content;
+  });
+});
+
+ipcMain.handle('ftp:writeFile', async (_, remotePath, content) => {
+  if (!ftpClient) throw new Error('Not connected');
+  return ftpOp(async () => {
+    const { Readable } = require('stream');
+    const readable = Readable.from([content]);
+    await ftpClient.uploadFrom(readable, remotePath);
+    return true;
+  });
+});
+
+ipcMain.handle('ftp:delete', async (_, remotePath, isDirectory) => {
+  if (!ftpClient) throw new Error('Not connected');
+  return ftpOp(async () => {
+    if (isDirectory) {
+      await ftpClient.removeDir(remotePath);
+    } else {
+      await ftpClient.remove(remotePath);
+    }
+    return true;
+  });
+});
+
+ipcMain.handle('ftp:mkdir', async (_, remotePath) => {
+  if (!ftpClient) throw new Error('Not connected');
+  return ftpOp(async () => {
+    await ftpClient.ensureDir(remotePath);
+    return true;
+  });
+});
+
+ipcMain.handle('ftp:downloadToLocal', async (_, remotePath, localPath) => {
+  if (!ftpClient) throw new Error('Not connected');
+  return ftpOp(async () => {
+    await ftpClient.downloadTo(localPath, remotePath);
+    return true;
+  });
+});
+
+ipcMain.handle('ftp:uploadFromLocal', async (_, localPath, remotePath) => {
+  if (!ftpClient) throw new Error('Not connected');
+  return ftpOp(async () => {
+    await ftpClient.uploadFrom(localPath, remotePath);
+    return true;
+  });
 });
 
 ipcMain.handle('ftp:disconnect', async () => {
@@ -263,6 +352,7 @@ ipcMain.handle('ftp:disconnect', async () => {
     ftpClient.close();
     ftpClient = null;
   }
+  ftpQueue = Promise.resolve();
   return true;
 });
 
