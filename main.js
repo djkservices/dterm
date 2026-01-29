@@ -146,6 +146,23 @@ ipcMain.handle('fs:copy', async (_, src, dest) => {
 
 ipcMain.handle('fs:getHome', () => app.getPath('home'));
 
+// FTP connections storage
+const ftpConnectionsPath = path.join(app.getPath('userData'), 'ftp-connections.json');
+
+ipcMain.handle('ftpConnections:load', async () => {
+  try {
+    const data = await fs.promises.readFile(ftpConnectionsPath, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+});
+
+ipcMain.handle('ftpConnections:save', async (_, connections) => {
+  await fs.promises.writeFile(ftpConnectionsPath, JSON.stringify(connections, null, 2));
+  return true;
+});
+
 // Notes storage
 const notesPath = path.join(app.getPath('userData'), 'notes.json');
 
@@ -370,6 +387,25 @@ ipcMain.handle('git:getBranch', async (_, dirPath) => {
   } catch {
     return null;
   }
+});
+
+// Tools - shell command execution
+const { exec } = require('child_process');
+
+ipcMain.handle('tools:exec', async (_, command) => {
+  // Whitelist allowed commands for security
+  const allowed = ['ping', 'traceroute', 'dig', 'nslookup', 'whois', 'curl', 'openssl', 'nc', 'echo', 'md5'];
+  // Check all commands in pipes
+  const parts = command.split(/\|/).map(s => s.trim().replace(/^[^a-zA-Z]*/, '').split(/\s+/)[0]);
+  const allAllowed = parts.every(cmd => allowed.includes(cmd));
+  if (!allAllowed) {
+    return { error: `Command not allowed: ${parts.find(cmd => !allowed.includes(cmd))}` };
+  }
+  return new Promise((resolve) => {
+    exec(command, { timeout: 30000, maxBuffer: 1024 * 1024, encoding: 'utf-8', shell: '/bin/bash' }, (error, stdout, stderr) => {
+      resolve({ stdout: stdout || '', stderr: stderr || '', error: error ? error.message : null });
+    });
+  });
 });
 
 ipcMain.handle('git:getStatus', async (_, dirPath) => {

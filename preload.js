@@ -22,6 +22,13 @@ contextBridge.exposeInMainWorld('api', {
     uploadFromLocal: (localPath, remotePath) => ipcRenderer.invoke('ftp:uploadFromLocal', localPath, remotePath),
     disconnect: () => ipcRenderer.invoke('ftp:disconnect')
   },
+  tools: {
+    exec: (command) => ipcRenderer.invoke('tools:exec', command)
+  },
+  ftpConnections: {
+    load: () => ipcRenderer.invoke('ftpConnections:load'),
+    save: (connections) => ipcRenderer.invoke('ftpConnections:save', connections)
+  },
   notes: {
     load: () => ipcRenderer.invoke('notes:load'),
     save: (notes) => ipcRenderer.invoke('notes:save', notes)

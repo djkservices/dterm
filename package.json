@@ -20,7 +20,7 @@
   },
   "build": {
     "appId": "com.dterm.app",
-    "productName": "dTerm",
+    "productName": "My Network Tools",
     "mac": {
       "category": "public.app-category.developer-tools",
       "target": [

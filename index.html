@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>dTerm</title>
+  <title>My Network Tools</title>
   <link rel="stylesheet" href="node_modules/xterm/css/xterm.css">
   <link rel="stylesheet" href="node_modules/monaco-editor/min/vs/editor/editor.main.css">
   <style>
@@ -372,6 +372,12 @@
       overflow-y: auto;
     }
 
+    #file-list.drop-over {
+      outline: 2px dashed #0066cc;
+      outline-offset: -2px;
+      background: rgba(0, 102, 204, 0.05);
+    }
+
     .file-item {
       padding: 4px 10px;
       cursor: pointer;
@@ -665,19 +671,241 @@
       line-height: 1.5;
     }
 
-    /* FTP Panel */
-    #right-ftp-panel {
+    /* Right Panel Tools */
+    #right-tools-panel {
       flex: 1;
+      display: flex;
+      flex-direction: column;
       min-height: 0;
       overflow: hidden;
     }
 
-    #ftp-connect-form {
-      padding: 12px;
-      border-bottom: 1px solid #222;
+    #tools-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
     }
 
-    #ftp-connect-form input {
+    .tools-category {
+      color: #888;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 4px 4px;
+      border-bottom: 1px solid #333;
+      margin-bottom: 4px;
+    }
+
+    .tools-category:first-child {
+      padding-top: 0;
+    }
+
+    .tool-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 6px 8px;
+      background: none;
+      border: none;
+      color: #ccc;
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .tool-btn:hover {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .tool-btn.active {
+      background: #0066cc;
+      color: #fff;
+    }
+
+    #tools-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .tool-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-bottom: 1px solid #333;
+      flex-shrink: 0;
+      background: #111;
+    }
+
+    .tool-back-btn {
+      background: none;
+      border: none;
+      color: #0088ff;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+
+    .tool-back-btn:hover { color: #44aaff; }
+
+    .tool-title {
+      color: #ccc;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tool-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+
+    .tool-body label {
+      display: block;
+      color: #888;
+      font-size: 11px;
+      margin-bottom: 3px;
+      margin-top: 8px;
+    }
+
+    .tool-body label:first-child { margin-top: 0; }
+
+    .tool-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 12px;
+      font-family: 'SF Mono', Monaco, monospace;
+      outline: none;
+    }
+
+    .tool-input:focus { border-color: #0066cc; }
+
+    .tool-textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 6px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 12px;
+      font-family: 'SF Mono', Monaco, monospace;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .tool-textarea:focus { border-color: #0066cc; }
+
+    .tool-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tool-run-btn {
+      padding: 6px 14px;
+      background: #0066cc;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .tool-run-btn:hover { background: #0077ee; }
+    .tool-run-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+    .tool-secondary-btn {
+      padding: 6px 14px;
+      background: #333;
+      border: none;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .tool-secondary-btn:hover { background: #444; }
+
+    .tool-output {
+      margin-top: 10px;
+      padding: 8px;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #0f0;
+      font-size: 11px;
+      font-family: 'SF Mono', Monaco, monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .tool-output.error { color: #f55; }
+
+    .tool-result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
+    .tool-result-table td, .tool-result-table th {
+      padding: 4px 6px;
+      border: 1px solid #333;
+      color: #ccc;
+      text-align: left;
+    }
+
+    .tool-result-table th {
+      background: #1a1a1a;
+      color: #888;
+      font-weight: 600;
+    }
+
+    .tool-result-table td:first-child {
+      color: #0088ff;
+      white-space: nowrap;
+      width: 1%;
+    }
+
+    .tool-status { font-size: 11px; color: #888; margin-top: 6px; }
+    .tool-status.ok { color: #4c4; }
+    .tool-status.warn { color: #cc4; }
+    .tool-status.fail { color: #f55; }
+
+    /* FTP Bar (bottom of right panel, always visible) */
+    #ftp-bar {
+      background: #0a0a0a;
+      border-top: 1px solid #222;
+      padding: 12px;
+      flex-shrink: 0;
+    }
+
+    #ftp-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+
+    #ftp-bar input, #ftp-bar select {
       width: 100%;
       padding: 8px;
       margin-bottom: 8px;
@@ -687,25 +915,66 @@
       color: #ccc;
       font-size: 12px;
       outline: none;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      box-sizing: border-box;
     }
 
-    #ftp-connect-form input:focus { border-color: #0066cc; }
+    #ftp-bar input:focus { border-color: #0066cc; }
 
-    #ftp-connect-form button {
-      width: 100%;
-      padding: 8px;
-      background: #0066cc;
+    #ftp-bar-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    #ftp-bar-row input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    #ftp-port { max-width: 70px; }
+
+    #ftp-bar-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    #ftp-bar button {
+      padding: 8px 12px;
       border: none;
       border-radius: 4px;
-      color: #fff;
       cursor: pointer;
       font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    #ftp-connect-form button:hover { background: #0077dd; }
+    #ftp-connect-btn {
+      flex: 1;
+      background: #0066cc;
+      color: #fff;
+    }
+    #ftp-connect-btn:hover { background: #0077dd; }
+
+    #ftp-disconnect-btn {
+      flex: 1;
+      background: #cc3333;
+      color: #fff;
+    }
+    #ftp-disconnect-btn:hover { background: #dd4444; }
+
+    #ftp-save-btn {
+      background: #333;
+      color: #ccc;
+    }
+    #ftp-save-btn:hover { background: #444; }
+
+    #ftp-delete-saved-btn {
+      background: #333;
+      color: #f44;
+    }
+    #ftp-delete-saved-btn:hover { background: #444; }
 
     #ftp-status {
-      padding: 8px 12px;
       font-size: 11px;
       color: #666;
       border-bottom: 1px solid #222;
@@ -1045,25 +1314,6 @@
 
     #ftp-mode-badge.visible { display: inline-block; }
 
-    /* FTP switch to local button */
-    #ftp-switch-local {
-      display: none;
-      margin-top: 8px;
-    }
-
-    #ftp-switch-local button {
-      width: 100%;
-      padding: 8px;
-      background: #333;
-      border: 1px solid #444;
-      border-radius: 6px;
-      color: #ccc;
-      cursor: pointer;
-      font-size: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    #ftp-switch-local button:hover { background: #444; }
   </style>
 </head>
 <body>
@@ -1156,8 +1406,8 @@
     <div id="right-panel-header">
       <div id="right-panel-tabs">
         <button class="right-tab active" onclick="showRightTab('notes')">Notes</button>
+        <button class="right-tab" onclick="showRightTab('tools')">Tools</button>
         <button class="right-tab" onclick="showRightTab('ai')">AI</button>
-        <button class="right-tab" onclick="showRightTab('ftp')">FTP</button>
       </div>
       <select id="ai-select" onchange="switchAI()">
         <option value="https://chatgpt.com">ChatGPT</option>
@@ -1171,18 +1421,83 @@
     <div id="right-notes-panel">
       <textarea id="notes-area" placeholder="Quick notes..."></textarea>
     </div>
-    <div id="right-ftp-panel">
-      <div id="ftp-connect-form">
-        <input type="text" id="ftp-host" placeholder="Host (e.g., ftp.example.com)">
-        <input type="text" id="ftp-port" placeholder="Port (default: 21)" value="21">
-        <input type="text" id="ftp-user" placeholder="Username">
-        <input type="password" id="ftp-pass" placeholder="Password">
-        <button onclick="connectFtp()">Connect</button>
+    <div id="right-tools-panel" style="display:none;">
+      <div id="tools-list">
+        <div class="tools-category">Network</div>
+        <button class="tool-btn" onclick="openTool('ping')">Ping</button>
+        <button class="tool-btn" onclick="openTool('traceroute')">Traceroute</button>
+        <button class="tool-btn" onclick="openTool('dns-lookup')">DNS Lookup</button>
+        <button class="tool-btn" onclick="openTool('reverse-dns')">Reverse DNS</button>
+        <button class="tool-btn" onclick="openTool('port-scanner')">Port Scanner</button>
+        <button class="tool-btn" onclick="openTool('ip-info')">IP Info</button>
+        <button class="tool-btn" onclick="openTool('whois')">Whois</button>
+        <button class="tool-btn" onclick="openTool('mac-lookup')">MAC Lookup</button>
+        <button class="tool-btn" onclick="openTool('subnet-calc')">Subnet Calculator</button>
+        <button class="tool-btn" onclick="openTool('ping-monitor')">Ping Monitor</button>
+        <button class="tool-btn" onclick="openTool('uptime-monitor')">Uptime Monitor</button>
+        <button class="tool-btn" onclick="openTool('blacklist-check')">Blacklist Check</button>
+
+        <div class="tools-category">SSL / Security</div>
+        <button class="tool-btn" onclick="openTool('ssl-checker')">SSL Checker</button>
+        <button class="tool-btn" onclick="openTool('ssl-expiry')">SSL Expiry</button>
+        <button class="tool-btn" onclick="openTool('security-headers')">Security Headers</button>
+        <button class="tool-btn" onclick="openTool('password-generator')">Password Generator</button>
+        <button class="tool-btn" onclick="openTool('password-checker')">Password Checker</button>
+        <button class="tool-btn" onclick="openTool('hash-generator')">Hash Generator</button>
+
+        <div class="tools-category">Web / SEO</div>
+        <button class="tool-btn" onclick="openTool('seo-analyzer')">SEO Analyzer</button>
+        <button class="tool-btn" onclick="openTool('page-speed')">Page Speed</button>
+        <button class="tool-btn" onclick="openTool('broken-links')">Broken Links</button>
+        <button class="tool-btn" onclick="openTool('http-headers')">HTTP Headers</button>
+        <button class="tool-btn" onclick="openTool('open-graph')">Open Graph</button>
+        <button class="tool-btn" onclick="openTool('meta-tags')">Meta Tags</button>
+        <button class="tool-btn" onclick="openTool('robots-txt')">Robots.txt</button>
+        <button class="tool-btn" onclick="openTool('sitemap-generator')">Sitemap Generator</button>
+        <button class="tool-btn" onclick="openTool('domain-expiry')">Domain Expiry</button>
+
+        <div class="tools-category">Developer</div>
+        <button class="tool-btn" onclick="openTool('api-tester')">API Tester</button>
+        <button class="tool-btn" onclick="openTool('json-formatter')">JSON Formatter</button>
+        <button class="tool-btn" onclick="openTool('code-beautifier')">Code Beautifier</button>
+        <button class="tool-btn" onclick="openTool('regex-tester')">Regex Tester</button>
+        <button class="tool-btn" onclick="openTool('base64')">Base64</button>
+        <button class="tool-btn" onclick="openTool('jwt-decoder')">JWT Decoder</button>
+        <button class="tool-btn" onclick="openTool('cron-parser')">Cron Parser</button>
+        <button class="tool-btn" onclick="openTool('uuid-generator')">UUID Generator</button>
+        <button class="tool-btn" onclick="openTool('timestamp-converter')">Timestamp Converter</button>
+
+        <div class="tools-category">Utilities</div>
+        <button class="tool-btn" onclick="openTool('markdown-preview')">Markdown Preview</button>
+        <button class="tool-btn" onclick="openTool('lorem-ipsum')">Lorem Ipsum</button>
+        <button class="tool-btn" onclick="openTool('qr-generator')">QR Generator</button>
+        <button class="tool-btn" onclick="openTool('color-picker')">Color Picker</button>
       </div>
-      <div id="ftp-status">Not connected</div>
-      <div id="ftp-switch-local"><button onclick="disconnectFtp()">Disconnect &amp; Switch to Local</button></div>
     </div>
+    <div id="tools-content" style="display:none;"></div>
     <webview id="ai-frame" src="about:blank" allowpopups style="display:none;"></webview>
+    <!-- FTP Bar (bottom of right panel) -->
+    <div id="ftp-bar">
+      <div id="ftp-bar-header">
+        <span style="font-weight:600;color:#ccc;">FTP Connection</span>
+        <span id="ftp-status">Not connected</span>
+      </div>
+      <select id="ftp-saved" onchange="loadSavedConnection()">
+        <option value="">Saved connections...</option>
+      </select>
+      <input type="text" id="ftp-host" placeholder="Host (e.g., ftp.example.com)" spellcheck="false">
+      <div id="ftp-bar-row">
+        <input type="text" id="ftp-port" placeholder="Port" value="21" spellcheck="false">
+        <input type="text" id="ftp-user" placeholder="Username" spellcheck="false">
+      </div>
+      <input type="password" id="ftp-pass" placeholder="Password">
+      <div id="ftp-bar-actions">
+        <button id="ftp-save-btn" onclick="saveConnection()">Save</button>
+        <button id="ftp-delete-saved-btn" onclick="deleteSavedConnection()" style="display:none;">Delete</button>
+        <button id="ftp-connect-btn" onclick="connectFtp()">Connect</button>
+        <button id="ftp-disconnect-btn" onclick="disconnectFtp()" style="display:none;">Disconnect</button>
+      </div>
+    </div>
   </div>
   </div><!-- End app-container -->
 
@@ -1502,10 +1817,10 @@
       loadBookmarks();
       currentPath = await window.api.fs.getHome();
       loadFiles();
-      createTerminal();
       setupResizer();
       setupPanelResizers();
       setupTerminalDropZone();
+      setupFileManagerDropZone();
       showRightTab('notes');
     }
 
@@ -1772,6 +2087,65 @@
 
     function handleDragEnd(e) {
       e.currentTarget.classList.remove('dragging');
+    }
+
+    function setupFileManagerDropZone() {
+      const fileList = document.getElementById('file-list');
+
+      fileList.addEventListener('dragover', (e) => {
+        // Only handle external drops (from Finder), not internal dTerm drags
+        if (e.dataTransfer.types.includes('application/x-dterm-file')) return;
+        if (e.dataTransfer.types.includes('Files')) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'copy';
+          fileList.classList.add('drop-over');
+        }
+      });
+
+      fileList.addEventListener('dragleave', (e) => {
+        if (!fileList.contains(e.relatedTarget)) {
+          fileList.classList.remove('drop-over');
+        }
+      });
+
+      fileList.addEventListener('drop', async (e) => {
+        fileList.classList.remove('drop-over');
+        if (e.dataTransfer.types.includes('application/x-dterm-file')) return;
+        if (!e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+        e.preventDefault();
+
+        const files = Array.from(e.dataTransfer.files);
+
+        if (appMode === 'ftp') {
+          // Upload each dropped file to current FTP directory
+          for (const file of files) {
+            const localPath = file.path;
+            const fileName = file.name;
+            const remotePath = currentPath === '/' ? '/' + fileName : currentPath + '/' + fileName;
+            try {
+              await window.api.ftp.uploadFromLocal(localPath, remotePath);
+              document.getElementById('ftp-status').textContent = `Uploaded: ${fileName}`;
+            } catch (err) {
+              alert('Upload failed for ' + fileName + ': ' + err.message);
+            }
+          }
+          loadFiles();
+        } else {
+          // Copy each dropped file to current local directory
+          for (const file of files) {
+            const srcPath = file.path;
+            const fileName = file.name;
+            const destPath = currentPath + '/' + fileName;
+            if (srcPath === destPath) continue;
+            try {
+              await window.api.fs.copy(srcPath, destPath);
+            } catch (err) {
+              alert('Copy failed for ' + fileName + ': ' + err.message);
+            }
+          }
+          loadFiles();
+        }
+      });
     }
 
     function setupTerminalDropZone() {
@@ -2154,8 +2528,13 @@
     }
 
     async function goHome() {
-      currentPath = await window.api.fs.getHome();
-      loadFiles();
+      if (appMode === 'ftp') {
+        currentPath = '/';
+        loadFiles();
+      } else {
+        currentPath = await window.api.fs.getHome();
+        loadFiles();
+      }
     }
 
     // Mini Browser functions
@@ -2316,7 +2695,6 @@
       { name: 'Toggle Hidden Files', icon: '👁', action: () => toggleHidden() },
       { name: 'Notes', icon: '📝', action: () => showRightTab('notes') },
       { name: 'AI Chat', icon: '🤖', action: () => showRightTab('ai') },
-      { name: 'FTP', icon: '🌐', action: () => showRightTab('ftp') },
     ];
 
     let selectedCommandIndex = 0;
@@ -2728,32 +3106,1165 @@
 
     // Right Panel
     function showRightTab(tab) {
-      const frame = document.getElementById('ai-frame');
+      const aiFrame = document.getElementById('ai-frame');
+      const toolsContent = document.getElementById('tools-content');
+      const toolsPanel = document.getElementById('right-tools-panel');
       const notesPanel = document.getElementById('right-notes-panel');
-      const ftpPanel = document.getElementById('right-ftp-panel');
       const select = document.getElementById('ai-select');
       const tabs = document.querySelectorAll('.right-tab');
 
       tabs.forEach(t => t.classList.remove('active'));
 
       notesPanel.style.display = 'none';
-      ftpPanel.style.display = 'none';
-      frame.style.display = 'none';
+      toolsPanel.style.display = 'none';
+      toolsContent.style.display = 'none';
+      aiFrame.style.display = 'none';
       select.style.display = 'none';
 
       if (tab === 'notes') {
         tabs[0].classList.add('active');
         notesPanel.style.display = 'flex';
-      } else if (tab === 'ai') {
+      } else if (tab === 'tools') {
         tabs[1].classList.add('active');
-        frame.style.display = 'flex';
-        select.style.display = 'block';
-        if (frame.src === 'about:blank') {
-          frame.src = select.value;
+        if (activeToolName) {
+          toolsContent.style.display = 'flex';
+        } else {
+          toolsPanel.style.display = 'flex';
         }
-      } else if (tab === 'ftp') {
+      } else if (tab === 'ai') {
         tabs[2].classList.add('active');
-        ftpPanel.style.display = 'block';
+        aiFrame.style.display = 'flex';
+        select.style.display = 'block';
+        if (aiFrame.src === 'about:blank') {
+          aiFrame.src = select.value;
+        }
+      }
+    }
+
+    // Tools panel - native implementations
+    let activeToolName = null;
+    let toolMonitorInterval = null;
+
+    function openTool(name) {
+      if (toolMonitorInterval) { clearInterval(toolMonitorInterval); toolMonitorInterval = null; }
+      activeToolName = name;
+      const toolsContent = document.getElementById('tools-content');
+      const toolsPanel = document.getElementById('right-tools-panel');
+      toolsPanel.style.display = 'none';
+      toolsContent.style.display = 'flex';
+      const renderer = toolRenderers[name];
+      if (renderer) renderer(toolsContent);
+      else toolsContent.innerHTML = '<div class="tool-header"><button class="tool-back-btn" onclick="showToolsList()">←</button><span class="tool-title">Unknown Tool</span></div>';
+    }
+
+    function showToolsList() {
+      if (toolMonitorInterval) { clearInterval(toolMonitorInterval); toolMonitorInterval = null; }
+      activeToolName = null;
+      const toolsContent = document.getElementById('tools-content');
+      const toolsPanel = document.getElementById('right-tools-panel');
+      toolsContent.style.display = 'none';
+      toolsContent.innerHTML = '';
+      toolsPanel.style.display = 'flex';
+    }
+
+    function toolHeader(title) {
+      return `<div class="tool-header"><button class="tool-back-btn" onclick="showToolsList()">←</button><span class="tool-title">${title}</span></div>`;
+    }
+
+    function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    const toolRenderers = {
+
+      // ========== NETWORK ==========
+
+      'ping': (el) => {
+        el.innerHTML = toolHeader('Ping') + `<div class="tool-body">
+          <label>Host / IP</label><input class="tool-input" id="t-ping-host" placeholder="e.g. google.com">
+          <label>Count</label><input class="tool-input" id="t-ping-count" value="4" placeholder="4">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunPing()">Ping</button></div>
+          <div class="tool-output" id="t-ping-out" style="display:none;"></div></div>`;
+      },
+
+      'traceroute': (el) => {
+        el.innerHTML = toolHeader('Traceroute') + `<div class="tool-body">
+          <label>Host / IP</label><input class="tool-input" id="t-trace-host" placeholder="e.g. google.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunTraceroute()">Trace</button></div>
+          <div class="tool-output" id="t-trace-out" style="display:none;"></div></div>`;
+      },
+
+      'dns-lookup': (el) => {
+        el.innerHTML = toolHeader('DNS Lookup') + `<div class="tool-body">
+          <label>Domain</label><input class="tool-input" id="t-dns-host" placeholder="e.g. example.com">
+          <label>Record Type</label>
+          <select class="tool-input" id="t-dns-type"><option>A</option><option>AAAA</option><option>MX</option><option>NS</option><option>TXT</option><option>CNAME</option><option>SOA</option><option>ANY</option></select>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunDns()">Lookup</button></div>
+          <div class="tool-output" id="t-dns-out" style="display:none;"></div></div>`;
+      },
+
+      'reverse-dns': (el) => {
+        el.innerHTML = toolHeader('Reverse DNS') + `<div class="tool-body">
+          <label>IP Address</label><input class="tool-input" id="t-rdns-ip" placeholder="e.g. 8.8.8.8">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunReverseDns()">Lookup</button></div>
+          <div class="tool-output" id="t-rdns-out" style="display:none;"></div></div>`;
+      },
+
+      'port-scanner': (el) => {
+        el.innerHTML = toolHeader('Port Scanner') + `<div class="tool-body">
+          <label>Host</label><input class="tool-input" id="t-port-host" placeholder="e.g. example.com">
+          <label>Ports (comma-separated)</label><input class="tool-input" id="t-port-ports" value="21,22,25,53,80,110,143,443,993,995,3306,3389,5432,8080,8443" placeholder="80,443,...">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunPortScan()">Scan</button></div>
+          <div class="tool-output" id="t-port-out" style="display:none;"></div></div>`;
+      },
+
+      'ip-info': (el) => {
+        el.innerHTML = toolHeader('IP Info') + `<div class="tool-body">
+          <label>IP or Domain (blank for your IP)</label><input class="tool-input" id="t-ipinfo-host" placeholder="Leave blank for your public IP">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunIpInfo()">Lookup</button></div>
+          <div id="t-ipinfo-out"></div></div>`;
+      },
+
+      'whois': (el) => {
+        el.innerHTML = toolHeader('Whois') + `<div class="tool-body">
+          <label>Domain</label><input class="tool-input" id="t-whois-host" placeholder="e.g. example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunWhois()">Lookup</button></div>
+          <div class="tool-output" id="t-whois-out" style="display:none;"></div></div>`;
+      },
+
+      'mac-lookup': (el) => {
+        el.innerHTML = toolHeader('MAC Lookup') + `<div class="tool-body">
+          <label>MAC Address</label><input class="tool-input" id="t-mac-addr" placeholder="e.g. 00:1A:2B:3C:4D:5E">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunMacLookup()">Lookup</button></div>
+          <div class="tool-output" id="t-mac-out" style="display:none;"></div></div>`;
+      },
+
+      'subnet-calc': (el) => {
+        el.innerHTML = toolHeader('Subnet Calculator') + `<div class="tool-body">
+          <label>IP Address</label><input class="tool-input" id="t-subnet-ip" placeholder="e.g. 192.168.1.0">
+          <label>CIDR / Mask</label><input class="tool-input" id="t-subnet-cidr" value="24" placeholder="24 or 255.255.255.0">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunSubnet()">Calculate</button></div>
+          <div id="t-subnet-out"></div></div>`;
+      },
+
+      'ping-monitor': (el) => {
+        el.innerHTML = toolHeader('Ping Monitor') + `<div class="tool-body">
+          <label>Host / IP</label><input class="tool-input" id="t-pingmon-host" placeholder="e.g. google.com">
+          <label>Interval (seconds)</label><input class="tool-input" id="t-pingmon-int" value="5">
+          <div class="tool-row"><button class="tool-run-btn" id="t-pingmon-btn" onclick="toolTogglePingMonitor()">Start</button></div>
+          <div class="tool-output" id="t-pingmon-out" style="display:none;"></div></div>`;
+      },
+
+      'uptime-monitor': (el) => {
+        el.innerHTML = toolHeader('Uptime Monitor') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-upmon-url" placeholder="e.g. https://example.com">
+          <label>Interval (seconds)</label><input class="tool-input" id="t-upmon-int" value="10">
+          <div class="tool-row"><button class="tool-run-btn" id="t-upmon-btn" onclick="toolToggleUptimeMonitor()">Start</button></div>
+          <div class="tool-output" id="t-upmon-out" style="display:none;"></div></div>`;
+      },
+
+      'blacklist-check': (el) => {
+        el.innerHTML = toolHeader('Blacklist Check') + `<div class="tool-body">
+          <label>IP Address</label><input class="tool-input" id="t-bl-ip" placeholder="e.g. 1.2.3.4">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunBlacklist()">Check</button></div>
+          <div class="tool-output" id="t-bl-out" style="display:none;"></div></div>`;
+      },
+
+      // ========== SSL / SECURITY ==========
+
+      'ssl-checker': (el) => {
+        el.innerHTML = toolHeader('SSL Checker') + `<div class="tool-body">
+          <label>Host</label><input class="tool-input" id="t-ssl-host" placeholder="e.g. example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunSslCheck()">Check</button></div>
+          <div class="tool-output" id="t-ssl-out" style="display:none;"></div></div>`;
+      },
+
+      'ssl-expiry': (el) => {
+        el.innerHTML = toolHeader('SSL Expiry') + `<div class="tool-body">
+          <label>Host</label><input class="tool-input" id="t-sslexp-host" placeholder="e.g. example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunSslExpiry()">Check</button></div>
+          <div class="tool-output" id="t-sslexp-out" style="display:none;"></div></div>`;
+      },
+
+      'security-headers': (el) => {
+        el.innerHTML = toolHeader('Security Headers') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-sechdr-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunSecHeaders()">Check</button></div>
+          <div id="t-sechdr-out"></div></div>`;
+      },
+
+      'password-generator': (el) => {
+        el.innerHTML = toolHeader('Password Generator') + `<div class="tool-body">
+          <label>Length</label><input class="tool-input" id="t-pwgen-len" type="number" value="16">
+          <label>Options</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-upper" checked> A-Z</label>
+            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-lower" checked> a-z</label>
+            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-digits" checked> 0-9</label>
+            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-symbols" checked> !@#$</label>
+          </div>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunPwGen()">Generate</button><button class="tool-secondary-btn" onclick="toolCopyPw()">Copy</button></div>
+          <div class="tool-output" id="t-pwgen-out" style="display:none;font-size:14px;"></div></div>`;
+      },
+
+      'password-checker': (el) => {
+        el.innerHTML = toolHeader('Password Checker') + `<div class="tool-body">
+          <label>Password</label><input class="tool-input" id="t-pwchk-pw" type="text" placeholder="Enter password to check">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunPwCheck()">Check</button></div>
+          <div id="t-pwchk-out"></div></div>`;
+      },
+
+      'hash-generator': (el) => {
+        el.innerHTML = toolHeader('Hash Generator') + `<div class="tool-body">
+          <label>Input Text</label><textarea class="tool-textarea" id="t-hash-input" placeholder="Text to hash..."></textarea>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunHash()">Generate</button></div>
+          <div id="t-hash-out"></div></div>`;
+      },
+
+      // ========== WEB / SEO ==========
+
+      'seo-analyzer': (el) => {
+        el.innerHTML = toolHeader('SEO Analyzer') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-seo-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunSeo()">Analyze</button></div>
+          <div id="t-seo-out"></div></div>`;
+      },
+
+      'page-speed': (el) => {
+        el.innerHTML = toolHeader('Page Speed') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-speed-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunPageSpeed()">Test</button></div>
+          <div id="t-speed-out"></div></div>`;
+      },
+
+      'broken-links': (el) => {
+        el.innerHTML = toolHeader('Broken Links') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-blinks-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunBrokenLinks()">Check</button></div>
+          <div class="tool-output" id="t-blinks-out" style="display:none;"></div></div>`;
+      },
+
+      'http-headers': (el) => {
+        el.innerHTML = toolHeader('HTTP Headers') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-hdrs-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunHttpHeaders()">Fetch</button></div>
+          <div class="tool-output" id="t-hdrs-out" style="display:none;"></div></div>`;
+      },
+
+      'open-graph': (el) => {
+        el.innerHTML = toolHeader('Open Graph') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-og-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunOpenGraph()">Fetch</button></div>
+          <div id="t-og-out"></div></div>`;
+      },
+
+      'meta-tags': (el) => {
+        el.innerHTML = toolHeader('Meta Tags') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-meta-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunMetaTags()">Fetch</button></div>
+          <div id="t-meta-out"></div></div>`;
+      },
+
+      'robots-txt': (el) => {
+        el.innerHTML = toolHeader('Robots.txt') + `<div class="tool-body">
+          <label>Domain</label><input class="tool-input" id="t-robots-url" placeholder="e.g. example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunRobots()">Fetch</button></div>
+          <div class="tool-output" id="t-robots-out" style="display:none;"></div></div>`;
+      },
+
+      'sitemap-generator': (el) => {
+        el.innerHTML = toolHeader('Sitemap Generator') + `<div class="tool-body">
+          <label>URL</label><input class="tool-input" id="t-sitemap-url" placeholder="e.g. https://example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunSitemap()">Crawl</button></div>
+          <div class="tool-output" id="t-sitemap-out" style="display:none;"></div></div>`;
+      },
+
+      'domain-expiry': (el) => {
+        el.innerHTML = toolHeader('Domain Expiry') + `<div class="tool-body">
+          <label>Domain</label><input class="tool-input" id="t-domexp-host" placeholder="e.g. example.com">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunDomainExpiry()">Check</button></div>
+          <div class="tool-output" id="t-domexp-out" style="display:none;"></div></div>`;
+      },
+
+      // ========== DEVELOPER ==========
+
+      'api-tester': (el) => {
+        el.innerHTML = toolHeader('API Tester') + `<div class="tool-body">
+          <label>Method</label>
+          <select class="tool-input" id="t-api-method"><option>GET</option><option>POST</option><option>PUT</option><option>PATCH</option><option>DELETE</option><option>HEAD</option></select>
+          <label>URL</label><input class="tool-input" id="t-api-url" placeholder="https://api.example.com/data">
+          <label>Headers (JSON)</label><textarea class="tool-textarea" id="t-api-headers" placeholder='{"Content-Type": "application/json"}'></textarea>
+          <label>Body</label><textarea class="tool-textarea" id="t-api-body" placeholder='{"key": "value"}'></textarea>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunApi()">Send</button></div>
+          <div class="tool-output" id="t-api-out" style="display:none;"></div></div>`;
+      },
+
+      'json-formatter': (el) => {
+        el.innerHTML = toolHeader('JSON Formatter') + `<div class="tool-body">
+          <label>Input JSON</label><textarea class="tool-textarea" id="t-json-input" style="min-height:100px;" placeholder='{"key":"value"}'></textarea>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunJsonFormat()">Format</button><button class="tool-secondary-btn" onclick="toolJsonMinify()">Minify</button></div>
+          <div class="tool-output" id="t-json-out" style="display:none;"></div></div>`;
+      },
+
+      'code-beautifier': (el) => {
+        el.innerHTML = toolHeader('Code Beautifier') + `<div class="tool-body">
+          <label>Code</label><textarea class="tool-textarea" id="t-beautify-input" style="min-height:120px;" placeholder="Paste code here..."></textarea>
+          <label>Indent</label>
+          <select class="tool-input" id="t-beautify-indent"><option value="2">2 spaces</option><option value="4">4 spaces</option><option value="tab">Tab</option></select>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunBeautify()">Beautify</button></div>
+          <div class="tool-output" id="t-beautify-out" style="display:none;"></div></div>`;
+      },
+
+      'regex-tester': (el) => {
+        el.innerHTML = toolHeader('Regex Tester') + `<div class="tool-body">
+          <label>Pattern</label><input class="tool-input" id="t-regex-pattern" placeholder="e.g. \\d+">
+          <label>Flags</label><input class="tool-input" id="t-regex-flags" value="g" placeholder="g, i, m...">
+          <label>Test String</label><textarea class="tool-textarea" id="t-regex-input" placeholder="Text to test against..."></textarea>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunRegex()">Test</button></div>
+          <div class="tool-output" id="t-regex-out" style="display:none;"></div></div>`;
+      },
+
+      'base64': (el) => {
+        el.innerHTML = toolHeader('Base64') + `<div class="tool-body">
+          <label>Input</label><textarea class="tool-textarea" id="t-b64-input" style="min-height:80px;" placeholder="Text to encode/decode..."></textarea>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunB64Encode()">Encode</button><button class="tool-secondary-btn" onclick="toolRunB64Decode()">Decode</button></div>
+          <label>Output</label><textarea class="tool-textarea" id="t-b64-output" style="min-height:80px;" readonly></textarea></div>`;
+      },
+
+      'jwt-decoder': (el) => {
+        el.innerHTML = toolHeader('JWT Decoder') + `<div class="tool-body">
+          <label>JWT Token</label><textarea class="tool-textarea" id="t-jwt-input" placeholder="eyJhbGciOiJIUzI1NiIs..."></textarea>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunJwt()">Decode</button></div>
+          <div id="t-jwt-out"></div></div>`;
+      },
+
+      'cron-parser': (el) => {
+        el.innerHTML = toolHeader('Cron Parser') + `<div class="tool-body">
+          <label>Cron Expression</label><input class="tool-input" id="t-cron-input" placeholder="e.g. */5 * * * *">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunCron()">Parse</button></div>
+          <div class="tool-output" id="t-cron-out" style="display:none;"></div></div>`;
+      },
+
+      'uuid-generator': (el) => {
+        el.innerHTML = toolHeader('UUID Generator') + `<div class="tool-body">
+          <label>Count</label><input class="tool-input" id="t-uuid-count" type="number" value="1" min="1" max="100">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunUuid()">Generate</button><button class="tool-secondary-btn" onclick="toolCopyUuid()">Copy</button></div>
+          <div class="tool-output" id="t-uuid-out" style="display:none;"></div></div>`;
+      },
+
+      'timestamp-converter': (el) => {
+        el.innerHTML = toolHeader('Timestamp Converter') + `<div class="tool-body">
+          <label>Unix Timestamp</label><input class="tool-input" id="t-ts-unix" placeholder="e.g. 1700000000">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunTsToDate()">→ Date</button><button class="tool-secondary-btn" onclick="toolRunTsNow()">Now</button></div>
+          <label>Date String</label><input class="tool-input" id="t-ts-date" placeholder="e.g. 2024-01-15 12:00:00">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunDateToTs()">→ Timestamp</button></div>
+          <div class="tool-output" id="t-ts-out" style="display:none;"></div></div>`;
+      },
+
+      // ========== UTILITIES ==========
+
+      'markdown-preview': (el) => {
+        el.innerHTML = toolHeader('Markdown Preview') + `<div class="tool-body">
+          <label>Markdown</label><textarea class="tool-textarea" id="t-md-input" style="min-height:120px;" placeholder="# Hello World"></textarea>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunMarkdown()">Preview</button></div>
+          <div id="t-md-out" style="margin-top:10px;padding:8px;background:#1a1a1a;border-radius:4px;color:#ccc;font-size:12px;"></div></div>`;
+      },
+
+      'lorem-ipsum': (el) => {
+        el.innerHTML = toolHeader('Lorem Ipsum') + `<div class="tool-body">
+          <label>Paragraphs</label><input class="tool-input" id="t-lorem-count" type="number" value="3" min="1" max="20">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunLorem()">Generate</button><button class="tool-secondary-btn" onclick="toolCopyLorem()">Copy</button></div>
+          <div class="tool-output" id="t-lorem-out" style="display:none;color:#ccc;"></div></div>`;
+      },
+
+      'qr-generator': (el) => {
+        el.innerHTML = toolHeader('QR Generator') + `<div class="tool-body">
+          <label>Text / URL</label><input class="tool-input" id="t-qr-input" placeholder="Enter text or URL">
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolRunQr()">Generate</button></div>
+          <div id="t-qr-out" style="margin-top:10px;text-align:center;"></div></div>`;
+      },
+
+      'color-picker': (el) => {
+        el.innerHTML = toolHeader('Color Picker') + `<div class="tool-body">
+          <label>Color</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="color" id="t-color-picker" value="#0066cc" style="width:40px;height:32px;border:none;background:none;cursor:pointer;">
+            <input class="tool-input" id="t-color-hex" value="#0066cc" style="flex:1;" oninput="toolUpdateColor()">
+          </div>
+          <div class="tool-row"><button class="tool-run-btn" onclick="toolConvertColor()">Convert</button></div>
+          <div id="t-color-out"></div></div>`;
+        document.getElementById('t-color-picker').addEventListener('input', (e) => {
+          document.getElementById('t-color-hex').value = e.target.value;
+        });
+      },
+    };
+
+    // ========== TOOL FUNCTION IMPLEMENTATIONS ==========
+
+    // --- Network ---
+    async function toolRunPing() {
+      const host = document.getElementById('t-ping-host').value.trim();
+      const count = document.getElementById('t-ping-count').value || '4';
+      if (!host) return;
+      const out = document.getElementById('t-ping-out');
+      out.style.display = 'block'; out.textContent = 'Pinging...';
+      const r = await window.api.tools.exec(`ping -c ${parseInt(count)} ${host}`);
+      out.textContent = r.stdout || r.stderr || r.error || 'No response';
+      if (r.error && !r.stdout) out.classList.add('error'); else out.classList.remove('error');
+    }
+
+    async function toolRunTraceroute() {
+      const host = document.getElementById('t-trace-host').value.trim();
+      if (!host) return;
+      const out = document.getElementById('t-trace-out');
+      out.style.display = 'block'; out.textContent = 'Tracing route... (may take a moment)';
+      const r = await window.api.tools.exec(`traceroute -m 20 ${host}`);
+      out.textContent = r.stdout || r.stderr || r.error || 'No response';
+    }
+
+    async function toolRunDns() {
+      const host = document.getElementById('t-dns-host').value.trim();
+      const type = document.getElementById('t-dns-type').value;
+      if (!host) return;
+      const out = document.getElementById('t-dns-out');
+      out.style.display = 'block'; out.textContent = 'Looking up...';
+      const r = await window.api.tools.exec(`dig ${host} ${type} +noall +answer`);
+      out.textContent = r.stdout || r.stderr || r.error || 'No records found';
+    }
+
+    async function toolRunReverseDns() {
+      const ip = document.getElementById('t-rdns-ip').value.trim();
+      if (!ip) return;
+      const out = document.getElementById('t-rdns-out');
+      out.style.display = 'block'; out.textContent = 'Looking up...';
+      const r = await window.api.tools.exec(`dig -x ${ip} +noall +answer`);
+      out.textContent = r.stdout || r.stderr || r.error || 'No PTR record found';
+    }
+
+    async function toolRunPortScan() {
+      const host = document.getElementById('t-port-host').value.trim();
+      const ports = document.getElementById('t-port-ports').value.trim();
+      if (!host || !ports) return;
+      const out = document.getElementById('t-port-out');
+      out.style.display = 'block'; out.textContent = 'Scanning ports...';
+      const portList = ports.split(',').map(p => p.trim()).filter(p => p);
+      let results = '';
+      for (const port of portList) {
+        const r = await window.api.tools.exec(`nc -z -w 2 ${host} ${port}`);
+        const open = !r.error;
+        results += `Port ${port}: ${open ? '✓ OPEN' : '✗ closed'}\n`;
+        out.textContent = results;
+      }
+    }
+
+    async function toolRunIpInfo() {
+      const host = document.getElementById('t-ipinfo-host').value.trim();
+      const out = document.getElementById('t-ipinfo-out');
+      out.innerHTML = '<div class="tool-status">Fetching...</div>';
+      const url = host ? `http://ip-api.com/json/${host}` : 'http://ip-api.com/json/';
+      const r = await window.api.tools.exec(`curl -s "${url}"`);
+      try {
+        const d = JSON.parse(r.stdout);
+        out.innerHTML = `<table class="tool-result-table">
+          <tr><td>IP</td><td>${escHtml(d.query||'')}</td></tr>
+          <tr><td>Country</td><td>${escHtml(d.country||'')} (${escHtml(d.countryCode||'')})</td></tr>
+          <tr><td>Region</td><td>${escHtml(d.regionName||'')}</td></tr>
+          <tr><td>City</td><td>${escHtml(d.city||'')}</td></tr>
+          <tr><td>ZIP</td><td>${escHtml(d.zip||'')}</td></tr>
+          <tr><td>ISP</td><td>${escHtml(d.isp||'')}</td></tr>
+          <tr><td>Org</td><td>${escHtml(d.org||'')}</td></tr>
+          <tr><td>AS</td><td>${escHtml(d.as||'')}</td></tr>
+          <tr><td>Timezone</td><td>${escHtml(d.timezone||'')}</td></tr>
+          <tr><td>Lat/Lon</td><td>${d.lat}, ${d.lon}</td></tr></table>`;
+      } catch { out.innerHTML = `<div class="tool-output">${escHtml(r.stdout || r.error || 'Error')}</div>`; }
+    }
+
+    async function toolRunWhois() {
+      const host = document.getElementById('t-whois-host').value.trim();
+      if (!host) return;
+      const out = document.getElementById('t-whois-out');
+      out.style.display = 'block'; out.textContent = 'Looking up...';
+      const r = await window.api.tools.exec(`whois ${host}`);
+      out.textContent = r.stdout || r.stderr || r.error || 'No data';
+    }
+
+    async function toolRunMacLookup() {
+      const mac = document.getElementById('t-mac-addr').value.trim();
+      if (!mac) return;
+      const out = document.getElementById('t-mac-out');
+      out.style.display = 'block'; out.textContent = 'Looking up...';
+      const prefix = mac.replace(/[^a-fA-F0-9]/g, '').substring(0, 6);
+      const r = await window.api.tools.exec(`curl -s "https://api.macvendors.com/${encodeURIComponent(mac)}"`);
+      out.textContent = r.stdout || 'Vendor not found';
+    }
+
+    function toolRunSubnet() {
+      const ipStr = document.getElementById('t-subnet-ip').value.trim();
+      const cidrStr = document.getElementById('t-subnet-cidr').value.trim();
+      if (!ipStr) return;
+      const out = document.getElementById('t-subnet-out');
+      let cidr = parseInt(cidrStr);
+      if (cidrStr.includes('.')) {
+        const parts = cidrStr.split('.').map(Number);
+        cidr = parts.reduce((a, b) => a + (b >>> 0).toString(2).split('1').length - 1, 0);
+      }
+      if (isNaN(cidr) || cidr < 0 || cidr > 32) { out.innerHTML = '<div class="tool-status fail">Invalid CIDR</div>'; return; }
+      const ip = ipStr.split('.').map(Number);
+      const ipNum = (ip[0]<<24 | ip[1]<<16 | ip[2]<<8 | ip[3]) >>> 0;
+      const mask = cidr === 0 ? 0 : (0xFFFFFFFF << (32 - cidr)) >>> 0;
+      const network = (ipNum & mask) >>> 0;
+      const broadcast = (network | ~mask) >>> 0;
+      const firstHost = (network + 1) >>> 0;
+      const lastHost = (broadcast - 1) >>> 0;
+      const hosts = cidr <= 30 ? Math.pow(2, 32 - cidr) - 2 : (cidr === 31 ? 2 : 1);
+      const toIp = n => [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+      const toMask = c => { const m = c===0?0:(0xFFFFFFFF<<(32-c))>>>0; return toIp(m); };
+      out.innerHTML = `<table class="tool-result-table">
+        <tr><td>Network</td><td>${toIp(network)}/${cidr}</td></tr>
+        <tr><td>Netmask</td><td>${toMask(cidr)}</td></tr>
+        <tr><td>Wildcard</td><td>${toIp(~mask >>> 0)}</td></tr>
+        <tr><td>Broadcast</td><td>${toIp(broadcast)}</td></tr>
+        <tr><td>First Host</td><td>${toIp(firstHost)}</td></tr>
+        <tr><td>Last Host</td><td>${toIp(lastHost)}</td></tr>
+        <tr><td>Usable Hosts</td><td>${hosts.toLocaleString()}</td></tr>
+        <tr><td>IP Class</td><td>${ip[0]<128?'A':ip[0]<192?'B':ip[0]<224?'C':ip[0]<240?'D':'E'}</td></tr></table>`;
+    }
+
+    async function toolTogglePingMonitor() {
+      const btn = document.getElementById('t-pingmon-btn');
+      if (toolMonitorInterval) {
+        clearInterval(toolMonitorInterval); toolMonitorInterval = null;
+        btn.textContent = 'Start'; return;
+      }
+      const host = document.getElementById('t-pingmon-host').value.trim();
+      const interval = parseInt(document.getElementById('t-pingmon-int').value) || 5;
+      if (!host) return;
+      btn.textContent = 'Stop';
+      const out = document.getElementById('t-pingmon-out');
+      out.style.display = 'block'; out.textContent = '';
+      const doPing = async () => {
+        const time = new Date().toLocaleTimeString();
+        const r = await window.api.tools.exec(`ping -c 1 -W 2 ${host}`);
+        const match = r.stdout && r.stdout.match(/time[=<]([\d.]+)/);
+        const ms = match ? match[1] + ' ms' : 'timeout';
+        out.textContent += `[${time}] ${host}: ${ms}\n`;
+        out.scrollTop = out.scrollHeight;
+      };
+      await doPing();
+      toolMonitorInterval = setInterval(doPing, interval * 1000);
+    }
+
+    async function toolToggleUptimeMonitor() {
+      const btn = document.getElementById('t-upmon-btn');
+      if (toolMonitorInterval) {
+        clearInterval(toolMonitorInterval); toolMonitorInterval = null;
+        btn.textContent = 'Start'; return;
+      }
+      const url = document.getElementById('t-upmon-url').value.trim();
+      const interval = parseInt(document.getElementById('t-upmon-int').value) || 10;
+      if (!url) return;
+      btn.textContent = 'Stop';
+      const out = document.getElementById('t-upmon-out');
+      out.style.display = 'block'; out.textContent = '';
+      const doCheck = async () => {
+        const time = new Date().toLocaleTimeString();
+        const r = await window.api.tools.exec(`curl -o /dev/null -s -w "%{http_code} %{time_total}s" "${url}"`);
+        out.textContent += `[${time}] ${r.stdout || 'error'}\n`;
+        out.scrollTop = out.scrollHeight;
+      };
+      await doCheck();
+      toolMonitorInterval = setInterval(doCheck, interval * 1000);
+    }
+
+    async function toolRunBlacklist() {
+      const ip = document.getElementById('t-bl-ip').value.trim();
+      if (!ip) return;
+      const out = document.getElementById('t-bl-out');
+      out.style.display = 'block'; out.textContent = 'Checking blacklists...';
+      const reversed = ip.split('.').reverse().join('.');
+      const dnsbls = ['zen.spamhaus.org','bl.spamcop.net','b.barracudacentral.org','dnsbl.sorbs.net','spam.dnsbl.sorbs.net'];
+      let results = '';
+      for (const bl of dnsbls) {
+        const r = await window.api.tools.exec(`dig +short ${reversed}.${bl}`);
+        const listed = r.stdout && r.stdout.trim().length > 0;
+        results += `${bl}: ${listed ? '⚠ LISTED' : '✓ Clean'}\n`;
+        out.textContent = results;
+      }
+    }
+
+    // --- SSL / Security ---
+    async function toolRunSslCheck() {
+      const host = document.getElementById('t-ssl-host').value.trim();
+      if (!host) return;
+      const out = document.getElementById('t-ssl-out');
+      out.style.display = 'block'; out.textContent = 'Checking SSL...';
+      const r = await window.api.tools.exec(`openssl s_client -connect ${host}:443 -servername ${host} </dev/null 2>/dev/null | openssl x509 -noout -subject -issuer -dates -serial`);
+      out.textContent = r.stdout || r.stderr || r.error || 'Could not connect';
+    }
+
+    async function toolRunSslExpiry() {
+      const host = document.getElementById('t-sslexp-host').value.trim();
+      if (!host) return;
+      const out = document.getElementById('t-sslexp-out');
+      out.style.display = 'block'; out.textContent = 'Checking...';
+      const r = await window.api.tools.exec(`openssl s_client -connect ${host}:443 -servername ${host} </dev/null 2>/dev/null | openssl x509 -noout -dates`);
+      if (r.stdout) {
+        const lines = r.stdout.trim().split('\n');
+        let text = '';
+        lines.forEach(line => {
+          if (line.startsWith('notBefore=')) text += 'Issued: ' + line.replace('notBefore=', '') + '\n';
+          if (line.startsWith('notAfter=')) {
+            const dateStr = line.replace('notAfter=', '');
+            const expiry = new Date(dateStr);
+            const now = new Date();
+            const days = Math.floor((expiry - now) / 86400000);
+            text += 'Expires: ' + dateStr + '\n';
+            text += days > 0 ? `${days} days remaining` : `EXPIRED ${Math.abs(days)} days ago`;
+          }
+        });
+        out.textContent = text;
+      } else { out.textContent = r.error || 'Could not connect'; out.classList.add('error'); }
+    }
+
+    async function toolRunSecHeaders() {
+      const url = document.getElementById('t-sechdr-url').value.trim();
+      if (!url) return;
+      const out = document.getElementById('t-sechdr-out');
+      out.innerHTML = '<div class="tool-status">Checking...</div>';
+      const r = await window.api.tools.exec(`curl -sI "${url}"`);
+      if (!r.stdout) { out.innerHTML = '<div class="tool-status fail">Could not connect</div>'; return; }
+      const headers = r.stdout.toLowerCase();
+      const checks = [
+        ['Strict-Transport-Security', 'strict-transport-security'],
+        ['Content-Security-Policy', 'content-security-policy'],
+        ['X-Frame-Options', 'x-frame-options'],
+        ['X-Content-Type-Options', 'x-content-type-options'],
+        ['X-XSS-Protection', 'x-xss-protection'],
+        ['Referrer-Policy', 'referrer-policy'],
+        ['Permissions-Policy', 'permissions-policy'],
+      ];
+      let html = '<table class="tool-result-table"><tr><th>Header</th><th>Status</th></tr>';
+      checks.forEach(([name, key]) => {
+        const found = headers.includes(key);
+        html += `<tr><td>${name}</td><td class="tool-status ${found?'ok':'fail'}">${found?'✓ Present':'✗ Missing'}</td></tr>`;
+      });
+      html += '</table>';
+      out.innerHTML = html;
+    }
+
+    function toolRunPwGen() {
+      const len = parseInt(document.getElementById('t-pwgen-len').value) || 16;
+      let chars = '';
+      if (document.getElementById('t-pwgen-upper').checked) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      if (document.getElementById('t-pwgen-lower').checked) chars += 'abcdefghijklmnopqrstuvwxyz';
+      if (document.getElementById('t-pwgen-digits').checked) chars += '0123456789';
+      if (document.getElementById('t-pwgen-symbols').checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+      if (!chars) chars = 'abcdefghijklmnopqrstuvwxyz';
+      const arr = new Uint32Array(len);
+      crypto.getRandomValues(arr);
+      let pw = '';
+      for (let i = 0; i < len; i++) pw += chars[arr[i] % chars.length];
+      const out = document.getElementById('t-pwgen-out');
+      out.style.display = 'block'; out.textContent = pw;
+    }
+
+    function toolCopyPw() {
+      const text = document.getElementById('t-pwgen-out').textContent;
+      if (text) navigator.clipboard.writeText(text);
+    }
+
+    function toolRunPwCheck() {
+      const pw = document.getElementById('t-pwchk-pw').value;
+      const out = document.getElementById('t-pwchk-out');
+      if (!pw) { out.innerHTML = ''; return; }
+      const len = pw.length;
+      const hasUpper = /[A-Z]/.test(pw);
+      const hasLower = /[a-z]/.test(pw);
+      const hasDigit = /\d/.test(pw);
+      const hasSymbol = /[^A-Za-z0-9]/.test(pw);
+      let pool = 0;
+      if (hasUpper) pool += 26;
+      if (hasLower) pool += 26;
+      if (hasDigit) pool += 10;
+      if (hasSymbol) pool += 32;
+      const entropy = Math.floor(len * Math.log2(pool || 1));
+      let strength = 'Weak', cls = 'fail';
+      if (entropy >= 60) { strength = 'Moderate'; cls = 'warn'; }
+      if (entropy >= 80) { strength = 'Strong'; cls = 'ok'; }
+      if (entropy >= 100) { strength = 'Very Strong'; cls = 'ok'; }
+      out.innerHTML = `<table class="tool-result-table">
+        <tr><td>Length</td><td>${len}</td></tr>
+        <tr><td>Uppercase</td><td>${hasUpper?'✓':'✗'}</td></tr>
+        <tr><td>Lowercase</td><td>${hasLower?'✓':'✗'}</td></tr>
+        <tr><td>Digits</td><td>${hasDigit?'✓':'✗'}</td></tr>
+        <tr><td>Symbols</td><td>${hasSymbol?'✓':'✗'}</td></tr>
+        <tr><td>Entropy</td><td>${entropy} bits</td></tr>
+        <tr><td>Strength</td><td class="tool-status ${cls}">${strength}</td></tr></table>`;
+    }
+
+    async function toolRunHash() {
+      const input = document.getElementById('t-hash-input').value;
+      const out = document.getElementById('t-hash-out');
+      if (!input) { out.innerHTML = ''; return; }
+      const enc = new TextEncoder();
+      const data = enc.encode(input);
+      const algos = ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'];
+      let html = '<table class="tool-result-table">';
+      for (const algo of algos) {
+        const hash = await crypto.subtle.digest(algo, data);
+        const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        html += `<tr><td>${algo}</td><td style="word-break:break-all;">${hex}</td></tr>`;
+      }
+      // MD5 via command
+      const r = await window.api.tools.exec(`echo -n "${input.replace(/"/g, '\\"')}" | md5`);
+      if (r.stdout) html = `<tr><td>MD5</td><td>${escHtml(r.stdout.trim())}</td></tr>` + html;
+      html = '<table class="tool-result-table">' + html.replace('<table class="tool-result-table">', '') + '</table>';
+      out.innerHTML = html;
+    }
+
+    // --- Web / SEO ---
+    async function toolRunSeo() {
+      const url = document.getElementById('t-seo-url').value.trim();
+      if (!url) return;
+      const out = document.getElementById('t-seo-out');
+      out.innerHTML = '<div class="tool-status">Analyzing...</div>';
+      const r = await window.api.tools.exec(`curl -sL "${url}"`);
+      if (!r.stdout) { out.innerHTML = '<div class="tool-status fail">Could not fetch page</div>'; return; }
+      const html = r.stdout;
+      const getTag = (tag) => { const m = html.match(new RegExp(`<${tag}[^>]*>([^<]*)</${tag}>`, 'i')); return m ? m[1].trim() : 'Not found'; };
+      const getMeta = (name) => { const m = html.match(new RegExp(`<meta[^>]*name=["']${name}["'][^>]*content=["']([^"']*)["']`, 'i')) || html.match(new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*name=["']${name}["']`, 'i')); return m ? m[1] : 'Not found'; };
+      const title = getTag('title');
+      const h1s = (html.match(/<h1[^>]*>[^<]*<\/h1>/gi) || []).length;
+      const h2s = (html.match(/<h2[^>]*>[^<]*<\/h2>/gi) || []).length;
+      const imgs = (html.match(/<img /gi) || []).length;
+      const imgsNoAlt = (html.match(/<img (?![^>]*alt=)[^>]*>/gi) || []).length;
+      const links = (html.match(/<a /gi) || []).length;
+      out.innerHTML = `<table class="tool-result-table">
+        <tr><td>Title</td><td>${escHtml(title)} (${title.length} chars)</td></tr>
+        <tr><td>Description</td><td>${escHtml(getMeta('description'))}</td></tr>
+        <tr><td>Keywords</td><td>${escHtml(getMeta('keywords'))}</td></tr>
+        <tr><td>H1 Tags</td><td>${h1s}</td></tr>
+        <tr><td>H2 Tags</td><td>${h2s}</td></tr>
+        <tr><td>Images</td><td>${imgs} (${imgsNoAlt} missing alt)</td></tr>
+        <tr><td>Links</td><td>${links}</td></tr>
+        <tr><td>Viewport</td><td>${escHtml(getMeta('viewport'))}</td></tr></table>`;
+    }
+
+    async function toolRunPageSpeed() {
+      const url = document.getElementById('t-speed-url').value.trim();
+      if (!url) return;
+      const out = document.getElementById('t-speed-out');
+      out.innerHTML = '<div class="tool-status">Testing...</div>';
+      const r = await window.api.tools.exec(`curl -o /dev/null -s -w "DNS: %{time_namelookup}s\\nConnect: %{time_connect}s\\nTLS: %{time_appconnect}s\\nFirst Byte: %{time_starttransfer}s\\nTotal: %{time_total}s\\nSize: %{size_download} bytes\\nHTTP Code: %{http_code}" "${url}"`);
+      if (r.stdout) {
+        const lines = r.stdout.split('\n');
+        let html = '<table class="tool-result-table">';
+        lines.forEach(l => { const [k,v] = l.split(': '); if(k&&v) html += `<tr><td>${escHtml(k)}</td><td>${escHtml(v)}</td></tr>`; });
+        html += '</table>';
+        out.innerHTML = html;
+      } else { out.innerHTML = '<div class="tool-status fail">Could not connect</div>'; }
+    }
+
+    async function toolRunBrokenLinks() {
+      const url = document.getElementById('t-blinks-url').value.trim();
+      if (!url) return;
+      const out = document.getElementById('t-blinks-out');
+      out.style.display = 'block'; out.textContent = 'Fetching page...';
+      const r = await window.api.tools.exec(`curl -sL "${url}"`);
+      if (!r.stdout) { out.textContent = 'Could not fetch page'; return; }
+      const matches = r.stdout.match(/href=["']([^"']+)["']/gi) || [];
+      const links = [...new Set(matches.map(m => m.match(/href=["']([^"']+)["']/i)[1]).filter(l => l.startsWith('http')))].slice(0, 20);
+      out.textContent = `Found ${links.length} links. Checking...\n\n`;
+      for (const link of links) {
+        const c = await window.api.tools.exec(`curl -o /dev/null -s -w "%{http_code}" -L "${link}"`);
+        const code = (c.stdout || '').trim();
+        const ok = code.startsWith('2') || code.startsWith('3');
+        out.textContent += `${ok ? '✓' : '✗'} [${code}] ${link}\n`;
+        out.scrollTop = out.scrollHeight;
+      }
+    }
+
+    async function toolRunHttpHeaders() {
+      const url = document.getElementById('t-hdrs-url').value.trim();
+      if (!url) return;
+      const out = document.getElementById('t-hdrs-out');
+      out.style.display = 'block'; out.textContent = 'Fetching...';
+      const r = await window.api.tools.exec(`curl -sI "${url}"`);
+      out.textContent = r.stdout || r.error || 'Could not connect';
+    }
+
+    async function toolRunOpenGraph() {
+      const url = document.getElementById('t-og-url').value.trim();
+      if (!url) return;
+      const out = document.getElementById('t-og-out');
+      out.innerHTML = '<div class="tool-status">Fetching...</div>';
+      const r = await window.api.tools.exec(`curl -sL "${url}"`);
+      if (!r.stdout) { out.innerHTML = '<div class="tool-status fail">Could not fetch</div>'; return; }
+      const ogTags = r.stdout.match(/<meta[^>]*property=["']og:[^"']*["'][^>]*>/gi) || [];
+      if (ogTags.length === 0) { out.innerHTML = '<div class="tool-status warn">No Open Graph tags found</div>'; return; }
+      let html = '<table class="tool-result-table">';
+      ogTags.forEach(tag => {
+        const prop = (tag.match(/property=["']([^"']*)["']/i) || [])[1] || '';
+        const content = (tag.match(/content=["']([^"']*)["']/i) || [])[1] || '';
+        html += `<tr><td>${escHtml(prop)}</td><td>${escHtml(content)}</td></tr>`;
+      });
+      html += '</table>';
+      out.innerHTML = html;
+    }
+
+    async function toolRunMetaTags() {
+      const url = document.getElementById('t-meta-url').value.trim();
+      if (!url) return;
+      const out = document.getElementById('t-meta-out');
+      out.innerHTML = '<div class="tool-status">Fetching...</div>';
+      const r = await window.api.tools.exec(`curl -sL "${url}"`);
+      if (!r.stdout) { out.innerHTML = '<div class="tool-status fail">Could not fetch</div>'; return; }
+      const metaTags = r.stdout.match(/<meta[^>]*>/gi) || [];
+      let html = '<table class="tool-result-table">';
+      metaTags.forEach(tag => {
+        const name = (tag.match(/(?:name|property|http-equiv)=["']([^"']*)["']/i) || [])[1] || '';
+        const content = (tag.match(/content=["']([^"']*)["']/i) || [])[1] || '';
+        if (name || content) html += `<tr><td>${escHtml(name)}</td><td>${escHtml(content)}</td></tr>`;
+      });
+      html += '</table>';
+      out.innerHTML = html;
+    }
+
+    async function toolRunRobots() {
+      let domain = document.getElementById('t-robots-url').value.trim();
+      if (!domain) return;
+      if (!domain.startsWith('http')) domain = 'https://' + domain;
+      const out = document.getElementById('t-robots-out');
+      out.style.display = 'block'; out.textContent = 'Fetching...';
+      const r = await window.api.tools.exec(`curl -sL "${domain}/robots.txt"`);
+      out.textContent = r.stdout || 'No robots.txt found';
+    }
+
+    async function toolRunSitemap() {
+      let url = document.getElementById('t-sitemap-url').value.trim();
+      if (!url) return;
+      if (!url.startsWith('http')) url = 'https://' + url;
+      const out = document.getElementById('t-sitemap-out');
+      out.style.display = 'block'; out.textContent = 'Fetching sitemap...';
+      // Try common sitemap locations
+      const locations = ['/sitemap.xml', '/sitemap_index.xml', '/sitemap/sitemap.xml'];
+      for (const loc of locations) {
+        const r = await window.api.tools.exec(`curl -sL "${url}${loc}"`);
+        if (r.stdout && r.stdout.includes('<urlset') || r.stdout && r.stdout.includes('<sitemapindex')) {
+          const urls = (r.stdout.match(/<loc>([^<]+)<\/loc>/g) || []).map(m => m.replace(/<\/?loc>/g, ''));
+          out.textContent = `Found at ${url}${loc}\n${urls.length} URLs:\n\n${urls.join('\n')}`;
+          return;
+        }
+      }
+      out.textContent = 'No sitemap found at common locations.';
+    }
+
+    async function toolRunDomainExpiry() {
+      const host = document.getElementById('t-domexp-host').value.trim();
+      if (!host) return;
+      const out = document.getElementById('t-domexp-out');
+      out.style.display = 'block'; out.textContent = 'Checking...';
+      const r = await window.api.tools.exec(`whois ${host}`);
+      if (!r.stdout) { out.textContent = r.error || 'Could not lookup'; return; }
+      const expiryMatch = r.stdout.match(/(?:expir|paid-till|validity)[^:]*:\s*(.+)/i);
+      if (expiryMatch) {
+        const expDate = new Date(expiryMatch[1].trim());
+        const now = new Date();
+        const days = Math.floor((expDate - now) / 86400000);
+        out.textContent = `Domain: ${host}\nExpiry: ${expiryMatch[1].trim()}\n${days > 0 ? days + ' days remaining' : 'EXPIRED ' + Math.abs(days) + ' days ago'}`;
+      } else {
+        out.textContent = 'Could not find expiry date.\n\nFull WHOIS:\n' + r.stdout.substring(0, 2000);
+      }
+    }
+
+    // --- Developer ---
+    async function toolRunApi() {
+      const method = document.getElementById('t-api-method').value;
+      const url = document.getElementById('t-api-url').value.trim();
+      if (!url) return;
+      const headersStr = document.getElementById('t-api-headers').value.trim();
+      const body = document.getElementById('t-api-body').value.trim();
+      const out = document.getElementById('t-api-out');
+      out.style.display = 'block'; out.textContent = 'Sending...';
+      let cmd = `curl -s -w "\\n\\n--- Response Info ---\\nHTTP Code: %{http_code}\\nTime: %{time_total}s\\nSize: %{size_download} bytes" -X ${method}`;
+      if (headersStr) {
+        try {
+          const hdrs = JSON.parse(headersStr);
+          Object.entries(hdrs).forEach(([k, v]) => { cmd += ` -H "${k}: ${v}"`; });
+        } catch {}
+      }
+      if (body && method !== 'GET' && method !== 'HEAD') cmd += ` -d '${body.replace(/'/g, "'\\''")}'`;
+      cmd += ` "${url}"`;
+      const r = await window.api.tools.exec(cmd);
+      out.textContent = r.stdout || r.error || 'No response';
+    }
+
+    function toolRunJsonFormat() {
+      const input = document.getElementById('t-json-input').value;
+      const out = document.getElementById('t-json-out');
+      out.style.display = 'block';
+      try {
+        const parsed = JSON.parse(input);
+        out.textContent = JSON.stringify(parsed, null, 2);
+        out.classList.remove('error');
+      } catch (e) { out.textContent = 'Error: ' + e.message; out.classList.add('error'); }
+    }
+
+    function toolJsonMinify() {
+      const input = document.getElementById('t-json-input').value;
+      const out = document.getElementById('t-json-out');
+      out.style.display = 'block';
+      try {
+        out.textContent = JSON.stringify(JSON.parse(input));
+        out.classList.remove('error');
+      } catch (e) { out.textContent = 'Error: ' + e.message; out.classList.add('error'); }
+    }
+
+    function toolRunBeautify() {
+      const input = document.getElementById('t-beautify-input').value;
+      const indentVal = document.getElementById('t-beautify-indent').value;
+      const out = document.getElementById('t-beautify-out');
+      out.style.display = 'block';
+      // Try JSON first
+      try {
+        const indent = indentVal === 'tab' ? '\t' : parseInt(indentVal);
+        out.textContent = JSON.stringify(JSON.parse(input), null, indent);
+        return;
+      } catch {}
+      // Basic HTML/code beautifier
+      let indent = 0;
+      const indentStr = indentVal === 'tab' ? '\t' : ' '.repeat(parseInt(indentVal));
+      const lines = input.replace(/>\s*</g, '>\n<').split('\n');
+      const result = lines.map(line => {
+        line = line.trim();
+        if (line.startsWith('</')) indent = Math.max(0, indent - 1);
+        const formatted = indentStr.repeat(indent) + line;
+        if (line.startsWith('<') && !line.startsWith('</') && !line.startsWith('<!') && !line.endsWith('/>') && !line.includes('</')) indent++;
+        return formatted;
+      }).join('\n');
+      out.textContent = result;
+    }
+
+    function toolRunRegex() {
+      const pattern = document.getElementById('t-regex-pattern').value;
+      const flags = document.getElementById('t-regex-flags').value;
+      const input = document.getElementById('t-regex-input').value;
+      const out = document.getElementById('t-regex-out');
+      out.style.display = 'block';
+      try {
+        const re = new RegExp(pattern, flags);
+        const matches = [];
+        let m;
+        if (flags.includes('g')) {
+          while ((m = re.exec(input)) !== null) { matches.push({ match: m[0], index: m.index, groups: m.slice(1) }); if (!m[0]) break; }
+        } else {
+          m = re.exec(input);
+          if (m) matches.push({ match: m[0], index: m.index, groups: m.slice(1) });
+        }
+        if (matches.length === 0) { out.textContent = 'No matches'; return; }
+        let text = `${matches.length} match(es):\n\n`;
+        matches.forEach((m, i) => {
+          text += `Match ${i+1}: "${m.match}" at index ${m.index}\n`;
+          if (m.groups.length) text += `  Groups: ${m.groups.map((g,j) => `$${j+1}="${g}"`).join(', ')}\n`;
+        });
+        out.textContent = text;
+        out.classList.remove('error');
+      } catch (e) { out.textContent = 'Error: ' + e.message; out.classList.add('error'); }
+    }
+
+    function toolRunB64Encode() {
+      const input = document.getElementById('t-b64-input').value;
+      document.getElementById('t-b64-output').value = btoa(unescape(encodeURIComponent(input)));
+    }
+
+    function toolRunB64Decode() {
+      const input = document.getElementById('t-b64-input').value;
+      try { document.getElementById('t-b64-output').value = decodeURIComponent(escape(atob(input))); }
+      catch { document.getElementById('t-b64-output').value = 'Error: Invalid Base64'; }
+    }
+
+    function toolRunJwt() {
+      const token = document.getElementById('t-jwt-input').value.trim();
+      const out = document.getElementById('t-jwt-out');
+      if (!token) { out.innerHTML = ''; return; }
+      try {
+        const parts = token.split('.');
+        if (parts.length < 2) throw new Error('Invalid JWT format');
+        const decode = (s) => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
+        const header = decode(parts[0]);
+        const payload = decode(parts[1]);
+        let html = '<label style="margin-top:10px;">Header</label><div class="tool-output">' + escHtml(JSON.stringify(header, null, 2)) + '</div>';
+        html += '<label>Payload</label><div class="tool-output">' + escHtml(JSON.stringify(payload, null, 2)) + '</div>';
+        if (payload.exp) {
+          const exp = new Date(payload.exp * 1000);
+          const now = new Date();
+          html += `<div class="tool-status ${exp > now ? 'ok' : 'fail'}">Expires: ${exp.toLocaleString()} (${exp > now ? 'valid' : 'EXPIRED'})</div>`;
+        }
+        if (payload.iat) html += `<div class="tool-status">Issued: ${new Date(payload.iat * 1000).toLocaleString()}</div>`;
+        out.innerHTML = html;
+      } catch (e) { out.innerHTML = `<div class="tool-status fail">Error: ${escHtml(e.message)}</div>`; }
+    }
+
+    function toolRunCron() {
+      const expr = document.getElementById('t-cron-input').value.trim();
+      const out = document.getElementById('t-cron-out');
+      out.style.display = 'block';
+      if (!expr) { out.textContent = ''; return; }
+      const parts = expr.split(/\s+/);
+      if (parts.length < 5) { out.textContent = 'Need 5 fields: min hour dom month dow'; return; }
+      const [min, hour, dom, month, dow] = parts;
+      const desc = (val, unit, names) => {
+        if (val === '*') return `every ${unit}`;
+        if (val.includes('/')) return `every ${val.split('/')[1]} ${unit}(s)`;
+        if (val.includes(',')) return `at ${unit} ${val}`;
+        if (val.includes('-')) return `${unit} ${val}`;
+        if (names && names[parseInt(val)]) return names[parseInt(val)];
+        return `at ${unit} ${val}`;
+      };
+      const dowNames = {0:'Sunday',1:'Monday',2:'Tuesday',3:'Wednesday',4:'Thursday',5:'Friday',6:'Saturday',7:'Sunday'};
+      const monNames = {1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'};
+      let text = `Schedule: ${expr}\n\n`;
+      text += `Minute: ${desc(min, 'minute')}\n`;
+      text += `Hour: ${desc(hour, 'hour')}\n`;
+      text += `Day of Month: ${desc(dom, 'day')}\n`;
+      text += `Month: ${desc(month, 'month', monNames)}\n`;
+      text += `Day of Week: ${desc(dow, 'day', dowNames)}\n`;
+      // Generate next 5 run times (simplified)
+      text += '\nHuman readable:\n';
+      if (min === '*' && hour === '*') text += 'Runs every minute';
+      else if (hour === '*') text += `Runs at minute ${min} of every hour`;
+      else if (min !== '*' && hour !== '*' && dom === '*' && month === '*' && dow === '*') text += `Runs daily at ${hour.padStart(2,'0')}:${min.padStart(2,'0')}`;
+      else text += 'Custom schedule';
+      out.textContent = text;
+    }
+
+    function toolRunUuid() {
+      const count = parseInt(document.getElementById('t-uuid-count').value) || 1;
+      const out = document.getElementById('t-uuid-out');
+      out.style.display = 'block';
+      let uuids = [];
+      for (let i = 0; i < Math.min(count, 100); i++) uuids.push(crypto.randomUUID());
+      out.textContent = uuids.join('\n');
+    }
+
+    function toolCopyUuid() {
+      const text = document.getElementById('t-uuid-out').textContent;
+      if (text) navigator.clipboard.writeText(text);
+    }
+
+    function toolRunTsToDate() {
+      const ts = document.getElementById('t-ts-unix').value.trim();
+      const out = document.getElementById('t-ts-out');
+      out.style.display = 'block';
+      if (!ts) { out.textContent = ''; return; }
+      const num = parseInt(ts);
+      const ms = num > 9999999999 ? num : num * 1000;
+      const d = new Date(ms);
+      out.textContent = `UTC: ${d.toUTCString()}\nLocal: ${d.toLocaleString()}\nISO: ${d.toISOString()}`;
+    }
+
+    function toolRunDateToTs() {
+      const dateStr = document.getElementById('t-ts-date').value.trim();
+      const out = document.getElementById('t-ts-out');
+      out.style.display = 'block';
+      if (!dateStr) { out.textContent = ''; return; }
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) { out.textContent = 'Invalid date'; return; }
+      out.textContent = `Unix (seconds): ${Math.floor(d.getTime() / 1000)}\nUnix (ms): ${d.getTime()}\nISO: ${d.toISOString()}`;
+    }
+
+    function toolRunTsNow() {
+      const out = document.getElementById('t-ts-out');
+      out.style.display = 'block';
+      const now = new Date();
+      document.getElementById('t-ts-unix').value = Math.floor(now.getTime() / 1000);
+      out.textContent = `Now: ${now.toLocaleString()}\nUnix: ${Math.floor(now.getTime() / 1000)}\nISO: ${now.toISOString()}`;
+    }
+
+    // --- Utilities ---
+    function toolRunMarkdown() {
+      const input = document.getElementById('t-md-input').value;
+      const out = document.getElementById('t-md-out');
+      // Simple markdown to HTML
+      let html = escHtml(input);
+      html = html.replace(/^### (.+)$/gm, '<h3 style="color:#fff;margin:8px 0 4px;">$1</h3>');
+      html = html.replace(/^## (.+)$/gm, '<h2 style="color:#fff;margin:8px 0 4px;">$1</h2>');
+      html = html.replace(/^# (.+)$/gm, '<h1 style="color:#fff;margin:8px 0 4px;">$1</h1>');
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      html = html.replace(/`(.+?)`/g, '<code style="background:#333;padding:1px 4px;border-radius:3px;">$1</code>');
+      html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+      html = html.replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>');
+      html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color:#0088ff;">$1</a>');
+      html = html.replace(/\n/g, '<br>');
+      out.innerHTML = html;
+    }
+
+    function toolRunLorem() {
+      const count = parseInt(document.getElementById('t-lorem-count').value) || 3;
+      const out = document.getElementById('t-lorem-out');
+      out.style.display = 'block';
+      const paras = [
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+        'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.',
+        'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.',
+        'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?',
+        'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?',
+        'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.',
+      ];
+      let result = [];
+      for (let i = 0; i < count; i++) result.push(paras[i % paras.length]);
+      out.textContent = result.join('\n\n');
+    }
+
+    function toolCopyLorem() {
+      const text = document.getElementById('t-lorem-out').textContent;
+      if (text) navigator.clipboard.writeText(text);
+    }
+
+    function toolRunQr() {
+      const input = document.getElementById('t-qr-input').value.trim();
+      const out = document.getElementById('t-qr-out');
+      if (!input) { out.innerHTML = ''; return; }
+      // Simple QR using a free API (generates image)
+      const size = 200;
+      const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(input)}`;
+      out.innerHTML = `<img src="${url}" alt="QR Code" style="border-radius:4px;background:#fff;padding:8px;">`;
+    }
+
+    function toolConvertColor() {
+      const hex = document.getElementById('t-color-hex').value.trim();
+      const out = document.getElementById('t-color-out');
+      const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+      if (!m) { out.innerHTML = '<div class="tool-status fail">Invalid hex color</div>'; return; }
+      const r = parseInt(m[1], 16), g = parseInt(m[2], 16), b = parseInt(m[3], 16);
+      // HSL conversion
+      const r1 = r/255, g1 = g/255, b1 = b/255;
+      const max = Math.max(r1,g1,b1), min = Math.min(r1,g1,b1);
+      let h, s, l = (max+min)/2;
+      if (max === min) { h = s = 0; }
+      else {
+        const d = max - min;
+        s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+        switch(max) {
+          case r1: h = ((g1-b1)/d + (g1<b1?6:0))/6; break;
+          case g1: h = ((b1-r1)/d + 2)/6; break;
+          case b1: h = ((r1-g1)/d + 4)/6; break;
+        }
+      }
+      const fullHex = '#' + m[1] + m[2] + m[3];
+      document.getElementById('t-color-picker').value = fullHex;
+      out.innerHTML = `<table class="tool-result-table">
+        <tr><td>HEX</td><td>${fullHex.toUpperCase()}</td></tr>
+        <tr><td>RGB</td><td>rgb(${r}, ${g}, ${b})</td></tr>
+        <tr><td>HSL</td><td>hsl(${Math.round(h*360)}, ${Math.round(s*100)}%, ${Math.round(l*100)}%)</td></tr>
+        <tr><td>Preview</td><td><div style="width:100%;height:24px;background:${fullHex};border-radius:3px;"></div></td></tr></table>`;
+    }
+
+    function toolUpdateColor() {
+      const hex = document.getElementById('t-color-hex').value.trim();
+      if (/^#?[a-f\d]{6}$/i.test(hex)) {
+        document.getElementById('t-color-picker').value = hex.startsWith('#') ? hex : '#' + hex;
       }
     }
 
@@ -2768,33 +4279,35 @@
     let ftpCurrentPath = '/';
 
     async function connectFtp() {
-      const host = document.getElementById('ftp-host').value;
+      const host = document.getElementById('ftp-host').value.trim();
       const port = parseInt(document.getElementById('ftp-port').value) || 21;
-      const user = document.getElementById('ftp-user').value;
+      const user = document.getElementById('ftp-user').value.trim();
       const pass = document.getElementById('ftp-pass').value;
 
       if (!host) {
-        document.getElementById('ftp-status').textContent = 'Please enter a host';
+        document.getElementById('ftp-status').textContent = 'Enter a host';
         document.getElementById('ftp-status').style.color = '#f44';
         return;
       }
 
       document.getElementById('ftp-status').textContent = 'Connecting...';
       document.getElementById('ftp-status').style.color = '#888';
+      document.getElementById('ftp-connect-btn').disabled = true;
 
       try {
         await window.api.ftp.connect(host, port, user, pass);
         ftpConnected = true;
         ftpCurrentPath = '/';
-        document.getElementById('ftp-status').textContent = `Connected to ${host}`;
+        document.getElementById('ftp-status').textContent = `Connected: ${host}`;
         document.getElementById('ftp-status').style.color = '#4c4';
-        document.getElementById('ftp-switch-local').style.display = 'block';
-        // Switch the left file browser to FTP mode
+        document.getElementById('ftp-connect-btn').style.display = 'none';
+        document.getElementById('ftp-disconnect-btn').style.display = '';
         switchToFtpMode(host);
       } catch (err) {
         document.getElementById('ftp-status').textContent = 'Error: ' + err.message;
         document.getElementById('ftp-status').style.color = '#f44';
       }
+      document.getElementById('ftp-connect-btn').disabled = false;
     }
 
     function disconnectFtp() {
@@ -2802,9 +4315,88 @@
       ftpConnected = false;
       document.getElementById('ftp-status').textContent = 'Not connected';
       document.getElementById('ftp-status').style.color = '#666';
-      document.getElementById('ftp-switch-local').style.display = 'none';
+      document.getElementById('ftp-connect-btn').style.display = '';
+      document.getElementById('ftp-disconnect-btn').style.display = 'none';
       switchToLocalMode();
     }
+
+    // Saved FTP connections (file-based storage via IPC)
+    let cachedConnections = [];
+
+    async function loadSavedConnectionsFromFile() {
+      cachedConnections = await window.api.ftpConnections.load();
+      return cachedConnections;
+    }
+
+    async function saveConnectionsToFile(connections) {
+      cachedConnections = connections;
+      await window.api.ftpConnections.save(connections);
+    }
+
+    async function renderSavedConnections() {
+      const select = document.getElementById('ftp-saved');
+      const connections = await loadSavedConnectionsFromFile();
+      select.innerHTML = '<option value="">Saved...</option>';
+      connections.forEach((c, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = c.label || `${c.user}@${c.host}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function loadSavedConnection() {
+      const select = document.getElementById('ftp-saved');
+      const idx = select.value;
+      if (idx === '') {
+        document.getElementById('ftp-delete-saved-btn').style.display = 'none';
+        return;
+      }
+      const c = cachedConnections[idx];
+      if (c) {
+        document.getElementById('ftp-host').value = c.host || '';
+        document.getElementById('ftp-port').value = c.port || '21';
+        document.getElementById('ftp-user').value = c.user || '';
+        document.getElementById('ftp-pass').value = c.pass || '';
+        document.getElementById('ftp-delete-saved-btn').style.display = '';
+      }
+    }
+
+    async function saveConnection() {
+      const host = document.getElementById('ftp-host').value.trim();
+      const port = document.getElementById('ftp-port').value || '21';
+      const user = document.getElementById('ftp-user').value.trim();
+      const pass = document.getElementById('ftp-pass').value;
+      if (!host) return;
+      const connections = [...cachedConnections];
+      const existsIdx = connections.findIndex(c => c.host === host && c.user === user);
+      if (existsIdx >= 0) {
+        connections[existsIdx].port = port;
+        connections[existsIdx].pass = pass;
+      } else {
+        connections.push({ host, port, user, pass, label: `${user}@${host}` });
+      }
+      await saveConnectionsToFile(connections);
+      await renderSavedConnections();
+      document.getElementById('ftp-status').textContent = 'Connection saved';
+      document.getElementById('ftp-status').style.color = '#4c4';
+    }
+
+    async function deleteSavedConnection() {
+      const select = document.getElementById('ftp-saved');
+      const idx = parseInt(select.value);
+      if (isNaN(idx)) return;
+      const connections = [...cachedConnections];
+      connections.splice(idx, 1);
+      await saveConnectionsToFile(connections);
+      await renderSavedConnections();
+      document.getElementById('ftp-delete-saved-btn').style.display = 'none';
+      document.getElementById('ftp-status').textContent = 'Connection deleted';
+      document.getElementById('ftp-status').style.color = '#888';
+    }
+
+    // Load saved connections on startup
+    renderSavedConnections();
 
     // Notes
     async function initNotes() {
