@@ -57,5 +57,15 @@ contextBridge.exposeInMainWorld('api', {
   git: {
     getBranch: (path) => ipcRenderer.invoke('git:getBranch', path),
     getStatus: (path) => ipcRenderer.invoke('git:getStatus', path)
+  },
+  cloud: {
+    login: (username, password) => ipcRenderer.invoke('cloud:login', username, password),
+    register: (username, email, password) => ipcRenderer.invoke('cloud:register', username, email, password),
+    validate: () => ipcRenderer.invoke('cloud:validate'),
+    push: (dataType, dataJson) => ipcRenderer.invoke('cloud:push', dataType, dataJson),
+    pullAll: () => ipcRenderer.invoke('cloud:pullAll'),
+    logout: () => ipcRenderer.invoke('cloud:logout'),
+    getAccount: () => ipcRenderer.invoke('cloud:getAccount'),
+    getWelcome: () => ipcRenderer.invoke('cloud:getWelcome')
   }
 });

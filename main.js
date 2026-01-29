@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const pty = require('node-pty');
+const https = require('https');
 
 let mainWindow = null;
 const terminals = new Map();
@@ -205,17 +206,14 @@ ipcMain.handle('dialog:openFile', async () => {
 ipcMain.handle('terminal:create', (_, id, shell) => {
   const defaultShell = '/bin/zsh';
 
-  const ptyProcess = pty.spawn(shell || defaultShell, ['--no-rcs'], {
+  const ptyProcess = pty.spawn(shell || defaultShell, [], {
     name: 'xterm-256color',
     cols: 80,
     rows: 24,
     cwd: app.getPath('home'),
     env: {
       ...process.env,
-      TERM: 'xterm-256color',
-      ZDOTDIR: '/tmp/dterm-empty',
-      PS1: '%~ ',
-      PROMPT: '%~ '
+      TERM: 'xterm-256color'
     }
   });
 
@@ -406,6 +404,102 @@ ipcMain.handle('tools:exec', async (_, command) => {
       resolve({ stdout: stdout || '', stderr: stderr || '', error: error ? error.message : null });
     });
   });
+});
+
+// Cloud sync
+const CLOUD_API = 'https://mynetworktools.com/dterm/api';
+const cloudAccountPath = path.join(app.getPath('userData'), 'cloud-account.json');
+
+function cloudRequest(endpoint, body) {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify(body);
+    const url = new URL(`${CLOUD_API}/${endpoint}`);
+    const options = {
+      hostname: url.hostname,
+      path: url.pathname,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(data)
+      }
+    };
+    const req = https.request(options, (res) => {
+      let body = '';
+      res.on('data', chunk => body += chunk);
+      res.on('end', () => {
+        try { resolve(JSON.parse(body)); } catch { resolve({ error: 'Invalid response' }); }
+      });
+    });
+    req.on('error', e => reject(e));
+    req.write(data);
+    req.end();
+  });
+}
+
+function loadCloudAccount() {
+  try {
+    return JSON.parse(fs.readFileSync(cloudAccountPath, 'utf-8'));
+  } catch { return null; }
+}
+
+function saveCloudAccount(account) {
+  fs.writeFileSync(cloudAccountPath, JSON.stringify(account, null, 2));
+}
+
+function clearCloudAccount() {
+  try { fs.unlinkSync(cloudAccountPath); } catch {}
+}
+
+ipcMain.handle('cloud:login', async (_, username, password) => {
+  const result = await cloudRequest('auth.php', { action: 'login', username, password });
+  if (result.success) {
+    saveCloudAccount({ token: result.token, user: result.user });
+  }
+  return result;
+});
+
+ipcMain.handle('cloud:register', async (_, username, email, password) => {
+  const result = await cloudRequest('auth.php', { action: 'register', username, email, password });
+  if (result.success) {
+    saveCloudAccount({ token: result.token, user: result.user });
+  }
+  return result;
+});
+
+ipcMain.handle('cloud:validate', async () => {
+  const account = loadCloudAccount();
+  if (!account) return { error: 'Not logged in' };
+  const result = await cloudRequest('auth.php', { action: 'validate', token: account.token });
+  return result;
+});
+
+ipcMain.handle('cloud:push', async (_, dataType, dataJson) => {
+  const account = loadCloudAccount();
+  if (!account) return { error: 'Not logged in' };
+  return cloudRequest('sync.php', { action: 'push', data_type: dataType, data_json: dataJson, token: account.token });
+});
+
+ipcMain.handle('cloud:pullAll', async () => {
+  const account = loadCloudAccount();
+  if (!account) return { error: 'Not logged in' };
+  return cloudRequest('sync.php', { action: 'pull_all', token: account.token });
+});
+
+ipcMain.handle('cloud:logout', async () => {
+  clearCloudAccount();
+  return { success: true };
+});
+
+ipcMain.handle('cloud:getAccount', async () => {
+  return loadCloudAccount();
+});
+
+ipcMain.handle('cloud:getWelcome', async () => {
+  const account = loadCloudAccount();
+  const token = account ? account.token : null;
+  try {
+    return await cloudRequest('welcome.php', { token });
+  } catch { return { error: 'Failed to fetch welcome message' }; }
 });
 
 ipcMain.handle('git:getStatus', async (_, dirPath) => {

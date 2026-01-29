@@ -1314,9 +1314,110 @@
 
     #ftp-mode-badge.visible { display: inline-block; }
 
+    /* Welcome / Cloud Account Overlay */
+    #welcome-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    #welcome-overlay.hidden { display: none; }
+    #welcome-box {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+    }
+    #welcome-box h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
+    #welcome-box .brand { color: #569cd6; font-family: 'SF Mono', Monaco, monospace; }
+    #welcome-box .welcome-msg { color: #888; font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+    #welcome-box .form-group { margin-bottom: 14px; text-align: left; }
+    #welcome-box .form-group label { display: block; font-size: 12px; color: #888; margin-bottom: 4px; }
+    #welcome-box .form-group input { width: 100%; padding: 10px 12px; background: #2d2d2d; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 14px; }
+    #welcome-box .form-group input:focus { outline: none; border-color: #569cd6; }
+    #welcome-box .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 8px; }
+    #welcome-box .btn-primary { background: #0e639c; color: #fff; }
+    #welcome-box .btn-primary:hover { background: #1177bb; }
+    #welcome-box .btn-secondary { background: #333; color: #ccc; }
+    #welcome-box .btn-secondary:hover { background: #444; }
+    #welcome-box .toggle-link { color: #569cd6; cursor: pointer; font-size: 13px; margin-top: 16px; display: inline-block; }
+    #welcome-box .error-msg { color: #f48771; font-size: 13px; margin-top: 8px; }
+    #welcome-box .skip-link { color: #666; cursor: pointer; font-size: 12px; margin-top: 16px; display: inline-block; }
+    #welcome-box .skip-link:hover { color: #888; }
+
+    /* Cloud account badge in status bar */
+    #cloud-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #569cd6;
+      cursor: pointer;
+    }
+    #cloud-badge:hover { color: #7ab8e8; }
+    #cloud-badge .sync-icon { animation: none; }
+    #cloud-badge .sync-icon.syncing { animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
   </style>
 </head>
 <body>
+  <!-- Welcome / Login Overlay -->
+  <div id="welcome-overlay" class="hidden">
+    <div id="welcome-box">
+      <h1>dTerm</h1>
+      <p class="welcome-msg" id="welcome-msg">Welcome to dTerm</p>
+      <div id="welcome-error" class="error-msg" style="display:none;"></div>
+
+      <!-- Login Form -->
+      <div id="login-form">
+        <div class="form-group">
+          <label>Username or Email</label>
+          <input type="text" id="cloud-username" placeholder="username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="cloud-password" placeholder="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')cloudLogin()">
+        </div>
+        <button class="btn btn-primary" onclick="cloudLogin()">Sign In</button>
+        <span class="toggle-link" onclick="showRegisterForm()">Create Account</span>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-form" style="display:none;">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="reg-username" placeholder="username">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="password (min 5 chars)">
+        </div>
+        <button class="btn btn-primary" onclick="cloudRegister()">Create Account</button>
+        <span class="toggle-link" onclick="showLoginForm()">Already have an account? Sign In</span>
+      </div>
+
+      <!-- Logged In View -->
+      <div id="welcome-logged-in" style="display:none;">
+        <p style="color:#4ec94e; margin-bottom:16px;">&#10003; Signed in as <strong id="welcome-username"></strong></p>
+        <button class="btn btn-primary" onclick="dismissWelcome()">Continue to dTerm</button>
+        <button class="btn btn-secondary" onclick="cloudLogout()">Sign Out</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- App Container -->
   <div id="app-container">
   <!-- Left Panel -->
@@ -1608,6 +1709,11 @@
     <span id="status-file">No file open</span>
     <span id="status-line">Ln 1, Col 1</span>
     <span style="flex:1;"></span>
+    <span id="cloud-badge" onclick="showCloudMenu()" style="display:none;" title="Cloud Account">
+      <span class="sync-icon">&#9729;</span>
+      <span id="cloud-badge-text">Not signed in</span>
+    </span>
+    <button id="cloud-sync-btn" onclick="manualSync()" style="display:none;" title="Sync Now">&#8635; Sync</button>
     <button onclick="showShortcuts()">Shortcuts</button>
     <button onclick="showSettings()">Settings</button>
   </div>
@@ -4537,9 +4643,260 @@
       }
     });
 
+    // ============ Cloud Sync ============
+    let cloudAccount = null;
+
+    function showWelcomeError(msg) {
+      const el = document.getElementById('welcome-error');
+      el.textContent = msg;
+      el.style.display = msg ? 'block' : 'none';
+    }
+
+    function showLoginForm() {
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('welcome-logged-in').style.display = 'none';
+      showWelcomeError('');
+    }
+
+    function showRegisterForm() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'block';
+      document.getElementById('welcome-logged-in').style.display = 'none';
+      showWelcomeError('');
+    }
+
+    function showLoggedInView(username) {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('welcome-logged-in').style.display = 'block';
+      document.getElementById('welcome-username').textContent = username;
+      showWelcomeError('');
+    }
+
+    function dismissWelcome() {
+      document.getElementById('welcome-overlay').classList.add('hidden');
+    }
+
+    async function cloudLogin() {
+      const username = document.getElementById('cloud-username').value.trim();
+      const password = document.getElementById('cloud-password').value;
+      if (!username || !password) { showWelcomeError('Enter username and password'); return; }
+      showWelcomeError('');
+      try {
+        const result = await window.api.cloud.login(username, password);
+        if (result.success) {
+          cloudAccount = { token: result.token, user: result.user };
+          showLoggedInView(result.user.username);
+          updateCloudBadge();
+          await pullCloudData();
+        } else {
+          showWelcomeError(result.error || 'Login failed');
+        }
+      } catch (e) { showWelcomeError('Connection error'); }
+    }
+
+    async function cloudRegister() {
+      const username = document.getElementById('reg-username').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      if (!username || !email || !password) { showWelcomeError('All fields are required'); return; }
+      showWelcomeError('');
+      try {
+        const result = await window.api.cloud.register(username, email, password);
+        if (result.success) {
+          cloudAccount = { token: result.token, user: result.user };
+          showLoggedInView(result.user.username);
+          updateCloudBadge();
+        } else {
+          showWelcomeError(result.error || 'Registration failed');
+        }
+      } catch (e) { showWelcomeError('Connection error'); }
+    }
+
+    async function cloudLogout() {
+      await window.api.cloud.logout();
+      cloudAccount = null;
+      updateCloudBadge();
+      showLoginForm();
+    }
+
+    function updateCloudBadge() {
+      const badge = document.getElementById('cloud-badge');
+      const text = document.getElementById('cloud-badge-text');
+      const syncBtn = document.getElementById('cloud-sync-btn');
+      badge.style.display = 'flex';
+      if (cloudAccount && cloudAccount.user) {
+        text.textContent = cloudAccount.user.username;
+        syncBtn.style.display = '';
+        startAutoSync();
+      } else {
+        text.textContent = 'Not signed in';
+        syncBtn.style.display = 'none';
+        stopAutoSync();
+      }
+    }
+
+    function showCloudMenu() {
+      if (cloudAccount && cloudAccount.user) {
+        if (confirm('Sign out of cloud account?')) {
+          cloudLogout();
+        }
+      } else {
+        document.getElementById('welcome-overlay').classList.remove('hidden');
+        showLoginForm();
+      }
+    }
+
+    async function pullCloudData() {
+      if (!cloudAccount) return;
+      try {
+        const result = await window.api.cloud.pullAll();
+        if (result.success && result.data) {
+          if (result.data.settings && result.data.settings.data_json) {
+            localStorage.setItem('dterm-settings', result.data.settings.data_json);
+            loadSettings();
+          }
+          if (result.data.bookmarks && result.data.bookmarks.data_json) {
+            localStorage.setItem('dterm-bookmarks', result.data.bookmarks.data_json);
+            loadBookmarks();
+          }
+          if (result.data.recent_folders && result.data.recent_folders.data_json) {
+            localStorage.setItem('dterm-recent-folders', result.data.recent_folders.data_json);
+          }
+          if (result.data.recent_files && result.data.recent_files.data_json) {
+            localStorage.setItem('dterm-recent-files', result.data.recent_files.data_json);
+          }
+          if (result.data.notes && result.data.notes.data_json) {
+            await window.api.notes.save(JSON.parse(result.data.notes.data_json));
+            initNotes();
+          }
+          if (result.data.ftp_connections && result.data.ftp_connections.data_json) {
+            await window.api.ftpConnections.save(JSON.parse(result.data.ftp_connections.data_json));
+          }
+        }
+      } catch (e) { console.error('Pull failed:', e); }
+    }
+
+    async function pushCloudData() {
+      if (!cloudAccount) return;
+      const syncIcon = document.querySelector('#cloud-badge .sync-icon');
+      if (syncIcon) syncIcon.classList.add('syncing');
+      try {
+        // Push localStorage items
+        const settings = localStorage.getItem('dterm-settings');
+        if (settings) await window.api.cloud.push('settings', settings);
+
+        const bookmarks = localStorage.getItem('dterm-bookmarks');
+        if (bookmarks) await window.api.cloud.push('bookmarks', bookmarks);
+
+        const recentFolders = localStorage.getItem('dterm-recent-folders');
+        if (recentFolders) await window.api.cloud.push('recent_folders', recentFolders);
+
+        const recentFiles = localStorage.getItem('dterm-recent-files');
+        if (recentFiles) await window.api.cloud.push('recent_files', recentFiles);
+
+        // Push file-based items
+        const notes = await window.api.notes.load();
+        await window.api.cloud.push('notes', JSON.stringify(notes));
+
+        const ftpConns = await window.api.ftpConnections.load();
+        await window.api.cloud.push('ftp_connections', JSON.stringify(ftpConns));
+      } catch (e) { console.error('Push failed:', e); }
+      if (syncIcon) syncIcon.classList.remove('syncing');
+    }
+
+    async function checkCloudAccount() {
+      try {
+        const account = await window.api.cloud.getAccount();
+        if (account && account.token) {
+          const validation = await window.api.cloud.validate();
+          if (validation.success) {
+            cloudAccount = account;
+            updateCloudBadge();
+            await pullCloudData();
+            return true;
+          }
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    async function showWelcomeScreen() {
+      try {
+        const welcome = await window.api.cloud.getWelcome();
+        if (welcome.welcome_enabled && welcome.welcome_message) {
+          document.getElementById('welcome-msg').textContent = welcome.welcome_message;
+        }
+        if (welcome.logged_in && welcome.user) {
+          cloudAccount = { user: welcome.user };
+          // Reload full account from local
+          const localAccount = await window.api.cloud.getAccount();
+          if (localAccount) cloudAccount = localAccount;
+          showLoggedInView(welcome.user.username);
+          updateCloudBadge();
+        } else {
+          const hasAccount = await checkCloudAccount();
+          if (hasAccount) {
+            showLoggedInView(cloudAccount.user.username);
+          } else {
+            showLoginForm();
+          }
+        }
+        if (welcome.welcome_enabled) {
+          document.getElementById('welcome-overlay').classList.remove('hidden');
+        } else {
+          // Still check and pull in background
+          await checkCloudAccount();
+        }
+      } catch (e) {
+        // If server unreachable, check local account silently
+        await checkCloudAccount();
+      }
+      updateCloudBadge();
+    }
+
+    // Manual sync button
+    async function manualSync() {
+      if (!cloudAccount) return;
+      const btn = document.getElementById('cloud-sync-btn');
+      btn.disabled = true;
+      btn.textContent = '⟳ Syncing...';
+      try {
+        await pushCloudData();
+        await pullCloudData();
+        btn.textContent = '⟳ Synced!';
+        setTimeout(() => { btn.textContent = '⟳ Sync'; }, 2000);
+      } catch (e) {
+        btn.textContent = '⟳ Failed';
+        setTimeout(() => { btn.textContent = '⟳ Sync'; }, 2000);
+      }
+      btn.disabled = false;
+    }
+
+    // Auto-sync every 5 minutes
+    let cloudSyncInterval = null;
+    function startAutoSync() {
+      stopAutoSync();
+      cloudSyncInterval = setInterval(() => {
+        if (cloudAccount) pushCloudData();
+      }, 10 * 1000);
+    }
+    function stopAutoSync() {
+      if (cloudSyncInterval) { clearInterval(cloudSyncInterval); cloudSyncInterval = null; }
+    }
+
+    // Auto-push on window close
+    window.addEventListener('beforeunload', () => {
+      if (cloudAccount) {
+        pushCloudData();
+      }
+    });
+
     // Start
     init();
     initNotes();
+    showWelcomeScreen();
   </script>
 </body>
 </html>
