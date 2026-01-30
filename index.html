@@ -31,15 +31,347 @@
 
     /* Left Panel */
     #left-panel {
-      width: 400px;
+      width: 350px;
       min-width: 200px;
-      max-width: 500px;
+      max-width: 600px;
       background: #0a0a0a;
       border-right: 1px solid #222;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       flex-shrink: 0;
       overflow: hidden;
+    }
+
+    /* Activity Bar */
+    #activity-bar {
+      width: 48px;
+      min-width: 48px;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0;
+      gap: 2px;
+      flex-shrink: 0;
+      border-right: 1px solid #222;
+    }
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 6px;
+      color: #666;
+      border: none;
+      background: none;
+      position: relative;
+      transition: color 0.15s, background 0.15s;
+    }
+    .activity-icon:hover { color: #ccc; background: #1a1a1a; }
+    .activity-icon.active {
+      color: #fff;
+      background: none;
+    }
+    .activity-icon.active::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: #0066cc;
+      border-radius: 1px;
+    }
+    .activity-separator {
+      width: 28px;
+      height: 1px;
+      background: #333;
+      margin: 4px 0;
+      flex-shrink: 0;
+    }
+    .activity-spacer {
+      flex: 1;
+    }
+
+    /* Left Panel Content */
+    #left-panel-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .left-tab-content {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    .left-tab-content.active {
+      display: flex;
+    }
+    .left-tab-header {
+      padding: 8px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #222;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Git Panel */
+    #git-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    #git-commit-area {
+      padding: 8px;
+      border-bottom: 1px solid #222;
+    }
+    .git-file-item {
+      padding: 3px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .git-file-item:hover { background: #1a1a1a; }
+    .git-status-m { color: #e2b93d; }
+    .git-status-a { color: #4ec94e; }
+    .git-status-d { color: #f44; }
+    .git-status-u { color: #888; }
+
+    /* Search Panel */
+    #search-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    .search-result-file {
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #ccc;
+      cursor: pointer;
+    }
+    .search-result-file:hover { background: #1a1a1a; }
+    .search-result-line {
+      padding: 2px 8px 2px 20px;
+      font-size: 11px;
+      color: #888;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .search-result-line:hover { background: #1a1a1a; color: #ccc; }
+    .search-result-match { color: #e2b93d; font-weight: 600; }
+
+    /* Code Runner Panel */
+    #runner-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 0;
+    }
+    .runner-section {
+      padding: 8px 10px 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #222;
+    }
+    .runner-run-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: calc(100% - 16px);
+      margin: 8px;
+      padding: 10px 12px;
+      background: #0e639c;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      cursor: pointer;
+      text-align: left;
+    }
+    .runner-run-btn:hover { background: #1177bb; }
+    .runner-run-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+    .runner-file-info {
+      padding: 0 20px 8px;
+      font-size: 11px;
+      color: #666;
+    }
+    .runner-task-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #ccc;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .runner-task-item:hover { background: #1a1a1a; }
+    .runner-task-play { color: #4ec94e; font-size: 10px; flex-shrink: 0; }
+    .runner-task-name { flex: 1; }
+    .runner-task-detail { color: #555; font-size: 10px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .runner-custom {
+      padding: 8px;
+      display: flex;
+      gap: 6px;
+    }
+    .runner-custom input {
+      flex: 1;
+      padding: 6px 8px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #ccc;
+      font-size: 12px;
+      outline: none;
+      font-family: 'SF Mono', Monaco, monospace;
+    }
+    .runner-custom input:focus { border-color: #0066cc; }
+    .runner-custom button {
+      padding: 6px 12px;
+      background: #0e639c;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .runner-custom button:hover { background: #1177bb; }
+    .runner-task-category {
+      font-size: 10px;
+      color: #666;
+      text-transform: uppercase;
+      padding: 8px 10px 2px;
+      letter-spacing: 0.5px;
+    }
+    .runner-empty {
+      padding: 12px;
+      color: #555;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    /* Breadcrumb Path */
+    .breadcrumb { display: flex; align-items: center; flex: 1; overflow: hidden; flex-wrap: nowrap; }
+    .breadcrumb-segment { color: #999; cursor: pointer; white-space: nowrap; }
+    .breadcrumb-segment:hover { color: #0066cc; text-decoration: underline; }
+    .breadcrumb-sep { color: #444; margin: 0 2px; white-space: nowrap; }
+    .breadcrumb-segment:last-child { color: #ccc; }
+
+    /* File Icons in Editor Tabs */
+    .tab-icon { margin-right: 4px; font-size: 11px; font-weight: bold; display: inline-block; min-width: 14px; text-align: center; }
+
+    /* Markdown Preview */
+    #md-preview-container {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      background: #0a0a0a;
+      color: #ccc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    #md-preview-container.visible { display: block; }
+    #md-preview-container h1 { font-size: 24px; color: #e6e6e6; border-bottom: 1px solid #333; padding-bottom: 8px; margin: 16px 0 8px; }
+    #md-preview-container h2 { font-size: 20px; color: #e6e6e6; border-bottom: 1px solid #222; padding-bottom: 6px; margin: 14px 0 6px; }
+    #md-preview-container h3 { font-size: 16px; color: #e6e6e6; margin: 12px 0 4px; }
+    #md-preview-container h4,#md-preview-container h5,#md-preview-container h6 { font-size: 14px; color: #ccc; margin: 10px 0 4px; }
+    #md-preview-container code { background: #1a1a1a; padding: 2px 6px; border-radius: 3px; font-family: Menlo, Monaco, monospace; font-size: 13px; }
+    #md-preview-container pre { background: #111; padding: 12px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
+    #md-preview-container pre code { background: none; padding: 0; }
+    #md-preview-container blockquote { border-left: 3px solid #444; padding-left: 12px; color: #888; margin: 8px 0; }
+    #md-preview-container a { color: #58a6ff; text-decoration: none; }
+    #md-preview-container a:hover { text-decoration: underline; }
+    #md-preview-container img { max-width: 100%; border-radius: 6px; }
+    #md-preview-container table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    #md-preview-container th, #md-preview-container td { border: 1px solid #333; padding: 6px 10px; text-align: left; }
+    #md-preview-container th { background: #1a1a1a; }
+    #md-preview-container ul, #md-preview-container ol { padding-left: 24px; }
+    #md-preview-container li { margin: 4px 0; }
+    #md-preview-container hr { border: none; border-top: 1px solid #333; margin: 16px 0; }
+    #md-preview-toggle { background: none; border: 1px solid #333; color: #888; font-size: 11px; padding: 2px 8px; border-radius: 3px; cursor: pointer; margin-left: auto; margin-right: 6px; white-space: nowrap; }
+    #md-preview-toggle:hover { color: #ccc; border-color: #555; }
+    #md-preview-toggle.active { color: #4ec94e; border-color: #4ec94e; }
+
+    /* Image Preview Tooltip */
+    .file-preview-tooltip {
+      position: fixed;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 4px;
+      z-index: 9999;
+      pointer-events: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .file-preview-tooltip img { max-width: 200px; max-height: 200px; display: block; border-radius: 4px; }
+
+    /* Status Bar */
+    #status-bar {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      background: #1a1a1a;
+      border-top: 1px solid #222;
+      font-size: 11px;
+      color: #888;
+      padding: 0 10px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .status-item {
+      padding: 0 8px;
+      white-space: nowrap;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+    }
+    .status-item.clickable { cursor: pointer; }
+    .status-item.clickable:hover { background: #2a2a2a; color: #ccc; }
+    .status-spacer { flex: 1; }
+
+    /* Left Terminal */
+    #left-terminal-area {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    #left-terminal-container {
+      flex: 1;
+      position: relative;
+      background: #000;
+      min-height: 0;
     }
 
     /* Panel Resizers */
@@ -51,9 +383,67 @@
     }
     .panel-resizer:hover { background: #0066cc; }
 
+    /* Panel Collapse Toggles */
+    .panel-toggle {
+      width: 16px;
+      background: #111;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #555;
+      font-size: 10px;
+      padding: 0;
+      transition: background 0.15s, color 0.15s;
+      user-select: none;
+    }
+    .panel-toggle:hover {
+      background: #1a1a1a;
+      color: #ccc;
+    }
+    .panel-toggle .toggle-icon {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    /* Collapsed panel states */
+    #left-panel.collapsed {
+      width: 48px !important;
+      min-width: 48px !important;
+      overflow: hidden;
+    }
+    #left-panel.collapsed #left-panel-content {
+      display: none;
+    }
+    /* Right panel removed — single sidebar layout */
+
+    /* Resize ghost preview */
+    #resize-ghost {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #0066cc;
+      z-index: 9999;
+      pointer-events: none;
+      display: none;
+    }
+    #resize-ghost.visible { display: block; }
+
+    .activity-icon.dragging { opacity: 0.4; }
+
+    /* Smooth transitions for collapse/expand */
+    #left-panel {
+      transition: width 0.2s ease, min-width 0.2s ease;
+    }
+
     /* File Manager */
     #file-manager {
-      flex: 3;
+      flex: 1;
       background: #0a0a0a;
       display: flex;
       flex-direction: column;
@@ -64,9 +454,7 @@
     /* Mini Browser */
     #mini-browser {
       flex: 1;
-      min-height: 450px;
       background: #0a0a0a;
-      border-top: 1px solid #222;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -168,15 +556,6 @@
     #file-list-loading.visible {
       display: block;
     }
-
-    /* Left panel resizer between file manager and mini browser */
-    #left-panel-resizer {
-      height: 4px;
-      background: #222;
-      cursor: ns-resize;
-      flex-shrink: 0;
-    }
-    #left-panel-resizer:hover { background: #0066cc; }
 
     #fm-toolbar {
       padding: 6px;
@@ -433,7 +812,7 @@
     #editor-area.visible {
       display: flex;
       flex: 1;
-      min-height: 0;
+      min-height: 120px;
     }
 
     #editor-tabs {
@@ -461,8 +840,8 @@
     }
 
     #terminal-area.with-editor {
-      flex: none;
-      height: 250px;
+      flex: 2;
+      min-height: 150px;
       border-top: 1px solid #222;
     }
 
@@ -485,6 +864,7 @@
     }
 
     .tab.active { background: #000000; }
+    .tab-label { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .tab:hover:not(.active) { background: #1a1a1a; }
     .tab.modified span:first-child::before { content: '● '; color: #0af; }
 
@@ -567,6 +947,42 @@
       background: #000000;
       min-height: 0;
       overflow: hidden;
+      display: flex;
+    }
+
+    /* Split Pane System */
+    .split-pane {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .split-pane.vertical { flex-direction: row; }
+    .split-pane.horizontal { flex-direction: column; }
+    .split-divider-v {
+      width: 4px;
+      background: #222;
+      cursor: col-resize;
+      flex-shrink: 0;
+    }
+    .split-divider-h {
+      height: 4px;
+      background: #222;
+      cursor: row-resize;
+      flex-shrink: 0;
+    }
+    .split-divider-v:hover, .split-divider-h:hover { background: #0066cc; }
+    .pane-container {
+      flex: 1;
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .pane-container.active-pane {
+      outline: 1px solid #0066cc33;
+      outline-offset: -1px;
     }
 
     #terminal-container.drag-over {
@@ -574,57 +990,7 @@
       outline-offset: -2px;
     }
 
-    /* Right Panel */
-    #right-panel {
-      width: 400px;
-      min-width: 300px;
-      max-width: 700px;
-      background: #0a0a0a;
-      border-left: 1px solid #222;
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-
-    #right-panel-header {
-      padding: 8px;
-      background: #0a0a0a;
-      border-bottom: 1px solid #222;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
-    #right-panel-tabs {
-      display: flex;
-      gap: 4px;
-    }
-
-    .right-tab {
-      padding: 5px 12px;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 4px;
-      color: #888;
-      cursor: pointer;
-      font-size: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    .right-tab:hover {
-      background: #2a2a2a;
-      color: #ccc;
-    }
-
-    .right-tab.active {
-      background: #0066cc;
-      border-color: #0066cc;
-      color: #fff;
-    }
-
+    /* AI Select (in left panel header) */
     #ai-select {
       background: #1a1a1a;
       color: #ccc;
@@ -635,10 +1001,7 @@
       cursor: pointer;
       outline: none;
     }
-
-    #ai-select:hover {
-      background: #2a2a2a;
-    }
+    #ai-select:hover { background: #2a2a2a; }
 
     #ai-frame {
       flex: 1;
@@ -649,30 +1012,21 @@
       min-height: 0;
     }
 
-    /* Right Panel Notes */
-    #right-notes-panel {
+    /* Notes Panel (Monaco editor) */
+    #notes-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-height: 0;
       overflow: hidden;
     }
-
-    #notes-area {
+    #notes-editor-container {
       flex: 1;
-      background: #000;
-      color: #ccc;
-      border: none;
-      outline: none;
-      resize: none;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 13px;
-      padding: 12px;
-      line-height: 1.5;
+      min-height: 0;
     }
 
-    /* Right Panel Tools */
-    #right-tools-panel {
+    /* Tools Panel (now in left sidebar) */
+    #tools-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -889,10 +1243,15 @@
     .tool-status.warn { color: #cc4; }
     .tool-status.fail { color: #f55; }
 
-    /* FTP Bar (bottom of right panel, always visible) */
+    /* FTP Panel (now in left sidebar) */
+    #ftp-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
     #ftp-bar {
       background: #0a0a0a;
-      border-top: 1px solid #222;
       padding: 12px;
       flex-shrink: 0;
     }
@@ -985,8 +1344,9 @@
       inset: 0;
       display: none;
     }
-
     .terminal-panel.active { display: block; }
+    /* When inside a split pane, always show */
+    .pane-container .terminal-panel { display: block; }
 
     /* Context Menu */
     #context-menu {
@@ -1277,29 +1637,50 @@
     }
 
     /* Status Bar */
-    #status-bar {
-      height: 24px;
-      background: #0a0a0a;
-      border-top: 1px solid #222;
+    /* Title Bar */
+    #title-bar {
+      height: 38px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #222;
       display: flex;
       align-items: center;
-      padding: 0 10px;
+      padding: 0 12px 0 80px; /* 80px left padding for macOS traffic lights */
       font-size: 11px;
-      color: #666;
-      gap: 16px;
+      color: #888;
+      gap: 8px;
       flex-shrink: 0;
+      -webkit-app-region: drag;
+      user-select: none;
     }
-
-    #status-bar button {
+    #title-bar button, #title-bar select, #title-bar span[onclick] {
+      -webkit-app-region: no-drag;
+    }
+    .title-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .title-left { justify-content: flex-start; }
+    .title-center {
+      flex: 1;
+      text-align: center;
+      color: #555;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .title-right {
+      justify-content: flex-end;
+    }
+    #title-bar button {
       background: none;
       border: none;
-      color: #666;
+      color: #888;
       cursor: pointer;
       font-size: 11px;
-      padding: 2px 6px;
+      padding: 3px 8px;
+      border-radius: 4px;
     }
-
-    #status-bar button:hover { color: #ccc; }
+    #title-bar button:hover { background: #2a2a2a; color: #ccc; }
 
     /* FTP mode indicator */
     #ftp-mode-badge {
@@ -1418,53 +1799,312 @@
     </div>
   </div>
 
+  <!-- Resize Ghost -->
+  <div id="resize-ghost"></div>
+
+  <!-- Title Bar -->
+  <div id="title-bar">
+    <div class="title-section title-left">
+      <span id="ftp-mode-badge">FTP</span>
+      <span id="status-file">No file open</span>
+      <span id="status-line" style="color:#555;">Ln 1, Col 1</span>
+    </div>
+    <div class="title-center">dTerm</div>
+    <div class="title-section title-right">
+      <span id="cloud-badge" onclick="showCloudMenu()" style="display:none;" title="Cloud Account">
+        <span class="sync-icon">&#9729;</span>
+        <span id="cloud-badge-text">Not signed in</span>
+      </span>
+      <button id="cloud-sync-btn" onclick="manualSync()" style="display:none;" title="Sync Now">&#8635; Sync</button>
+      <span id="session-sync-time" style="color:#555;font-size:11px;" title="Last session save"></span>
+      <button onclick="showShortcuts()">Shortcuts</button>
+      <button onclick="showSettings()">Settings</button>
+    </div>
+  </div>
+
   <!-- App Container -->
   <div id="app-container">
   <!-- Left Panel -->
   <div id="left-panel">
-    <!-- File Manager -->
-    <div id="file-manager">
-      <div id="fm-toolbar">
-        <button onclick="goHome()">Home</button>
-        <button onclick="goUp()">Up</button>
-        <button onclick="openFolder()">Open</button>
-        <button onclick="refresh()">Refresh</button>
-        <button id="hidden-toggle" onclick="toggleHidden()">Hidden</button>
-        <button onclick="showRecentMenu(event)">Recent ▾</button>
-        <input type="text" id="fm-search" placeholder="Search..." oninput="filterFiles()">
-      </div>
-      <div id="recent-menu"></div>
-      <div id="fm-path"><span>Loading...</span><div id="git-branch"><span class="branch-icon">⎇</span><span id="git-branch-name"></span></div><button onclick="toggleBookmark()" title="Bookmark this folder">☆</button></div>
-      <div id="bookmarks-bar"></div>
-      <div id="file-list"></div>
-      <div id="fm-bottom-toolbar">
-        <button onclick="newFile()">+ File</button>
-        <button onclick="newFolder()">+ Folder</button>
-      </div>
+    <!-- Activity Bar -->
+    <div id="activity-bar">
+      <button class="activity-icon active" data-panel="files" onclick="showLeftTab('files')" title="Explorer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="browser" onclick="showLeftTab('browser')" title="Browser">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="git" onclick="showLeftTab('git')" title="Source Control">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 009 9"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="search" onclick="showLeftTab('search')" title="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="terminal" onclick="showLeftTab('terminal')" title="Terminal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      </button>
+      <div class="activity-separator"></div>
+      <button class="activity-icon" data-panel="runner" onclick="showLeftTab('runner')" title="Code Runner">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="notes" onclick="showLeftTab('notes')" title="Notes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="snippets" onclick="showLeftTab('snippets')" title="Snippets">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="processes" onclick="showLeftTab('processes')" title="Processes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="tools" onclick="showLeftTab('tools')" title="Tools">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      </button>
+      <button class="activity-icon" data-panel="ai" onclick="showLeftTab('ai')" title="AI Chat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </button>
+      <div class="activity-spacer"></div>
+      <button class="activity-icon" data-panel="ftp" onclick="showLeftTab('ftp')" title="FTP">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+      </button>
     </div>
 
-    <!-- Left Panel Resizer -->
-    <div id="left-panel-resizer"></div>
-
-    <!-- Mini Browser -->
-    <div id="mini-browser">
-      <div id="mini-browser-toolbar">
-        <button onclick="miniBrowserBack()">←</button>
-        <button onclick="miniBrowserForward()">→</button>
-        <button onclick="miniBrowserRefresh()">↻</button>
-        <button onclick="miniBrowserHome()">⌂</button>
-        <input type="text" id="mini-browser-url" placeholder="Enter URL..." value="" onkeydown="if(event.key==='Enter')miniBrowserGo()">
-        <button onclick="miniBrowserGo()">Go</button>
+    <!-- Left Panel Content -->
+    <div id="left-panel-content">
+      <!-- Files Tab -->
+      <div id="left-tab-files" class="left-tab-content active">
+        <div id="file-manager">
+          <div id="fm-toolbar">
+            <button onclick="goHome()">Home</button>
+            <button onclick="goUp()">Up</button>
+            <button onclick="openFolder()">Open</button>
+            <button onclick="refresh()">Refresh</button>
+            <button id="hidden-toggle" onclick="toggleHidden()">Hidden</button>
+            <button onclick="showRecentMenu(event)">Recent ▾</button>
+            <input type="text" id="fm-search" placeholder="Search..." oninput="filterFiles()">
+          </div>
+          <div id="recent-menu"></div>
+          <div id="fm-path"><span>Loading...</span><div id="git-branch"><span class="branch-icon">⎇</span><span id="git-branch-name"></span></div><button onclick="toggleBookmark()" title="Bookmark this folder">☆</button></div>
+          <div id="bookmarks-bar"></div>
+          <div id="file-list"></div>
+          <div id="fm-bottom-toolbar">
+            <button onclick="newFile()">+ File</button>
+            <button onclick="newFolder()">+ Folder</button>
+          </div>
+        </div>
       </div>
-      <div id="mini-browser-content">
-        <div id="mini-browser-loading"><span class="loading-spinner"></span>Loading...</div>
-        <webview id="mini-browser-frame" allowpopups></webview>
+
+      <!-- Browser Tab -->
+      <div id="left-tab-browser" class="left-tab-content">
+        <div id="mini-browser">
+          <div id="mini-browser-toolbar">
+            <button onclick="miniBrowserBack()">←</button>
+            <button onclick="miniBrowserForward()">→</button>
+            <button onclick="miniBrowserRefresh()">↻</button>
+            <button onclick="miniBrowserHome()">⌂</button>
+            <input type="text" id="mini-browser-url" placeholder="Enter URL..." value="" onkeydown="if(event.key==='Enter')miniBrowserGo()">
+            <button onclick="miniBrowserGo()">Go</button>
+          </div>
+          <div id="mini-browser-content">
+            <div id="mini-browser-loading"><span class="loading-spinner"></span>Loading...</div>
+            <webview id="mini-browser-frame" allowpopups></webview>
+          </div>
+        </div>
+      </div>
+
+      <!-- Git Tab -->
+      <div id="left-tab-git" class="left-tab-content">
+        <div id="git-panel">
+          <div class="left-tab-header">Source Control</div>
+          <div id="git-commit-area">
+            <input type="text" id="git-commit-msg" placeholder="Commit message..." style="width:100%;padding:6px 8px;background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;margin-bottom:6px;">
+            <div style="display:flex;gap:4px;">
+              <button onclick="gitCommitAll()" style="flex:1;padding:4px 8px;background:#0e639c;border:none;border-radius:4px;color:#fff;cursor:pointer;font-size:11px;">Commit All</button>
+              <button onclick="gitPush()" style="padding:4px 8px;background:#333;border:none;border-radius:4px;color:#ccc;cursor:pointer;font-size:11px;">Push</button>
+              <button onclick="gitPull()" style="padding:4px 8px;background:#333;border:none;border-radius:4px;color:#ccc;cursor:pointer;font-size:11px;">Pull</button>
+            </div>
+          </div>
+          <div class="left-tab-header" style="margin-top:8px;font-size:11px;color:#888;">Changes <button onclick="loadGitStatus()" style="background:none;border:none;color:#888;cursor:pointer;font-size:11px;">↻</button></div>
+          <div id="git-changes-list" style="flex:1;overflow-y:auto;padding:4px 8px;font-size:12px;font-family:monospace;"></div>
+        </div>
+      </div>
+
+      <!-- Search Tab -->
+      <div id="left-tab-search" class="left-tab-content">
+        <div id="search-panel">
+          <div class="left-tab-header">Search Files</div>
+          <div style="padding:0 8px 8px;">
+            <input type="text" id="global-search-input" placeholder="Search in files..." style="width:100%;padding:6px 8px;background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;margin-bottom:6px;" onkeydown="if(event.key==='Enter')globalSearch()">
+            <div style="display:flex;gap:8px;font-size:11px;color:#888;margin-bottom:6px;">
+              <label><input type="checkbox" id="search-regex"> Regex</label>
+              <label><input type="checkbox" id="search-case"> Case sensitive</label>
+            </div>
+            <button onclick="globalSearch()" style="width:100%;padding:4px 8px;background:#0e639c;border:none;border-radius:4px;color:#fff;cursor:pointer;font-size:11px;">Search</button>
+          </div>
+          <div id="search-results" style="flex:1;overflow-y:auto;padding:4px 8px;font-size:12px;"></div>
+        </div>
+      </div>
+
+      <!-- Terminal Tab -->
+      <div id="left-tab-terminal" class="left-tab-content">
+        <div id="left-terminal-area">
+          <div class="left-tab-header">Terminal <button onclick="createLeftTerminal()" style="background:none;border:none;color:#888;cursor:pointer;font-size:13px;">+</button></div>
+          <div id="left-terminal-container"></div>
+        </div>
+      </div>
+
+      <!-- Code Runner Tab -->
+      <div id="left-tab-runner" class="left-tab-content">
+        <div id="runner-panel">
+          <div class="left-tab-header">Code Runner <button onclick="refreshRunner()" style="background:none;border:none;color:#888;cursor:pointer;font-size:11px;">↻</button></div>
+          <button class="runner-run-btn" id="runner-run-file-btn" onclick="runCurrentFile()" disabled>
+            <span style="color:#4ec94e;">▶</span> Run Current File
+          </button>
+          <div class="runner-file-info" id="runner-file-info">No file open in editor</div>
+          <div class="runner-section">Project Tasks</div>
+          <div id="runner-tasks-list"><div class="runner-empty">Open a project folder to detect tasks</div></div>
+          <div class="runner-section">Quick Run</div>
+          <div class="runner-custom">
+            <input type="text" id="runner-custom-cmd" placeholder="e.g. npm start" onkeydown="if(event.key==='Enter')runCustomCommand()">
+            <button onclick="runCustomCommand()">Run</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes Tab -->
+      <div id="left-tab-notes" class="left-tab-content">
+        <div id="notes-panel">
+          <div class="left-tab-header">Notes</div>
+          <div id="notes-editor-container" style="flex:1;min-height:0;"></div>
+        </div>
+      </div>
+
+      <!-- Snippets Tab -->
+      <div id="left-tab-snippets" class="left-tab-content">
+        <div style="display:flex;flex-direction:column;height:100%;">
+          <div class="left-tab-header">Snippets <button onclick="createSnippet()" style="background:none;border:none;color:#0066cc;cursor:pointer;font-size:11px;">+ New</button></div>
+          <div id="snippets-list" style="flex:1;overflow-y:auto;padding:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Processes Tab -->
+      <div id="left-tab-processes" class="left-tab-content">
+        <div style="display:flex;flex-direction:column;height:100%;">
+          <div class="left-tab-header">Processes <button onclick="refreshProcesses()" style="background:none;border:none;color:#888;cursor:pointer;font-size:11px;">↻</button></div>
+          <div style="padding:4px 8px;">
+            <input type="text" id="process-search" placeholder="Search processes..." style="width:100%;padding:4px 8px;background:#111;border:1px solid #333;border-radius:3px;color:#ccc;font-size:11px;" oninput="filterProcessList()">
+          </div>
+          <div class="runner-section">Listening Ports</div>
+          <div id="ports-list" style="overflow-y:auto;max-height:200px;padding:4px;"></div>
+          <div class="runner-section">Processes</div>
+          <div id="process-list" style="flex:1;overflow-y:auto;padding:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Tools Tab -->
+      <div id="left-tab-tools" class="left-tab-content">
+        <div id="tools-panel">
+          <div id="tools-list">
+            <div class="tools-category">Network</div>
+            <button class="tool-btn" onclick="openTool('ping')">Ping</button>
+            <button class="tool-btn" onclick="openTool('traceroute')">Traceroute</button>
+            <button class="tool-btn" onclick="openTool('dns-lookup')">DNS Lookup</button>
+            <button class="tool-btn" onclick="openTool('reverse-dns')">Reverse DNS</button>
+            <button class="tool-btn" onclick="openTool('port-scanner')">Port Scanner</button>
+            <button class="tool-btn" onclick="openTool('ip-info')">IP Info</button>
+            <button class="tool-btn" onclick="openTool('whois')">Whois</button>
+            <button class="tool-btn" onclick="openTool('mac-lookup')">MAC Lookup</button>
+            <button class="tool-btn" onclick="openTool('subnet-calc')">Subnet Calculator</button>
+            <button class="tool-btn" onclick="openTool('ping-monitor')">Ping Monitor</button>
+            <button class="tool-btn" onclick="openTool('uptime-monitor')">Uptime Monitor</button>
+            <button class="tool-btn" onclick="openTool('blacklist-check')">Blacklist Check</button>
+            <div class="tools-category">SSL / Security</div>
+            <button class="tool-btn" onclick="openTool('ssl-checker')">SSL Checker</button>
+            <button class="tool-btn" onclick="openTool('ssl-expiry')">SSL Expiry</button>
+            <button class="tool-btn" onclick="openTool('security-headers')">Security Headers</button>
+            <button class="tool-btn" onclick="openTool('password-generator')">Password Generator</button>
+            <button class="tool-btn" onclick="openTool('password-checker')">Password Checker</button>
+            <button class="tool-btn" onclick="openTool('hash-generator')">Hash Generator</button>
+            <div class="tools-category">Web / SEO</div>
+            <button class="tool-btn" onclick="openTool('seo-analyzer')">SEO Analyzer</button>
+            <button class="tool-btn" onclick="openTool('page-speed')">Page Speed</button>
+            <button class="tool-btn" onclick="openTool('broken-links')">Broken Links</button>
+            <button class="tool-btn" onclick="openTool('http-headers')">HTTP Headers</button>
+            <button class="tool-btn" onclick="openTool('open-graph')">Open Graph</button>
+            <button class="tool-btn" onclick="openTool('meta-tags')">Meta Tags</button>
+            <button class="tool-btn" onclick="openTool('robots-txt')">Robots.txt</button>
+            <button class="tool-btn" onclick="openTool('sitemap-generator')">Sitemap Generator</button>
+            <button class="tool-btn" onclick="openTool('domain-expiry')">Domain Expiry</button>
+            <div class="tools-category">Developer</div>
+            <button class="tool-btn" onclick="openTool('api-tester')">API Tester</button>
+            <button class="tool-btn" onclick="openTool('json-formatter')">JSON Formatter</button>
+            <button class="tool-btn" onclick="openTool('code-beautifier')">Code Beautifier</button>
+            <button class="tool-btn" onclick="openTool('regex-tester')">Regex Tester</button>
+            <button class="tool-btn" onclick="openTool('base64')">Base64</button>
+            <button class="tool-btn" onclick="openTool('jwt-decoder')">JWT Decoder</button>
+            <button class="tool-btn" onclick="openTool('cron-parser')">Cron Parser</button>
+            <button class="tool-btn" onclick="openTool('uuid-generator')">UUID Generator</button>
+            <button class="tool-btn" onclick="openTool('timestamp-converter')">Timestamp Converter</button>
+            <div class="tools-category">System</div>
+            <button class="tool-btn" onclick="openTool('env-viewer')">Environment Variables</button>
+            <div class="tools-category">Utilities</div>
+            <button class="tool-btn" onclick="openTool('markdown-preview')">Markdown Preview</button>
+            <button class="tool-btn" onclick="openTool('lorem-ipsum')">Lorem Ipsum</button>
+            <button class="tool-btn" onclick="openTool('qr-generator')">QR Generator</button>
+            <button class="tool-btn" onclick="openTool('color-picker')">Color Picker</button>
+          </div>
+        </div>
+        <div id="tools-content" style="display:none;"></div>
+      </div>
+
+      <!-- AI Tab -->
+      <div id="left-tab-ai" class="left-tab-content">
+        <div class="left-tab-header">
+          AI Chat
+          <select id="ai-select" onchange="switchAI()">
+            <option value="https://chatgpt.com">ChatGPT</option>
+            <option value="https://copilot.microsoft.com">Copilot</option>
+            <option value="https://claude.ai">Claude</option>
+            <option value="https://gemini.google.com">Gemini</option>
+            <option value="https://poe.com">Poe</option>
+            <option value="https://perplexity.ai">Perplexity</option>
+          </select>
+        </div>
+        <webview id="ai-frame" src="about:blank" allowpopups></webview>
+      </div>
+
+      <!-- FTP Tab -->
+      <div id="left-tab-ftp" class="left-tab-content">
+        <div id="ftp-panel">
+          <div class="left-tab-header">FTP Connection</div>
+          <div id="ftp-bar">
+            <select id="ftp-saved" onchange="loadSavedConnection()">
+              <option value="">Saved connections...</option>
+            </select>
+            <input type="text" id="ftp-host" placeholder="Host (e.g., ftp.example.com)" spellcheck="false">
+            <div id="ftp-bar-row">
+              <input type="text" id="ftp-port" placeholder="Port" value="21" spellcheck="false">
+              <input type="text" id="ftp-user" placeholder="Username" spellcheck="false">
+            </div>
+            <input type="password" id="ftp-pass" placeholder="Password">
+            <div id="ftp-bar-actions">
+              <button id="ftp-save-btn" onclick="saveConnection()">Save</button>
+              <button id="ftp-delete-saved-btn" onclick="deleteSavedConnection()" style="display:none;">Delete</button>
+              <button id="ftp-connect-btn" onclick="connectFtp()">Connect</button>
+              <button id="ftp-disconnect-btn" onclick="disconnectFtp()" style="display:none;">Disconnect</button>
+            </div>
+            <div id="ftp-status" style="margin-top:8px;">Not connected</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Left Resizer -->
   <div class="panel-resizer" id="left-resizer"></div>
+  <!-- Left Panel Toggle -->
+  <div class="panel-toggle" id="left-toggle" onclick="toggleLeftPanel()" title="Toggle left panel">
+    <span class="toggle-icon">◀</span>
+  </div>
 
   <!-- Main Area -->
   <div id="main-area">
@@ -1472,6 +2112,7 @@
     <div id="editor-area">
       <div id="editor-tabs"></div>
       <div id="editor-container"></div>
+      <div id="md-preview-container"></div>
     </div>
 
     <div id="resizer"></div>
@@ -1485,6 +2126,7 @@
           <button class="term-profile-btn" onclick="createTerminal('/bin/bash')" title="Bash">bash</button>
           <button class="term-profile-btn" onclick="createTerminal('node')" title="Node">node</button>
           <button class="term-profile-btn" onclick="createTerminal('python3')" title="Python">py</button>
+          <button class="term-profile-btn" onclick="showSshDialog()" title="SSH Connection" style="color:#58a6ff;">ssh</button>
         </div>
       </div>
       <div id="terminal-container">
@@ -1497,109 +2139,20 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Right Resizer -->
-  <div class="panel-resizer" id="right-resizer"></div>
-
-  <!-- Right Panel - AI / Notes / FTP -->
-  <div id="right-panel">
-    <div id="right-panel-header">
-      <div id="right-panel-tabs">
-        <button class="right-tab active" onclick="showRightTab('notes')">Notes</button>
-        <button class="right-tab" onclick="showRightTab('tools')">Tools</button>
-        <button class="right-tab" onclick="showRightTab('ai')">AI</button>
-      </div>
-      <select id="ai-select" onchange="switchAI()">
-        <option value="https://chatgpt.com">ChatGPT</option>
-        <option value="https://copilot.microsoft.com">Copilot</option>
-        <option value="https://claude.ai">Claude</option>
-        <option value="https://gemini.google.com">Gemini</option>
-        <option value="https://poe.com">Poe</option>
-        <option value="https://perplexity.ai">Perplexity</option>
-      </select>
-    </div>
-    <div id="right-notes-panel">
-      <textarea id="notes-area" placeholder="Quick notes..."></textarea>
-    </div>
-    <div id="right-tools-panel" style="display:none;">
-      <div id="tools-list">
-        <div class="tools-category">Network</div>
-        <button class="tool-btn" onclick="openTool('ping')">Ping</button>
-        <button class="tool-btn" onclick="openTool('traceroute')">Traceroute</button>
-        <button class="tool-btn" onclick="openTool('dns-lookup')">DNS Lookup</button>
-        <button class="tool-btn" onclick="openTool('reverse-dns')">Reverse DNS</button>
-        <button class="tool-btn" onclick="openTool('port-scanner')">Port Scanner</button>
-        <button class="tool-btn" onclick="openTool('ip-info')">IP Info</button>
-        <button class="tool-btn" onclick="openTool('whois')">Whois</button>
-        <button class="tool-btn" onclick="openTool('mac-lookup')">MAC Lookup</button>
-        <button class="tool-btn" onclick="openTool('subnet-calc')">Subnet Calculator</button>
-        <button class="tool-btn" onclick="openTool('ping-monitor')">Ping Monitor</button>
-        <button class="tool-btn" onclick="openTool('uptime-monitor')">Uptime Monitor</button>
-        <button class="tool-btn" onclick="openTool('blacklist-check')">Blacklist Check</button>
-
-        <div class="tools-category">SSL / Security</div>
-        <button class="tool-btn" onclick="openTool('ssl-checker')">SSL Checker</button>
-        <button class="tool-btn" onclick="openTool('ssl-expiry')">SSL Expiry</button>
-        <button class="tool-btn" onclick="openTool('security-headers')">Security Headers</button>
-        <button class="tool-btn" onclick="openTool('password-generator')">Password Generator</button>
-        <button class="tool-btn" onclick="openTool('password-checker')">Password Checker</button>
-        <button class="tool-btn" onclick="openTool('hash-generator')">Hash Generator</button>
-
-        <div class="tools-category">Web / SEO</div>
-        <button class="tool-btn" onclick="openTool('seo-analyzer')">SEO Analyzer</button>
-        <button class="tool-btn" onclick="openTool('page-speed')">Page Speed</button>
-        <button class="tool-btn" onclick="openTool('broken-links')">Broken Links</button>
-        <button class="tool-btn" onclick="openTool('http-headers')">HTTP Headers</button>
-        <button class="tool-btn" onclick="openTool('open-graph')">Open Graph</button>
-        <button class="tool-btn" onclick="openTool('meta-tags')">Meta Tags</button>
-        <button class="tool-btn" onclick="openTool('robots-txt')">Robots.txt</button>
-        <button class="tool-btn" onclick="openTool('sitemap-generator')">Sitemap Generator</button>
-        <button class="tool-btn" onclick="openTool('domain-expiry')">Domain Expiry</button>
-
-        <div class="tools-category">Developer</div>
-        <button class="tool-btn" onclick="openTool('api-tester')">API Tester</button>
-        <button class="tool-btn" onclick="openTool('json-formatter')">JSON Formatter</button>
-        <button class="tool-btn" onclick="openTool('code-beautifier')">Code Beautifier</button>
-        <button class="tool-btn" onclick="openTool('regex-tester')">Regex Tester</button>
-        <button class="tool-btn" onclick="openTool('base64')">Base64</button>
-        <button class="tool-btn" onclick="openTool('jwt-decoder')">JWT Decoder</button>
-        <button class="tool-btn" onclick="openTool('cron-parser')">Cron Parser</button>
-        <button class="tool-btn" onclick="openTool('uuid-generator')">UUID Generator</button>
-        <button class="tool-btn" onclick="openTool('timestamp-converter')">Timestamp Converter</button>
-
-        <div class="tools-category">Utilities</div>
-        <button class="tool-btn" onclick="openTool('markdown-preview')">Markdown Preview</button>
-        <button class="tool-btn" onclick="openTool('lorem-ipsum')">Lorem Ipsum</button>
-        <button class="tool-btn" onclick="openTool('qr-generator')">QR Generator</button>
-        <button class="tool-btn" onclick="openTool('color-picker')">Color Picker</button>
-      </div>
-    </div>
-    <div id="tools-content" style="display:none;"></div>
-    <webview id="ai-frame" src="about:blank" allowpopups style="display:none;"></webview>
-    <!-- FTP Bar (bottom of right panel) -->
-    <div id="ftp-bar">
-      <div id="ftp-bar-header">
-        <span style="font-weight:600;color:#ccc;">FTP Connection</span>
-        <span id="ftp-status">Not connected</span>
-      </div>
-      <select id="ftp-saved" onchange="loadSavedConnection()">
-        <option value="">Saved connections...</option>
-      </select>
-      <input type="text" id="ftp-host" placeholder="Host (e.g., ftp.example.com)" spellcheck="false">
-      <div id="ftp-bar-row">
-        <input type="text" id="ftp-port" placeholder="Port" value="21" spellcheck="false">
-        <input type="text" id="ftp-user" placeholder="Username" spellcheck="false">
-      </div>
-      <input type="password" id="ftp-pass" placeholder="Password">
-      <div id="ftp-bar-actions">
-        <button id="ftp-save-btn" onclick="saveConnection()">Save</button>
-        <button id="ftp-delete-saved-btn" onclick="deleteSavedConnection()" style="display:none;">Delete</button>
-        <button id="ftp-connect-btn" onclick="connectFtp()">Connect</button>
-        <button id="ftp-disconnect-btn" onclick="disconnectFtp()" style="display:none;">Disconnect</button>
-      </div>
+    <!-- Status Bar -->
+    <div id="status-bar">
+      <div class="status-item clickable" id="sb-branch" onclick="showLeftTab('git')" title="Git branch"></div>
+      <div class="status-item" id="sb-dir" title="Current directory"></div>
+      <div class="status-spacer"></div>
+      <div class="status-item" id="sb-lang" title="Language"></div>
+      <div class="status-item" id="sb-encoding">UTF-8</div>
+      <div class="status-item" id="sb-indent" title="Indentation">Spaces: 2</div>
+      <div class="status-item" id="sb-cursor" title="Cursor position"></div>
+      <div class="status-item" id="sb-terminals" title="Open terminals"></div>
     </div>
   </div>
+
+  <!-- Right panel removed — single sidebar layout -->
   </div><!-- End app-container -->
 
   <!-- Context Menu (File Manager) -->
@@ -1612,6 +2165,8 @@
     <button onclick="cutFile()">Cut</button>
     <button onclick="pasteFile()">Paste</button>
     <button onclick="renameFile()">Rename</button>
+    <button onclick="pinToFavorites()">Pin to Favorites</button>
+    <button onclick="compareWithFile()">Compare with...</button>
     <button onclick="deleteFile()" class="danger">Delete</button>
   </div>
 
@@ -1621,6 +2176,9 @@
     <button onclick="terminalPaste()">Paste</button>
     <button onclick="terminalSelectAll()">Select All</button>
     <button onclick="terminalClear()">Clear</button>
+    <hr style="border:none;border-top:1px solid #333;margin:4px 0;">
+    <button onclick="splitFromMenu('vertical')">Split Right</button>
+    <button onclick="splitFromMenu('horizontal')">Split Down</button>
   </div>
 
   <!-- Command Palette -->
@@ -1670,6 +2228,10 @@
           <option value="light">Light</option>
         </select>
       </div>
+      <div class="settings-group" style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="setting-minimap" style="margin:0;">
+        <label for="setting-minimap" style="cursor:pointer;">Show Editor Minimap</label>
+      </div>
       <div class="settings-group">
         <label>Browser Home Page</label>
         <input type="text" id="setting-browser-home" value="https://duckduckgo.com" placeholder="https://duckduckgo.com" style="width:100%; padding:6px 8px; background:#1a1a1a; border:1px solid #333; border-radius:4px; color:#ccc; font-size:12px;">
@@ -1692,6 +2254,10 @@
       <div class="shortcut-row"><span>Go to line</span><span class="shortcut-key">⌘G</span></div>
       <div class="shortcut-row"><span>Command palette</span><span class="shortcut-key">⌘⇧P</span></div>
       <div class="shortcut-row"><span>Toggle sidebar</span><span class="shortcut-key">⌘B</span></div>
+      <div class="shortcut-row"><span>Focus mode</span><span class="shortcut-key">⌘⇧F</span></div>
+      <div class="shortcut-row"><span>Split terminal vertical</span><span class="shortcut-key">⌘\</span></div>
+      <div class="shortcut-row"><span>Split terminal horizontal</span><span class="shortcut-key">⌘⇧\</span></div>
+      <div class="shortcut-row"><span>Run current file</span><span class="shortcut-key">⌘R</span></div>
       <div class="shortcut-row"><span>Settings</span><span class="shortcut-key">⌘,</span></div>
       <div class="shortcut-row"><span>Shortcuts help</span><span class="shortcut-key">⌘/</span></div>
       <div class="shortcut-row"><span>Copy file</span><span class="shortcut-key">⌘C</span></div>
@@ -1703,24 +2269,32 @@
     </div>
   </div>
 
-  <!-- Status Bar -->
-  <div id="status-bar">
-    <span id="ftp-mode-badge">FTP</span>
-    <span id="status-file">No file open</span>
-    <span id="status-line">Ln 1, Col 1</span>
-    <span style="flex:1;"></span>
-    <span id="cloud-badge" onclick="showCloudMenu()" style="display:none;" title="Cloud Account">
-      <span class="sync-icon">&#9729;</span>
-      <span id="cloud-badge-text">Not signed in</span>
-    </span>
-    <button id="cloud-sync-btn" onclick="manualSync()" style="display:none;" title="Sync Now">&#8635; Sync</button>
-    <button onclick="showShortcuts()">Shortcuts</button>
-    <button onclick="showSettings()">Settings</button>
+  <!-- SSH Connection Dialog -->
+  <div id="ssh-dialog" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:10000;display:none;align-items:center;justify-content:center;" onclick="if(event.target===this)closeSshDialog()">
+    <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:20px;width:350px;">
+      <h3 style="margin:0 0 12px;font-size:14px;color:#ccc;">SSH Connection</h3>
+      <div id="ssh-saved-list" style="margin-bottom:12px;"></div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <input type="text" id="ssh-host" placeholder="Host (e.g. 192.168.1.1)" style="padding:6px 8px;background:#111;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;">
+        <div style="display:flex;gap:8px;">
+          <input type="number" id="ssh-port" value="22" placeholder="Port" style="width:70px;padding:6px 8px;background:#111;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;">
+          <input type="text" id="ssh-user" placeholder="Username" style="flex:1;padding:6px 8px;background:#111;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;">
+        </div>
+        <label style="font-size:11px;color:#888;display:flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="ssh-save-conn"> Save this connection
+        </label>
+        <div style="display:flex;gap:8px;margin-top:4px;">
+          <button onclick="closeSshDialog()" style="flex:1;padding:6px;background:#333;border:none;border-radius:4px;color:#ccc;cursor:pointer;">Cancel</button>
+          <button onclick="connectSsh()" style="flex:1;padding:6px;background:#0066cc;border:none;border-radius:4px;color:#fff;cursor:pointer;">Connect</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="node_modules/xterm/lib/xterm.js"></script>
   <script src="node_modules/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
   <script src="node_modules/xterm-addon-search/lib/xterm-addon-search.js"></script>
+  <script src="node_modules/xterm-addon-serialize/lib/xterm-addon-serialize.js"></script>
   <script>
     // Monaco Editor loader
     const monacoLoader = document.createElement('script');
@@ -1730,6 +2304,8 @@
       require(['vs/editor/editor.main'], () => {
         monacoReady = true;
         monaco.editor.setTheme('vs-dark');
+        // Init notes editor now that Monaco is available
+        initNotes();
       });
     };
     document.head.appendChild(monacoLoader);
@@ -1748,8 +2324,10 @@
       fontSize: 14,
       shell: '/bin/zsh',
       theme: 'dark',
-      browserHome: 'https://duckduckgo.com'
+      browserHome: 'https://duckduckgo.com',
+      minimap: false
     };
+    // activeRightTab removed — all tabs are in the left panel now
 
     // FTP mode state
     let appMode = 'local'; // 'local' or 'ftp'
@@ -1871,6 +2449,7 @@
       settings.fontSize = parseInt(document.getElementById('setting-font-size').value);
       settings.shell = document.getElementById('setting-shell').value;
       settings.theme = document.getElementById('setting-theme').value;
+      settings.minimap = document.getElementById('setting-minimap').checked;
       let browserHome = document.getElementById('setting-browser-home').value.trim();
       if (browserHome && !browserHome.startsWith('http://') && !browserHome.startsWith('https://')) {
         browserHome = 'https://' + browserHome;
@@ -1879,7 +2458,7 @@
       localStorage.setItem('dterm-settings', JSON.stringify(settings));
       applyTheme();
       if (monacoEditor) {
-        monacoEditor.updateOptions({ fontSize: settings.fontSize });
+        monacoEditor.updateOptions({ fontSize: settings.fontSize, minimap: { enabled: settings.minimap } });
       }
       // Apply new home page to browser
       const webview = document.getElementById('mini-browser-frame');
@@ -1902,6 +2481,11 @@
     }
 
     function showSettings() {
+      document.getElementById('setting-font-size').value = settings.fontSize;
+      document.getElementById('setting-shell').value = settings.shell;
+      document.getElementById('setting-theme').value = settings.theme;
+      document.getElementById('setting-browser-home').value = settings.browserHome;
+      document.getElementById('setting-minimap').checked = settings.minimap;
       document.getElementById('settings-overlay').style.display = 'flex';
     }
 
@@ -1927,7 +2511,16 @@
       setupPanelResizers();
       setupTerminalDropZone();
       setupFileManagerDropZone();
-      showRightTab('notes');
+      // Default to files tab
+      setupPanelDragDrop();
+      // Restore previous session (terminals, editor files, browser URL, etc.)
+      await restoreSession();
+      // Defer terminal fit to ensure layout has settled at full height
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          terminals.forEach(t => t.fitAddon.fit());
+        });
+      });
     }
 
     // Recent files/folders
@@ -2009,12 +2602,24 @@
     function loadBookmarks() {
       const bar = document.getElementById('bookmarks-bar');
       bar.innerHTML = '';
+      // Folder bookmarks
       bookmarks.forEach((path, i) => {
         const name = path.split('/').pop() || path;
         const item = document.createElement('div');
         item.className = 'bookmark-item';
         item.innerHTML = `<span>📁 ${name}</span><span class="remove-bookmark" onclick="removeBookmark(${i}, event)">✕</span>`;
         item.onclick = () => goToBookmark(path);
+        item.title = path;
+        bar.appendChild(item);
+      });
+      // File bookmarks (pinned files)
+      const fileBookmarks = JSON.parse(localStorage.getItem('dterm-file-bookmarks') || '[]');
+      fileBookmarks.forEach((path, i) => {
+        const name = path.split('/').pop() || path;
+        const item = document.createElement('div');
+        item.className = 'bookmark-item';
+        item.innerHTML = `<span>📄 ${name}</span><span class="remove-bookmark" onclick="removeFileBookmark(${i}, event)">✕</span>`;
+        item.onclick = () => openFileByPath(path);
         item.title = path;
         bar.appendChild(item);
       });
@@ -2058,7 +2663,7 @@
         loadFtpFileBrowser();
         return;
       }
-      document.querySelector('#fm-path span').textContent = currentPath;
+      renderBreadcrumb(currentPath);
       updateBookmarkButton();
       addRecentFolder(currentPath);
       const fileList = document.getElementById('file-list');
@@ -2140,6 +2745,22 @@
           div.oncontextmenu = (e) => showContextMenu(e, file);
           div.ondragstart = (e) => handleDragStart(e, file);
           div.ondragend = (e) => handleDragEnd(e);
+
+          // Image preview tooltip on hover
+          if (!file.isDirectory && appMode === 'local') {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (imageExtensions.includes(ext)) {
+              div.onmouseenter = (e) => showImageTooltip(e, file.path);
+              div.onmouseleave = () => hideImageTooltip();
+              div.onmousemove = (e) => {
+                if (imgPreviewTooltip && imgPreviewTooltip.style.display === 'block') {
+                  imgPreviewTooltip.style.left = (e.clientX + 12) + 'px';
+                  imgPreviewTooltip.style.top = (e.clientY + 12) + 'px';
+                }
+              };
+            }
+          }
+
           fileList.appendChild(div);
         });
       } catch (err) {
@@ -2375,7 +2996,7 @@
         language: language,
         theme: settings.theme === 'light' ? 'vs' : 'vs-dark',
         fontSize: settings.fontSize,
-        minimap: { enabled: true },
+        minimap: { enabled: settings.minimap },
         automaticLayout: true,
         scrollBeyondLastLine: false,
         wordWrap: 'on'
@@ -2386,11 +3007,19 @@
           openFiles[activeFileIndex].modified = true;
           openFiles[activeFileIndex].content = monacoEditor.getValue();
           updateEditorTabs();
+          // Live markdown preview update
+          if (mdPreviewActive) {
+            clearTimeout(window._mdPreviewTimer);
+            window._mdPreviewTimer = setTimeout(updateMdPreview, 300);
+          }
         }
       });
 
       monacoEditor.onDidChangeCursorPosition((e) => {
-        document.getElementById('status-line').textContent = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
+        const pos = `Ln ${e.position.lineNumber}, Col ${e.position.column}`;
+        document.getElementById('status-line').textContent = pos;
+        const sbCursor = document.getElementById('sb-cursor');
+        if (sbCursor) sbCursor.textContent = pos;
       });
     }
 
@@ -2443,10 +3072,30 @@
       openFiles.forEach((file, index) => {
         const tab = document.createElement('div');
         tab.className = 'tab' + (index === activeFileIndex ? ' active' : '') + (file.modified ? ' modified' : '');
-        tab.innerHTML = `<span>${file.name}</span><span class="tab-close" onclick="closeEditorTab(${index}, event)">✕</span>`;
+        tab.innerHTML = `${getFileIcon(file.name)}<span>${file.name}</span><span class="tab-close" onclick="closeEditorTab(${index}, event)">✕</span>`;
         tab.onclick = () => activateFile(index);
         tabsContainer.appendChild(tab);
       });
+
+      // Add markdown preview toggle if active file is .md
+      if (activeFileIndex >= 0 && openFiles[activeFileIndex]) {
+        const ext = openFiles[activeFileIndex].name.split('.').pop().toLowerCase();
+        if (ext === 'md' || ext === 'markdown') {
+          const toggle = document.createElement('button');
+          toggle.id = 'md-preview-toggle';
+          toggle.textContent = mdPreviewActive ? '◀ Editor' : 'Preview ▶';
+          if (mdPreviewActive) toggle.classList.add('active');
+          toggle.onclick = () => toggleMdPreview();
+          tabsContainer.appendChild(toggle);
+        } else if (mdPreviewActive) {
+          // Turn off preview if switched away from .md file
+          mdPreviewActive = false;
+          document.getElementById('md-preview-container').classList.remove('visible');
+          document.getElementById('editor-container').style.display = '';
+        }
+      }
+
+      updateStatusBar();
     }
 
     function activateFile(index) {
@@ -2560,76 +3209,87 @@
       });
     }
 
+    // Panel collapse/expand toggles
+    let leftPanelWidth = null;
+    // rightPanelWidth removed — single sidebar layout
+
+    function toggleLeftPanel() {
+      const panel = document.getElementById('left-panel');
+      const resizer = document.getElementById('left-resizer');
+      const isCollapsed = panel.classList.contains('collapsed');
+
+      if (isCollapsed) {
+        panel.classList.remove('collapsed');
+        panel.style.width = (leftPanelWidth || 400) + 'px';
+        resizer.style.display = '';
+      } else {
+        leftPanelWidth = panel.offsetWidth;
+        panel.classList.add('collapsed');
+        resizer.style.display = 'none';
+      }
+      updateToggleIcons();
+      setTimeout(() => terminals.forEach(t => t.fitAddon.fit()), 250);
+    }
+
+    // Right panel removed — toggleRightPanel kept as no-op for compat
+    function toggleRightPanel() { toggleLeftPanel(); }
+
+    function updateToggleIcons() {
+      const leftPanel = document.getElementById('left-panel');
+      const leftToggle = document.getElementById('left-toggle');
+      if (!leftToggle) return;
+      const leftCollapsed = leftPanel.classList.contains('collapsed');
+      leftToggle.querySelector('.toggle-icon').textContent = leftCollapsed ? '▶' : '◀';
+    }
+
+    function toggleFocusMode() {
+      toggleLeftPanel();
+    }
+
+    // Panel drag-drop removed — single sidebar layout
+    function setupPanelDragDrop() { /* no-op */ }
+
     function setupPanelResizers() {
-      // Left panel resizer
+      const ghost = document.getElementById('resize-ghost');
       const leftResizer = document.getElementById('left-resizer');
       const leftPanel = document.getElementById('left-panel');
       let leftResizing = false;
+      let leftTargetWidth = 0;
+
+      function disableWebviewPointerEvents() {
+        document.querySelectorAll('webview, iframe').forEach(el => { el.style.pointerEvents = 'none'; });
+      }
+      function enableWebviewPointerEvents() {
+        document.querySelectorAll('webview, iframe').forEach(el => { el.style.pointerEvents = ''; });
+      }
 
       leftResizer.addEventListener('mousedown', () => {
         leftResizing = true;
+        leftTargetWidth = 0;
         document.body.style.cursor = 'ew-resize';
-      });
-
-      // Right panel resizer
-      const rightResizer = document.getElementById('right-resizer');
-      const rightPanel = document.getElementById('right-panel');
-      let rightResizing = false;
-
-      rightResizer.addEventListener('mousedown', () => {
-        rightResizing = true;
-        document.body.style.cursor = 'ew-resize';
+        ghost.classList.add('visible');
+        disableWebviewPointerEvents();
       });
 
       document.addEventListener('mousemove', (e) => {
         if (leftResizing) {
           const width = e.clientX;
-          if (width >= 200 && width <= 500) {
-            leftPanel.style.width = width + 'px';
-            terminals.forEach(t => t.fitAddon.fit());
-          }
-        }
-        if (rightResizing) {
-          const width = window.innerWidth - e.clientX;
-          if (width >= 300 && width <= 700) {
-            rightPanel.style.width = width + 'px';
-            terminals.forEach(t => t.fitAddon.fit());
+          if (width >= 200 && width <= 600) {
+            leftTargetWidth = width;
+            ghost.style.left = e.clientX + 'px';
           }
         }
       });
 
       document.addEventListener('mouseup', () => {
-        leftResizing = false;
-        rightResizing = false;
-        leftPanelResizing = false;
-        document.body.style.cursor = '';
-      });
-
-      // Left panel internal resizer (between file manager and mini browser)
-      const leftPanelResizer = document.getElementById('left-panel-resizer');
-      const fileManager = document.getElementById('file-manager');
-      const miniBrowser = document.getElementById('mini-browser');
-      let leftPanelResizing = false;
-
-      leftPanelResizer.addEventListener('mousedown', () => {
-        leftPanelResizing = true;
-        document.body.style.cursor = 'ns-resize';
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (leftPanelResizing) {
-          const leftPanel = document.getElementById('left-panel');
-          const rect = leftPanel.getBoundingClientRect();
-          const offsetY = e.clientY - rect.top;
-          const totalHeight = rect.height;
-          const minHeight = 100;
-
-          if (offsetY >= minHeight && offsetY <= totalHeight - minHeight) {
-            fileManager.style.flex = 'none';
-            fileManager.style.height = offsetY + 'px';
-            miniBrowser.style.flex = '1';
-          }
+        if (leftResizing && leftTargetWidth) {
+          leftPanel.style.width = leftTargetWidth + 'px';
+          terminals.forEach(t => t.fitAddon.fit());
         }
+        leftResizing = false;
+        ghost.classList.remove('visible');
+        document.body.style.cursor = '';
+        enableWebviewPointerEvents();
       });
     }
 
@@ -2784,6 +3444,14 @@
       }
     }
 
+    function splitFromMenu(direction) {
+      hideContextMenu();
+      if (activeTerminalForMenu) {
+        activePaneId = activeTerminalForMenu;
+      }
+      splitTerminal(direction);
+    }
+
     // Command Palette
     const commands = [
       { name: 'New Terminal', icon: '💻', action: () => createTerminal(), shortcut: '⌘T' },
@@ -2791,7 +3459,10 @@
       { name: 'New Folder', icon: '📁', action: () => newFolder() },
       { name: 'Open Folder', icon: '📂', action: () => openFolder() },
       { name: 'Save File', icon: '💾', action: () => saveCurrentFile(), shortcut: '⌘S' },
-      { name: 'Toggle Sidebar', icon: '◀', action: () => toggleSidebar(), shortcut: '⌘B' },
+      { name: 'Toggle Sidebar', icon: '◀', action: () => toggleLeftPanel(), shortcut: '⌘B' },
+      { name: 'Focus Mode', icon: '⊞', action: () => toggleFocusMode(), shortcut: '⌘⇧F' },
+      { name: 'Split Terminal Vertical', icon: '▏', action: () => splitTerminal('vertical'), shortcut: '⌘\\' },
+      { name: 'Split Terminal Horizontal', icon: '▁', action: () => splitTerminal('horizontal'), shortcut: '⌘⇧\\' },
       { name: 'Settings', icon: '⚙', action: () => showSettings(), shortcut: '⌘,' },
       { name: 'Keyboard Shortcuts', icon: '⌨', action: () => showShortcuts(), shortcut: '⌘/' },
       { name: 'Search in Terminal', icon: '🔍', action: () => openTerminalSearch(), shortcut: '⌘F' },
@@ -2799,24 +3470,25 @@
       { name: 'Go Home', icon: '🏠', action: () => goHome() },
       { name: 'Refresh Files', icon: '🔄', action: () => refresh() },
       { name: 'Toggle Hidden Files', icon: '👁', action: () => toggleHidden() },
-      { name: 'Notes', icon: '📝', action: () => showRightTab('notes') },
-      { name: 'AI Chat', icon: '🤖', action: () => showRightTab('ai') },
+      { name: 'Notes', icon: '📝', action: () => showLeftTab('notes') },
+      { name: 'Tools', icon: '🔧', action: () => showLeftTab('tools') },
+      { name: 'AI Chat', icon: '🤖', action: () => showLeftTab('ai') },
+      { name: 'FTP', icon: '🌐', action: () => showLeftTab('ftp') },
+      { name: 'Run Current File', icon: '▶', action: () => runCurrentFile(), shortcut: '⌘R' },
+      { name: 'Code Runner', icon: '▶', action: () => showLeftTab('runner') },
+      { name: 'Compare Files', icon: '⇔', action: () => compareCurrentFile() },
+      { name: 'Snippets', icon: '📋', action: () => showLeftTab('snippets') },
+      { name: 'Processes', icon: '⊞', action: () => showLeftTab('processes') },
+      { name: 'SSH Connection', icon: '🔗', action: () => showSshDialog() },
+      { name: 'Save Workspace', icon: '💾', action: () => saveWorkspace() },
+      { name: 'Load Workspace', icon: '📂', action: () => loadWorkspace() },
+      { name: 'Delete Workspace', icon: '🗑', action: () => deleteWorkspace() },
     ];
 
     let selectedCommandIndex = 0;
     let filteredCommands = [...commands];
 
-    function toggleSidebar() {
-      const left = document.getElementById('left-panel');
-      const resizer = document.getElementById('left-resizer');
-      if (left.style.display === 'none') {
-        left.style.display = 'flex';
-        resizer.style.display = 'block';
-      } else {
-        left.style.display = 'none';
-        resizer.style.display = 'none';
-      }
-    }
+
 
     function showCommandPalette() {
       document.getElementById('command-palette').classList.add('visible');
@@ -3114,12 +3786,308 @@
     }
 
     // Terminal
-    function createTerminal(shell) {
+    // Split pane tree system
+    let paneTree = null; // Root of split tree
+    let activePaneId = null; // Currently focused pane's terminal ID
+
+    function createPaneContainer(terminalId) {
+      const pane = document.createElement('div');
+      pane.className = 'pane-container';
+      pane.dataset.termId = terminalId;
+      pane.addEventListener('mousedown', () => setActivePane(terminalId));
+      return pane;
+    }
+
+    function setActivePane(terminalId) {
+      activePaneId = terminalId;
+      document.querySelectorAll('.pane-container').forEach(el => el.classList.remove('active-pane'));
+      const pane = document.querySelector(`.pane-container[data-term-id="${terminalId}"]`);
+      if (pane) pane.classList.add('active-pane');
+    }
+
+    function findPaneNode(node, terminalId) {
+      if (!node) return null;
+      if (node.type === 'terminal' && node.terminalId === terminalId) return node;
+      if (node.type === 'split') {
+        return findPaneNode(node.children[0], terminalId) || findPaneNode(node.children[1], terminalId);
+      }
+      return null;
+    }
+
+    function findPaneParent(node, terminalId, parent) {
+      if (!node) return null;
+      if (node.type === 'terminal' && node.terminalId === terminalId) return parent;
+      if (node.type === 'split') {
+        return findPaneParent(node.children[0], terminalId, node) || findPaneParent(node.children[1], terminalId, node);
+      }
+      return null;
+    }
+
+    function dismantlePaneTree() {
+      // Move all terminal panels back to flat mode in #terminal-container
+      const container = document.getElementById('terminal-container');
+      // Collect elements before detaching (getElementById won't find detached nodes)
+      const collected = {};
+      terminals.forEach(t => {
+        const el = document.getElementById(t.id);
+        if (el && el.parentNode) {
+          el.parentNode.removeChild(el);
+          collected[t.id] = el;
+        }
+      });
+      container.innerHTML = '';
+      terminals.forEach(t => {
+        const el = collected[t.id];
+        if (el) {
+          container.appendChild(el);
+        }
+      });
+      paneTree = null;
+    }
+
+    let _detachedTerminals = {};
+
+    function rebuildPaneDOM() {
+      const container = document.getElementById('terminal-container');
+      // Detach all terminal panels first (preserve their DOM and xterm state)
+      _detachedTerminals = {};
+      terminals.forEach(t => {
+        const el = document.getElementById(t.id);
+        if (el && el.parentNode) {
+          el.parentNode.removeChild(el);
+          _detachedTerminals[t.id] = el;
+        }
+      });
+      // Clear container of any leftover pane structure
+      container.innerHTML = '';
+      if (paneTree) {
+        renderPaneNode(paneTree, container);
+      }
+      _detachedTerminals = {};
+      // Fit all terminals after DOM rebuild
+      setTimeout(() => terminals.forEach(t => t.fitAddon.fit()), 50);
+    }
+
+    function renderPaneNode(node, parent) {
+      if (node.type === 'terminal') {
+        const pane = createPaneContainer(node.terminalId);
+        const termEl = _detachedTerminals[node.terminalId] || document.getElementById(node.terminalId);
+        if (termEl) pane.appendChild(termEl);
+        parent.appendChild(pane);
+        // ResizeObserver for fit
+        const termData = terminals.find(t => t.id === node.terminalId);
+        if (termData) {
+          new ResizeObserver(() => termData.fitAddon.fit()).observe(pane);
+        }
+        if (node.terminalId === activePaneId) pane.classList.add('active-pane');
+      } else if (node.type === 'split') {
+        const splitEl = document.createElement('div');
+        splitEl.className = 'split-pane ' + node.direction;
+
+        // First child with flex ratio
+        const child1Wrap = document.createElement('div');
+        child1Wrap.style.flex = node.ratio || 0.5;
+        child1Wrap.style.display = 'flex';
+        child1Wrap.style.minWidth = '0';
+        child1Wrap.style.minHeight = '0';
+        child1Wrap.style.overflow = 'hidden';
+        renderPaneNode(node.children[0], child1Wrap);
+        splitEl.appendChild(child1Wrap);
+
+        // Divider
+        const divider = document.createElement('div');
+        divider.className = node.direction === 'vertical' ? 'split-divider-v' : 'split-divider-h';
+        setupSplitDivider(divider, splitEl, node, child1Wrap);
+        splitEl.appendChild(divider);
+
+        // Second child with flex ratio
+        const child2Wrap = document.createElement('div');
+        child2Wrap.style.flex = 1 - (node.ratio || 0.5);
+        child2Wrap.style.display = 'flex';
+        child2Wrap.style.minWidth = '0';
+        child2Wrap.style.minHeight = '0';
+        child2Wrap.style.overflow = 'hidden';
+        renderPaneNode(node.children[1], child2Wrap);
+        splitEl.appendChild(child2Wrap);
+
+        parent.appendChild(splitEl);
+      }
+    }
+
+    function setupSplitDivider(divider, splitEl, node, child1Wrap) {
+      let dragging = false;
+      divider.addEventListener('mousedown', (e) => {
+        dragging = true;
+        e.preventDefault();
+        document.body.style.cursor = node.direction === 'vertical' ? 'col-resize' : 'row-resize';
+        // Disable webview pointer events
+        document.querySelectorAll('webview, iframe').forEach(el => { el.style.pointerEvents = 'none'; });
+      });
+      const onMove = (e) => {
+        if (!dragging) return;
+        const rect = splitEl.getBoundingClientRect();
+        let ratio;
+        if (node.direction === 'vertical') {
+          ratio = (e.clientX - rect.left) / rect.width;
+        } else {
+          ratio = (e.clientY - rect.top) / rect.height;
+        }
+        ratio = Math.max(0.15, Math.min(0.85, ratio));
+        node.ratio = ratio;
+        child1Wrap.style.flex = ratio;
+        child1Wrap.nextElementSibling.nextElementSibling.style.flex = 1 - ratio;
+        terminals.forEach(t => t.fitAddon.fit());
+      };
+      const onUp = () => {
+        if (!dragging) return;
+        dragging = false;
+        document.body.style.cursor = '';
+        document.querySelectorAll('webview, iframe').forEach(el => { el.style.pointerEvents = ''; });
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }
+
+    function splitTerminal(direction) {
+      // Find which terminal to split
+      const targetId = activePaneId || (terminals.length > 0 ? terminals[terminals.length - 1].id : null);
+      if (!targetId) return;
+
+      // Create the new terminal element and xterm instance
+      const newId = 'term-' + Date.now();
+      const newContainer = document.createElement('div');
+      newContainer.className = 'terminal-panel';
+      newContainer.id = newId;
+
+      const term = new Terminal({
+        fontSize: 13,
+        fontFamily: 'Menlo, Monaco, monospace',
+        theme: { background: '#000000', foreground: '#cccccc', cursor: '#ffffff', cursorAccent: '#000000', selectionBackground: '#0066cc' },
+        cursorBlink: true
+      });
+      const fitAddon = new FitAddon.FitAddon();
+      const searchAddon = new SearchAddon.SearchAddon();
+      const serializeAddon = new SerializeAddon.SerializeAddon();
+      term.loadAddon(fitAddon);
+      term.loadAddon(searchAddon);
+      term.loadAddon(serializeAddon);
+
+      const shellToUse = settings.shell || '/bin/zsh';
+      const shellName = shellToUse.split('/').pop();
+      const termData = { id: newId, term, fitAddon, searchAddon, serializeAddon, name: shellName };
+      terminals.push(termData);
+
+      // Add tab
+      const tab = document.createElement('div');
+      tab.className = 'tab';
+      tab.id = 'tab-' + newId;
+      tab.innerHTML = `<span>${shellName}</span><span class="tab-close" onclick="closeTerminal('${newId}', event)">✕</span>`;
+      tab.onclick = () => activateTerminal(newId);
+      document.getElementById('terminal-tabs').insertBefore(tab, document.getElementById('new-term-btn'));
+
+      // Build or update the pane tree
+      if (!paneTree || paneTree.type !== 'split') {
+        // First split: create tree with target + new
+        paneTree = {
+          type: 'split',
+          direction: direction,
+          ratio: 0.5,
+          children: [
+            { type: 'terminal', terminalId: targetId },
+            { type: 'terminal', terminalId: newId }
+          ]
+        };
+      } else {
+        // Already have splits — find target node and split it further
+        const replaceInTree = (node) => {
+          if (node.type === 'split') {
+            for (let i = 0; i < node.children.length; i++) {
+              if (node.children[i].type === 'terminal' && node.children[i].terminalId === targetId) {
+                node.children[i] = {
+                  type: 'split', direction, ratio: 0.5,
+                  children: [
+                    { type: 'terminal', terminalId: targetId },
+                    { type: 'terminal', terminalId: newId }
+                  ]
+                };
+                return true;
+              }
+              if (replaceInTree(node.children[i])) return true;
+            }
+          }
+          return false;
+        };
+        replaceInTree(paneTree);
+      }
+
+      // Temporarily add the new container to the DOM so rebuildPaneDOM can find it
+      document.getElementById('terminal-container').appendChild(newContainer);
+      // Open the terminal now so it has content
+      term.open(newContainer);
+
+      // Rebuild the pane DOM (moves all terminals into pane containers)
+      rebuildPaneDOM();
+
+      // Start the shell process
+      window.api.terminal.create(newId, shellToUse, null);
+      term.onData(data => window.api.terminal.write(newId, data));
+      term.onResize(({ cols, rows }) => window.api.terminal.resize(newId, cols, rows));
+
+      term.attachCustomKeyEventHandler((e) => {
+        if (e.type === 'keydown' && e.key === 'Enter' && e.shiftKey) {
+          e.preventDefault();
+          window.api.terminal.write(newId, '\n');
+          return false;
+        }
+        return true;
+      });
+
+      newContainer.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        showTerminalContextMenu(e, newId);
+      });
+
+      activePaneId = newId;
+      activateTerminal(newId);
+    }
+
+    function removePaneFromTree(terminalId) {
+      if (!paneTree) return;
+      if (paneTree.type === 'terminal') {
+        if (paneTree.terminalId === terminalId) paneTree = null;
+        return;
+      }
+      const replaceInParent = (node) => {
+        if (node.type !== 'split') return false;
+        for (let i = 0; i < node.children.length; i++) {
+          if (node.children[i].type === 'terminal' && node.children[i].terminalId === terminalId) {
+            // Replace the split with the other child
+            const other = node.children[1 - i];
+            Object.assign(node, other);
+            delete node.children;
+            return true;
+          }
+          if (replaceInParent(node.children[i])) return true;
+        }
+        return false;
+      };
+      // Check if root split contains the terminal directly
+      if (paneTree.type === 'split') {
+        for (let i = 0; i < paneTree.children.length; i++) {
+          if (paneTree.children[i].type === 'terminal' && paneTree.children[i].terminalId === terminalId) {
+            paneTree = paneTree.children[1 - i];
+            return;
+          }
+        }
+        replaceInParent(paneTree);
+      }
+    }
+
+    function createTerminal(shell, cwd) {
       const id = 'term-' + Date.now();
       const container = document.createElement('div');
       container.className = 'terminal-panel';
       container.id = id;
-      document.getElementById('terminal-container').appendChild(container);
 
       const term = new Terminal({
         fontSize: 13,
@@ -3136,44 +4104,95 @@
 
       const fitAddon = new FitAddon.FitAddon();
       const searchAddon = new SearchAddon.SearchAddon();
+      const serializeAddon = new SerializeAddon.SerializeAddon();
       term.loadAddon(fitAddon);
       term.loadAddon(searchAddon);
-      term.open(container);
-      fitAddon.fit();
+      term.loadAddon(serializeAddon);
 
       const shellToUse = shell || settings.shell || '/bin/zsh';
-      window.api.terminal.create(id, shellToUse);
+      window.api.terminal.create(id, shellToUse, cwd || null);
 
       term.onData(data => window.api.terminal.write(id, data));
       term.onResize(({ cols, rows }) => window.api.terminal.resize(id, cols, rows));
 
+      term.attachCustomKeyEventHandler((e) => {
+        if (e.type === 'keydown' && e.key === 'Enter' && e.shiftKey) {
+          e.preventDefault();
+          window.api.terminal.write(id, '\n');
+          return false;
+        }
+        return true;
+      });
+
       const shellName = shellToUse.split('/').pop();
-      const termData = { id, term, fitAddon, searchAddon, name: shellName };
+      const termData = { id, term, fitAddon, searchAddon, serializeAddon, name: shellName, cwd: cwd || '' };
       terminals.push(termData);
 
       const tab = document.createElement('div');
       tab.className = 'tab';
       tab.id = 'tab-' + id;
-      tab.innerHTML = `<span>${shellName}</span><span class="tab-close" onclick="closeTerminal('${id}', event)">✕</span>`;
+      tab.innerHTML = `<span class="tab-label">${shellName}</span><span class="tab-close" onclick="closeTerminal('${id}', event)">✕</span>`;
       tab.onclick = () => activateTerminal(id);
       document.getElementById('terminal-tabs').insertBefore(tab, document.getElementById('new-term-btn'));
 
+      // If there are active splits, dismantle the pane tree first
+      // New tab-created terminals use simple show/hide, not pane tree
+      if (paneTree && paneTree.type === 'split') {
+        dismantlePaneTree();
+      }
+
+      document.getElementById('terminal-container').appendChild(container);
+      term.open(container);
+      fitAddon.fit();
+
       activateTerminal(id);
       new ResizeObserver(() => fitAddon.fit()).observe(container);
+      new ResizeObserver(() => fitAddon.fit()).observe(document.getElementById('terminal-container'));
 
-      // Terminal context menu
       container.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         showTerminalContextMenu(e, id);
       });
     }
 
-    function activateTerminal(id) {
-      document.querySelectorAll('.terminal-panel').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('#terminal-tabs .tab').forEach(el => el.classList.remove('active'));
+    // Periodically update terminal tab labels with CWD
+    function updateTerminalCwds() {
+      terminals.forEach(async (t) => {
+        try {
+          const cwd = await window.api.terminal.getCwd(t.id);
+          if (cwd && cwd !== t.cwd) {
+            t.cwd = cwd;
+            const basename = cwd.split('/').pop() || cwd;
+            const tabEl = document.getElementById('tab-' + t.id);
+            if (tabEl) {
+              const label = tabEl.querySelector('.tab-label');
+              if (label) label.textContent = `${t.name}: ${basename}`;
+            }
+          }
+        } catch (e) { /* terminal may have exited */ }
+      });
+    }
+    setInterval(updateTerminalCwds, 3000);
 
-      document.getElementById(id).classList.add('active');
-      document.getElementById('tab-' + id).classList.add('active');
+    function activateTerminal(id) {
+      // Update tab bar
+      document.querySelectorAll('#terminal-tabs .tab').forEach(el => el.classList.remove('active'));
+      const tabEl = document.getElementById('tab-' + id);
+      if (tabEl) tabEl.classList.add('active');
+
+      activePaneId = id;
+
+      if (paneTree && paneTree.type === 'split') {
+        // Split mode: highlight the active pane, all terminals visible in their panes
+        document.querySelectorAll('.pane-container').forEach(el => el.classList.remove('active-pane'));
+        const pane = document.querySelector(`.pane-container[data-term-id="${id}"]`);
+        if (pane) pane.classList.add('active-pane');
+      } else {
+        // Non-split mode: show/hide terminal panels
+        document.querySelectorAll('.terminal-panel').forEach(el => el.classList.remove('active'));
+        const termEl = document.getElementById(id);
+        if (termEl) termEl.classList.add('active');
+      }
 
       const termData = terminals.find(t => t.id === id);
       if (termData) {
@@ -3192,8 +4211,21 @@
         terminals.splice(idx, 1);
       }
 
-      document.getElementById(id).remove();
-      document.getElementById('tab-' + id).remove();
+      const el = document.getElementById(id);
+      if (el) el.remove();
+      const tabEl = document.getElementById('tab-' + id);
+      if (tabEl) tabEl.remove();
+
+      // Remove from pane tree
+      if (paneTree) {
+        removePaneFromTree(id);
+        // If tree collapsed to a single terminal, switch back to flat mode
+        if (paneTree && paneTree.type === 'terminal') {
+          dismantlePaneTree();
+        } else if (paneTree && paneTree.type === 'split') {
+          rebuildPaneDOM();
+        }
+      }
 
       if (terminals.length > 0) {
         activateTerminal(terminals[terminals.length - 1].id);
@@ -3202,7 +4234,8 @@
 
     window.api.terminal.onData((id, data) => {
       const termData = terminals.find(t => t.id === id);
-      if (termData) termData.term.write(data);
+      if (termData) { termData.term.write(data); return; }
+      if (leftTerminalData && leftTerminalData.id === id) leftTerminalData.term.write(data);
     });
 
     window.api.terminal.onExit((id, code) => {
@@ -3211,40 +4244,200 @@
     });
 
     // Right Panel
-    function showRightTab(tab) {
-      const aiFrame = document.getElementById('ai-frame');
-      const toolsContent = document.getElementById('tools-content');
-      const toolsPanel = document.getElementById('right-tools-panel');
-      const notesPanel = document.getElementById('right-notes-panel');
-      const select = document.getElementById('ai-select');
-      const tabs = document.querySelectorAll('.right-tab');
+    // Left panel tabs
+    let activeLeftTab = 'files';
+    let leftTerminalData = null;
 
-      tabs.forEach(t => t.classList.remove('active'));
+    function showLeftTab(tab) {
+      activeLeftTab = tab;
+      document.querySelectorAll('.left-tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.activity-icon').forEach(el => el.classList.remove('active'));
 
-      notesPanel.style.display = 'none';
-      toolsPanel.style.display = 'none';
-      toolsContent.style.display = 'none';
-      aiFrame.style.display = 'none';
-      select.style.display = 'none';
+      const panel = document.getElementById('left-tab-' + tab);
+      if (panel) panel.classList.add('active');
+      const icon = document.querySelector(`.activity-icon[data-panel="${tab}"]`);
+      if (icon) icon.classList.add('active');
 
-      if (tab === 'notes') {
-        tabs[0].classList.add('active');
-        notesPanel.style.display = 'flex';
-      } else if (tab === 'tools') {
-        tabs[1].classList.add('active');
+      // Expand left panel if collapsed
+      const leftPanel = document.getElementById('left-panel');
+      if (leftPanel.classList.contains('collapsed')) {
+        toggleLeftPanel();
+      }
+
+      // Create left terminal if needed
+      if (tab === 'terminal' && !leftTerminalData) {
+        createLeftTerminal();
+      }
+      if (tab === 'terminal' && leftTerminalData) {
+        setTimeout(() => leftTerminalData.fitAddon.fit(), 50);
+      }
+
+      // AI tab: load webview on first show
+      if (tab === 'ai') {
+        const aiFrame = document.getElementById('ai-frame');
+        const aiSelect = document.getElementById('ai-select');
+        if (aiFrame && aiFrame.src === 'about:blank' && aiSelect) {
+          aiFrame.src = aiSelect.value;
+        }
+      }
+
+      // Runner tab: refresh on show
+      if (tab === 'runner') {
+        refreshRunner();
+      }
+
+      // Snippets tab: load snippets
+      if (tab === 'snippets') {
+        loadSnippets();
+      }
+
+      // Processes tab: refresh
+      if (tab === 'processes') {
+        refreshProcesses();
+      }
+
+      // Tools tab: show list or active tool content
+      if (tab === 'tools') {
+        const toolsContent = document.getElementById('tools-content');
+        const toolsPanel = document.getElementById('tools-panel');
         if (activeToolName) {
+          toolsPanel.style.display = 'none';
           toolsContent.style.display = 'flex';
         } else {
           toolsPanel.style.display = 'flex';
-        }
-      } else if (tab === 'ai') {
-        tabs[2].classList.add('active');
-        aiFrame.style.display = 'flex';
-        select.style.display = 'block';
-        if (aiFrame.src === 'about:blank') {
-          aiFrame.src = select.value;
+          toolsContent.style.display = 'none';
         }
       }
+    }
+
+    function createLeftTerminal() {
+      const container = document.getElementById('left-terminal-container');
+      const term = new Terminal({
+        fontSize: 13,
+        fontFamily: 'Menlo, Monaco, monospace',
+        theme: {
+          background: '#000000',
+          foreground: '#cccccc',
+          cursor: '#ffffff',
+          cursorAccent: '#000000',
+          selectionBackground: '#0066cc'
+        },
+        cursorBlink: true
+      });
+      const fitAddon = new FitAddon.FitAddon();
+      term.loadAddon(fitAddon);
+      term.open(container);
+      fitAddon.fit();
+
+      const id = 'left-term-' + Date.now();
+      const shellToUse = settings.shell || '/bin/zsh';
+      window.api.terminal.create(id, shellToUse, null);
+      term.onData(data => window.api.terminal.write(id, data));
+      term.onResize(({ cols, rows }) => window.api.terminal.resize(id, cols, rows));
+
+      leftTerminalData = { id, term, fitAddon };
+      new ResizeObserver(() => fitAddon.fit()).observe(container);
+    }
+
+    // Git panel functions
+    async function loadGitStatus() {
+      const resultsEl = document.getElementById('git-changes-list');
+      resultsEl.innerHTML = '<span style="color:#888;font-size:11px;padding:4px;">Loading...</span>';
+      try {
+        const result = await window.api.git.statusPorcelain(currentPath);
+        if (!result || result.error || !result.stdout) {
+          resultsEl.innerHTML = '<span style="color:#888;font-size:11px;padding:4px;">Not a git repository or no changes</span>';
+          return;
+        }
+        const lines = result.stdout.trim().split('\n').filter(l => l);
+        if (lines.length === 0) {
+          resultsEl.innerHTML = '<span style="color:#4ec94e;font-size:11px;padding:4px;">Working tree clean</span>';
+          return;
+        }
+        resultsEl.innerHTML = lines.map(line => {
+          const status = line.substring(0, 2).trim();
+          const file = line.substring(3);
+          let cls = 'git-status-u';
+          if (status === 'M' || status === 'MM') cls = 'git-status-m';
+          else if (status === 'A' || status === '??') cls = status === 'A' ? 'git-status-a' : 'git-status-u';
+          else if (status === 'D') cls = 'git-status-d';
+          const safePath = (currentPath + '/' + file).replace(/'/g, "\\'");
+          const safeName = file.split('/').pop().replace(/'/g, "\\'");
+          return `<div class="git-file-item" onclick="openFileInEditor({path:'${safePath}',name:'${safeName}',isFile:true})"><span class="${cls}">${status}</span> ${file}</div>`;
+        }).join('');
+      } catch (e) {
+        resultsEl.innerHTML = '<span style="color:#f44;font-size:11px;padding:4px;">Error: ' + e.message + '</span>';
+      }
+    }
+
+    async function gitCommitAll() {
+      const msg = document.getElementById('git-commit-msg').value.trim();
+      if (!msg) return;
+      try {
+        const result = await window.api.git.commitAll(currentPath, msg);
+        if (result.error) { console.error('Git commit failed:', result.error); return; }
+        document.getElementById('git-commit-msg').value = '';
+        loadGitStatus();
+      } catch (e) { console.error('Git commit failed:', e); }
+    }
+
+    async function gitPush() {
+      try { await window.api.git.push(currentPath); } catch (e) { console.error('Git push failed:', e); }
+    }
+
+    async function gitPull() {
+      try {
+        await window.api.git.pull(currentPath);
+        loadGitStatus();
+      } catch (e) { console.error('Git pull failed:', e); }
+    }
+
+    // Search panel functions
+    async function globalSearch() {
+      const query = document.getElementById('global-search-input').value.trim();
+      if (!query) return;
+      const resultsEl = document.getElementById('search-results');
+      resultsEl.innerHTML = '<span style="color:#888;font-size:11px;">Searching...</span>';
+      const useRegex = document.getElementById('search-regex').checked;
+      const caseSensitive = document.getElementById('search-case').checked;
+      try {
+        const result = await window.api.search.grep(currentPath, query, useRegex, caseSensitive);
+        if (!result || result.error || !result.stdout || !result.stdout.trim()) {
+          resultsEl.innerHTML = '<span style="color:#888;font-size:11px;">No results found</span>';
+          return;
+        }
+        const lines = result.stdout.trim().split('\n');
+        const grouped = {};
+        lines.forEach(line => {
+          const match = line.match(/^(.+?):(\d+):(.*)$/);
+          if (match) {
+            const file = match[1].replace(currentPath + '/', '');
+            if (!grouped[file]) grouped[file] = [];
+            grouped[file].push({ line: match[2], text: match[3] });
+          }
+        });
+        let html = '';
+        for (const [file, matches] of Object.entries(grouped)) {
+          const safePath = (currentPath + '/' + file).replace(/'/g, "\\'");
+          const safeName = file.split('/').pop().replace(/'/g, "\\'");
+          html += `<div class="search-result-file" onclick="openFileInEditor({path:'${safePath}',name:'${safeName}',isFile:true})">${file} (${matches.length})</div>`;
+          matches.slice(0, 5).forEach(m => {
+            const escaped = m.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            html += `<div class="search-result-line" onclick="openFileInEditor({path:'${safePath}',name:'${safeName}',isFile:true})">${m.line}: ${escaped}</div>`;
+          });
+          if (matches.length > 5) {
+            html += `<div class="search-result-line" style="color:#555;">... ${matches.length - 5} more</div>`;
+          }
+        }
+        resultsEl.innerHTML = html;
+      } catch (e) {
+        resultsEl.innerHTML = '<span style="color:#f44;font-size:11px;">Error: ' + e.message + '</span>';
+      }
+    }
+
+    // Legacy compat: redirect to showLeftTab
+    function showRightTab(tab) {
+      showLeftTab(tab);
     }
 
     // Tools panel - native implementations
@@ -3255,8 +4448,8 @@
       if (toolMonitorInterval) { clearInterval(toolMonitorInterval); toolMonitorInterval = null; }
       activeToolName = name;
       const toolsContent = document.getElementById('tools-content');
-      const toolsPanel = document.getElementById('right-tools-panel');
-      toolsPanel.style.display = 'none';
+      const toolsPanel = document.getElementById('tools-panel');
+      if (toolsPanel) toolsPanel.style.display = 'none';
       toolsContent.style.display = 'flex';
       const renderer = toolRenderers[name];
       if (renderer) renderer(toolsContent);
@@ -3267,10 +4460,10 @@
       if (toolMonitorInterval) { clearInterval(toolMonitorInterval); toolMonitorInterval = null; }
       activeToolName = null;
       const toolsContent = document.getElementById('tools-content');
-      const toolsPanel = document.getElementById('right-tools-panel');
+      const toolsPanel = document.getElementById('tools-panel');
       toolsContent.style.display = 'none';
       toolsContent.innerHTML = '';
-      toolsPanel.style.display = 'flex';
+      if (toolsPanel) toolsPanel.style.display = 'flex';
     }
 
     function toolHeader(title) {
@@ -3600,6 +4793,14 @@
         document.getElementById('t-color-picker').addEventListener('input', (e) => {
           document.getElementById('t-color-hex').value = e.target.value;
         });
+      },
+
+      'env-viewer': (el) => {
+        el.innerHTML = toolHeader('Environment Variables') + `<div class="tool-body">
+          <input class="tool-input" id="t-env-search" placeholder="Search variables..." oninput="filterEnvVars()">
+          <div class="tool-row"><button class="tool-run-btn" onclick="loadEnvVars()">Refresh</button></div>
+          <div id="t-env-list" style="max-height:500px;overflow-y:auto;"></div></div>`;
+        loadEnvVars();
       },
     };
 
@@ -4374,6 +5575,43 @@
       }
     }
 
+    // --- Environment Variables ---
+    let envVarsData = [];
+    async function loadEnvVars() {
+      const out = document.getElementById('t-env-list');
+      if (!out) return;
+      out.innerHTML = '<div style="color:#888;font-size:11px;">Loading...</div>';
+      try {
+        const result = await window.api.tools.exec('env | sort');
+        const lines = (result.stdout || '').split('\n').filter(l => l.includes('='));
+        envVarsData = lines.map(l => {
+          const idx = l.indexOf('=');
+          return { name: l.substring(0, idx), value: l.substring(idx + 1) };
+        });
+        renderEnvVars(envVarsData);
+      } catch (e) {
+        out.innerHTML = '<div class="tool-status fail">Error loading env vars</div>';
+      }
+    }
+
+    function renderEnvVars(vars) {
+      const out = document.getElementById('t-env-list');
+      if (!out) return;
+      if (vars.length === 0) {
+        out.innerHTML = '<div style="color:#888;font-size:11px;">No matching variables</div>';
+        return;
+      }
+      out.innerHTML = '<table class="tool-result-table">' +
+        vars.map(v => `<tr><td style="color:#58a6ff;white-space:nowrap;vertical-align:top;font-size:11px;">${escHtml(v.name)}</td><td style="word-break:break-all;font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;" title="${escHtml(v.value)}" onclick="navigator.clipboard.writeText(this.title)" style="cursor:pointer;">${escHtml(v.value.length > 80 ? v.value.substring(0, 80) + '...' : v.value)}</td></tr>`
+        ).join('') + '</table>';
+    }
+
+    function filterEnvVars() {
+      const query = (document.getElementById('t-env-search')?.value || '').toLowerCase();
+      if (!query) { renderEnvVars(envVarsData); return; }
+      renderEnvVars(envVarsData.filter(v => v.name.toLowerCase().includes(query) || v.value.toLowerCase().includes(query)));
+    }
+
     function switchAI() {
       const select = document.getElementById('ai-select');
       const frame = document.getElementById('ai-frame');
@@ -4505,22 +5743,911 @@
     renderSavedConnections();
 
     // Notes
+    let notesEditor = null;
     async function initNotes() {
-      const notes = document.getElementById('notes-area');
+      if (!monacoReady) return; // Monaco not loaded yet
+      const container = document.getElementById('notes-editor-container');
+      if (!container) return;
+
+      // Dispose previous instance if re-initializing (e.g. cloud pull)
+      if (notesEditor) {
+        notesEditor.dispose();
+        notesEditor = null;
+        container.innerHTML = '';
+      }
+
       const saved = await window.api.notes.load();
-      if (saved && saved.content) notes.value = saved.content;
+      const content = (saved && saved.content) ? saved.content : '';
+
+      notesEditor = monaco.editor.create(container, {
+        value: content,
+        language: 'markdown',
+        theme: 'vs-dark',
+        fontSize: 13,
+        fontFamily: 'Menlo, Monaco, monospace',
+        minimap: { enabled: false },
+        wordWrap: 'on',
+        lineNumbers: 'off',
+        scrollBeyondLastLine: false,
+        renderWhitespace: 'none',
+        overviewRulerLanes: 0,
+        hideCursorInOverviewRuler: true,
+        automaticLayout: true,
+        padding: { top: 8 }
+      });
 
       let saveTimeout;
-      notes.addEventListener('input', () => {
+      notesEditor.onDidChangeModelContent(() => {
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
-          window.api.notes.save({ content: notes.value });
+          window.api.notes.save({ content: notesEditor.getValue() });
         }, 500);
       });
     }
 
+    // ============ Favorites / File Bookmarks ============
+    function pinToFavorites() {
+      if (!selectedFile) return;
+      hideContextMenu();
+      if (selectedFile.isDirectory) {
+        if (!bookmarks.includes(selectedFile.path)) {
+          bookmarks.push(selectedFile.path);
+          localStorage.setItem('dterm-bookmarks', JSON.stringify(bookmarks));
+          loadBookmarks();
+        }
+      } else {
+        const fileBookmarks = JSON.parse(localStorage.getItem('dterm-file-bookmarks') || '[]');
+        if (!fileBookmarks.includes(selectedFile.path)) {
+          fileBookmarks.push(selectedFile.path);
+          localStorage.setItem('dterm-file-bookmarks', JSON.stringify(fileBookmarks));
+          loadBookmarks();
+        }
+      }
+    }
+
+    function removeFileBookmark(index, e) {
+      e.stopPropagation();
+      const fileBookmarks = JSON.parse(localStorage.getItem('dterm-file-bookmarks') || '[]');
+      fileBookmarks.splice(index, 1);
+      localStorage.setItem('dterm-file-bookmarks', JSON.stringify(fileBookmarks));
+      loadBookmarks();
+    }
+
+    async function openFileByPath(filePath) {
+      try {
+        const content = await window.api.fs.readFile(filePath);
+        const name = filePath.split('/').pop();
+        const existing = openFiles.findIndex(f => f.path === filePath);
+        if (existing >= 0) {
+          activateFile(existing);
+          return;
+        }
+        openFiles.push({ name, path: filePath, content, modified: false });
+        activeFileIndex = openFiles.length - 1;
+        showEditor();
+        setEditorContent(content, name);
+        updateEditorTabs();
+        document.getElementById('status-file').textContent = name;
+      } catch (e) {
+        console.error('Error opening file:', e);
+      }
+    }
+
+    // ============ Side-by-Side Diff View ============
+    let diffEditor = null;
+
+    async function compareWithFile() {
+      if (!selectedFile) return;
+      hideContextMenu();
+      const firstPath = selectedFile.path;
+      const firstName = selectedFile.name;
+      // Open a file dialog to pick the second file
+      const secondPath = await window.api.dialog.openFile();
+      if (!secondPath) return;
+      try {
+        const firstContent = await window.api.fs.readFile(firstPath);
+        const secondContent = await window.api.fs.readFile(secondPath);
+        const secondName = secondPath.split('/').pop();
+        showDiffView(firstName, firstContent, secondName, secondContent);
+      } catch (e) {
+        console.error('Error comparing files:', e);
+      }
+    }
+
+    async function compareCurrentFile() {
+      if (activeFileIndex < 0 || !openFiles[activeFileIndex]) return;
+      const file = openFiles[activeFileIndex];
+      const secondPath = await window.api.dialog.openFile();
+      if (!secondPath) return;
+      try {
+        const secondContent = await window.api.fs.readFile(secondPath);
+        const secondName = secondPath.split('/').pop();
+        showDiffView(file.name, file.content, secondName, secondContent);
+      } catch (e) {
+        console.error('Error comparing files:', e);
+      }
+    }
+
+    function showDiffView(name1, content1, name2, content2) {
+      if (!monacoReady) return;
+      const container = document.getElementById('editor-container');
+      if (monacoEditor) { monacoEditor.dispose(); monacoEditor = null; }
+      if (diffEditor) { diffEditor.dispose(); diffEditor = null; }
+      container.innerHTML = '';
+
+      // Add close button
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = '✕ Close Diff';
+      closeBtn.style.cssText = 'position:absolute;top:4px;right:8px;z-index:10;background:#333;color:#ccc;border:1px solid #555;padding:2px 8px;border-radius:3px;cursor:pointer;font-size:11px;';
+      closeBtn.onclick = closeDiffView;
+      container.style.position = 'relative';
+      container.appendChild(closeBtn);
+
+      diffEditor = monaco.editor.createDiffEditor(container, {
+        theme: settings.theme === 'light' ? 'vs' : 'vs-dark',
+        fontSize: settings.fontSize,
+        automaticLayout: true,
+        readOnly: true,
+        renderSideBySide: true
+      });
+
+      diffEditor.setModel({
+        original: monaco.editor.createModel(content1, getLanguage(name1)),
+        modified: monaco.editor.createModel(content2, getLanguage(name2))
+      });
+
+      showEditor();
+    }
+
+    function closeDiffView() {
+      if (diffEditor) { diffEditor.dispose(); diffEditor = null; }
+      const container = document.getElementById('editor-container');
+      container.innerHTML = '';
+      container.style.position = '';
+      // Re-open current file if any
+      if (activeFileIndex >= 0 && openFiles[activeFileIndex]) {
+        setEditorContent(openFiles[activeFileIndex].content, openFiles[activeFileIndex].name);
+      }
+    }
+
+    // ============ Path Autocomplete in Quick Run ============
+    let recentCommands = JSON.parse(localStorage.getItem('dterm-recent-commands') || '[]');
+    let autocompleteVisible = false;
+
+    function setupRunnerAutocomplete() {
+      const input = document.getElementById('runner-custom-cmd');
+      if (!input) return;
+
+      // Create dropdown
+      let dropdown = document.getElementById('runner-autocomplete');
+      if (!dropdown) {
+        dropdown = document.createElement('div');
+        dropdown.id = 'runner-autocomplete';
+        dropdown.className = 'autocomplete-dropdown';
+        dropdown.style.cssText = 'display:none;position:absolute;background:#1a1a1a;border:1px solid #333;border-radius:4px;max-height:200px;overflow-y:auto;z-index:100;width:calc(100% - 20px);left:10px;';
+        input.parentElement.style.position = 'relative';
+        input.parentElement.appendChild(dropdown);
+      }
+
+      input.addEventListener('input', () => {
+        const val = input.value.trim().toLowerCase();
+        if (!val) { dropdown.style.display = 'none'; autocompleteVisible = false; return; }
+        const suggestions = getAutocompleteSuggestions(val);
+        if (suggestions.length === 0) { dropdown.style.display = 'none'; autocompleteVisible = false; return; }
+        dropdown.innerHTML = suggestions.map(s =>
+          `<div style="padding:4px 8px;cursor:pointer;font-size:12px;color:#ccc;" onmousedown="selectAutocomplete('${s.replace(/'/g, "\\'")}')" onmouseenter="this.style.background='#2a2a2a'" onmouseleave="this.style.background=''">${s}</div>`
+        ).join('');
+        dropdown.style.display = 'block';
+        autocompleteVisible = true;
+      });
+
+      input.addEventListener('blur', () => {
+        setTimeout(() => { dropdown.style.display = 'none'; autocompleteVisible = false; }, 150);
+      });
+    }
+
+    function selectAutocomplete(value) {
+      const input = document.getElementById('runner-custom-cmd');
+      if (input) input.value = value;
+      const dropdown = document.getElementById('runner-autocomplete');
+      if (dropdown) dropdown.style.display = 'none';
+      autocompleteVisible = false;
+    }
+
+    function getAutocompleteSuggestions(query) {
+      const suggestions = [];
+      // Recent commands
+      recentCommands.forEach(cmd => {
+        if (cmd.toLowerCase().includes(query) && !suggestions.includes(cmd)) suggestions.push(cmd);
+      });
+      // Common commands
+      const common = ['npm start', 'npm test', 'npm run build', 'npm run dev', 'npm install',
+        'python3', 'node', 'go run .', 'cargo run', 'cargo build', 'cargo test',
+        'make', 'make clean', 'make install', 'docker build .', 'docker-compose up',
+        'git status', 'git log --oneline', 'pip install -r requirements.txt'];
+      common.forEach(cmd => {
+        if (cmd.toLowerCase().includes(query) && !suggestions.includes(cmd)) suggestions.push(cmd);
+      });
+      return suggestions.slice(0, 8);
+    }
+
+    function addRecentCommand(cmd) {
+      recentCommands = recentCommands.filter(c => c !== cmd);
+      recentCommands.unshift(cmd);
+      if (recentCommands.length > 20) recentCommands.pop();
+      localStorage.setItem('dterm-recent-commands', JSON.stringify(recentCommands));
+    }
+
+    // ============ Environment Variable Viewer ============
+    // Added as a tool in the Tools panel
+
+    // ============ Snippets Manager ============
+    let snippetsData = [];
+
+    async function loadSnippets() {
+      snippetsData = await window.api.snippets.load();
+      renderSnippets();
+    }
+
+    function renderSnippets() {
+      const list = document.getElementById('snippets-list');
+      if (!list) return;
+      if (snippetsData.length === 0) {
+        list.innerHTML = '<div style="padding:12px;color:#555;font-size:12px;text-align:center;">No snippets yet. Click + New to create one.</div>';
+        return;
+      }
+      list.innerHTML = snippetsData.map((s, i) => `
+        <div style="padding:6px 8px;border-bottom:1px solid #1a1a1a;cursor:pointer;" onmouseenter="this.style.background='#1a1a1a'" onmouseleave="this.style.background=''">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="flex:1;font-size:12px;color:#ccc;" onclick="insertSnippet(${i})">${escHtml(s.name)}</span>
+            <span style="font-size:10px;color:#555;background:#1a1a1a;padding:1px 4px;border-radius:2px;">${s.language || 'text'}</span>
+            <span style="font-size:10px;color:#666;cursor:pointer;" onclick="editSnippet(${i})">✎</span>
+            <span style="font-size:10px;color:#f44;cursor:pointer;" onclick="deleteSnippet(${i})">✕</span>
+          </div>
+          <div style="font-size:10px;color:#555;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" onclick="insertSnippet(${i})">${escHtml(s.code.substring(0, 80))}</div>
+        </div>
+      `).join('');
+    }
+
+    function createSnippet() {
+      const name = prompt('Snippet name:');
+      if (!name) return;
+      const language = prompt('Language (e.g. javascript, python, html):') || 'text';
+      const code = prompt('Snippet code:');
+      if (!code) return;
+      snippetsData.push({ name, language, code });
+      window.api.snippets.save(snippetsData);
+      renderSnippets();
+    }
+
+    function insertSnippet(index) {
+      const snippet = snippetsData[index];
+      if (!snippet || !monacoEditor) return;
+      const selection = monacoEditor.getSelection();
+      monacoEditor.executeEdits('snippet', [{
+        range: selection,
+        text: snippet.code
+      }]);
+      monacoEditor.focus();
+    }
+
+    function editSnippet(index) {
+      const s = snippetsData[index];
+      const name = prompt('Snippet name:', s.name);
+      if (!name) return;
+      const language = prompt('Language:', s.language);
+      const code = prompt('Code:', s.code);
+      if (code === null) return;
+      snippetsData[index] = { name, language: language || 'text', code };
+      window.api.snippets.save(snippetsData);
+      renderSnippets();
+    }
+
+    function deleteSnippet(index) {
+      if (!confirm('Delete this snippet?')) return;
+      snippetsData.splice(index, 1);
+      window.api.snippets.save(snippetsData);
+      renderSnippets();
+    }
+
+    // ============ Process / Port Manager ============
+    let processesData = [];
+    let portsData = [];
+
+    async function refreshProcesses() {
+      await Promise.all([loadProcessList(), loadPortsList()]);
+    }
+
+    async function loadProcessList() {
+      const list = document.getElementById('process-list');
+      if (!list) return;
+      list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">Loading...</div>';
+      try {
+        const result = await window.api.processes.list();
+        processesData = result.processes || [];
+        renderProcessList(processesData);
+      } catch (e) {
+        list.innerHTML = '<div style="color:#f44;font-size:11px;padding:4px;">Error loading processes</div>';
+      }
+    }
+
+    function renderProcessList(procs) {
+      const list = document.getElementById('process-list');
+      if (!list) return;
+      if (procs.length === 0) {
+        list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">No processes found</div>';
+        return;
+      }
+      list.innerHTML = procs.map(line => {
+        const parts = line.trim().split(/\s+/);
+        const pid = parts[0];
+        const rest = parts.slice(1).join(' ');
+        return `<div style="display:flex;align-items:center;gap:4px;padding:2px 4px;font-size:11px;border-bottom:1px solid #111;" onmouseenter="this.style.background='#1a1a1a'" onmouseleave="this.style.background=''">
+          <span style="color:#58a6ff;min-width:50px;">${pid}</span>
+          <span style="flex:1;color:#ccc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(rest)}</span>
+          <span style="color:#f44;cursor:pointer;font-size:10px;" onclick="killProcess('${pid}')" title="Kill process">✕</span>
+        </div>`;
+      }).join('');
+    }
+
+    function filterProcessList() {
+      const query = (document.getElementById('process-search')?.value || '').toLowerCase();
+      if (!query) { renderProcessList(processesData); return; }
+      renderProcessList(processesData.filter(l => l.toLowerCase().includes(query)));
+    }
+
+    async function killProcess(pid) {
+      if (!confirm(`Kill process ${pid}?`)) return;
+      const result = await window.api.processes.kill(pid);
+      if (result.success) {
+        refreshProcesses();
+      }
+    }
+
+    async function loadPortsList() {
+      const list = document.getElementById('ports-list');
+      if (!list) return;
+      list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">Loading...</div>';
+      try {
+        const lines = await window.api.processes.ports();
+        portsData = lines;
+        if (lines.length <= 1) {
+          list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">No listening ports</div>';
+          return;
+        }
+        list.innerHTML = lines.slice(1).map(line => {
+          const parts = line.trim().split(/\s+/);
+          return `<div style="padding:2px 4px;font-size:10px;color:#ccc;border-bottom:1px solid #111;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(line)}">${escHtml(line)}</div>`;
+        }).join('');
+      } catch (e) {
+        list.innerHTML = '<div style="color:#f44;font-size:11px;padding:4px;">Error loading ports</div>';
+      }
+    }
+
+    // ============ SSH Terminal ============
+    let sshConnections = [];
+
+    async function loadSshConnections() {
+      sshConnections = await window.api.sshConnections.load();
+    }
+
+    function showSshDialog() {
+      const dialog = document.getElementById('ssh-dialog');
+      dialog.style.display = 'flex';
+      document.getElementById('ssh-host').value = '';
+      document.getElementById('ssh-port').value = '22';
+      document.getElementById('ssh-user').value = '';
+      document.getElementById('ssh-save-conn').checked = false;
+      // Render saved connections
+      renderSshSaved();
+    }
+
+    function closeSshDialog() {
+      document.getElementById('ssh-dialog').style.display = 'none';
+    }
+
+    function renderSshSaved() {
+      const list = document.getElementById('ssh-saved-list');
+      if (sshConnections.length === 0) {
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = '<div style="font-size:11px;color:#666;margin-bottom:4px;">Saved connections:</div>' +
+        sshConnections.map((c, i) => `
+          <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:#111;border-radius:3px;margin-bottom:3px;cursor:pointer;" onclick="quickSshConnect(${i})" onmouseenter="this.style.background='#222'" onmouseleave="this.style.background='#111'">
+            <span style="flex:1;font-size:12px;color:#58a6ff;">${c.user}@${c.host}:${c.port}</span>
+            <span style="font-size:10px;color:#f44;cursor:pointer;" onclick="event.stopPropagation();deleteSshConnection(${i})">✕</span>
+          </div>
+        `).join('');
+    }
+
+    function quickSshConnect(index) {
+      const conn = sshConnections[index];
+      document.getElementById('ssh-host').value = conn.host;
+      document.getElementById('ssh-port').value = conn.port;
+      document.getElementById('ssh-user').value = conn.user;
+      connectSsh();
+    }
+
+    function connectSsh() {
+      const host = document.getElementById('ssh-host').value.trim();
+      const port = document.getElementById('ssh-port').value.trim() || '22';
+      const user = document.getElementById('ssh-user').value.trim();
+      if (!host || !user) return;
+
+      const save = document.getElementById('ssh-save-conn').checked;
+      if (save) {
+        const exists = sshConnections.some(c => c.host === host && c.port === port && c.user === user);
+        if (!exists) {
+          sshConnections.push({ host, port, user });
+          window.api.sshConnections.save(sshConnections);
+        }
+      }
+
+      closeSshDialog();
+      // Create a terminal and run ssh command
+      const sshCmd = port === '22' ? `ssh ${user}@${host}` : `ssh -p ${port} ${user}@${host}`;
+      createTerminal(null, null);
+      setTimeout(() => {
+        const t = terminals[terminals.length - 1];
+        if (t) {
+          // Update tab label
+          const tabEl = document.getElementById('tab-' + t.id);
+          if (tabEl) {
+            const label = tabEl.querySelector('.tab-label');
+            if (label) label.textContent = `ssh:${host}`;
+          }
+          window.api.terminal.write(t.id, sshCmd + '\n');
+        }
+      }, 300);
+    }
+
+    async function deleteSshConnection(index) {
+      sshConnections.splice(index, 1);
+      await window.api.sshConnections.save(sshConnections);
+      renderSshSaved();
+    }
+
+    // ============ Workspaces ============
+    async function saveWorkspace() {
+      const name = prompt('Workspace name:');
+      if (!name) return;
+      const data = {
+        currentPath,
+        openFilePaths: openFiles.map(f => f.path),
+        activeFileIndex,
+        terminalCount: terminals.length,
+        activeLeftTab,
+        leftPanelCollapsed: document.getElementById('left-panel').classList.contains('collapsed')
+      };
+      await window.api.workspaces.save(name, data);
+    }
+
+    async function loadWorkspace() {
+      const workspaces = await window.api.workspaces.list();
+      if (workspaces.length === 0) {
+        alert('No saved workspaces');
+        return;
+      }
+      const names = workspaces.map(w => w.name);
+      const choice = prompt('Load workspace:\n' + names.map((n, i) => `${i + 1}. ${n}`).join('\n') + '\n\nEnter number:');
+      if (!choice) return;
+      const idx = parseInt(choice) - 1;
+      if (idx < 0 || idx >= workspaces.length) return;
+      const ws = workspaces[idx];
+      if (!ws.data) return;
+
+      // Restore folder
+      if (ws.data.currentPath) {
+        currentPath = ws.data.currentPath;
+        loadFiles();
+      }
+
+      // Restore files
+      if (ws.data.openFilePaths) {
+        for (const filePath of ws.data.openFilePaths) {
+          try {
+            await openFileByPath(filePath);
+          } catch (e) { /* file may not exist */ }
+        }
+      }
+
+      // Restore terminals
+      if (ws.data.terminalCount) {
+        const existingCount = terminals.length;
+        for (let i = existingCount; i < ws.data.terminalCount; i++) {
+          createTerminal();
+        }
+      }
+
+      // Restore left tab
+      if (ws.data.activeLeftTab) {
+        showLeftTab(ws.data.activeLeftTab);
+      }
+
+      // Update title bar
+      const wsName = ws.name;
+      const titleCenter = document.querySelector('.title-center');
+      if (titleCenter) titleCenter.textContent = `dTerm — ${wsName}`;
+    }
+
+    async function deleteWorkspace() {
+      const workspaces = await window.api.workspaces.list();
+      if (workspaces.length === 0) { alert('No saved workspaces'); return; }
+      const names = workspaces.map(w => w.name);
+      const choice = prompt('Delete workspace:\n' + names.map((n, i) => `${i + 1}. ${n}`).join('\n') + '\n\nEnter number:');
+      if (!choice) return;
+      const idx = parseInt(choice) - 1;
+      if (idx < 0 || idx >= workspaces.length) return;
+      if (!confirm(`Delete workspace "${workspaces[idx].name}"?`)) return;
+      await window.api.workspaces.delete(workspaces[idx].name);
+    }
+
+    // ============ Breadcrumb Path Bar ============
+    function renderBreadcrumb(pathStr) {
+      const container = document.querySelector('#fm-path span');
+      if (!container) return;
+      if (!pathStr || pathStr === '/') {
+        container.innerHTML = '<span class="breadcrumb-segment" onclick="navigateTo(\'/\')">/</span>';
+        return;
+      }
+      const parts = pathStr.split('/').filter(Boolean);
+      let html = '<span class="breadcrumb">';
+      html += '<span class="breadcrumb-segment" onclick="navigateTo(\'/\')">/</span>';
+      parts.forEach((part, i) => {
+        const fullPath = '/' + parts.slice(0, i + 1).join('/');
+        html += `<span class="breadcrumb-sep">/</span><span class="breadcrumb-segment" onclick="navigateTo('${fullPath.replace(/'/g, "\\'")}')">${part}</span>`;
+      });
+      html += '</span>';
+      container.innerHTML = html;
+    }
+
+    function navigateTo(path) {
+      currentPath = path;
+      loadFiles();
+    }
+
+    // ============ File Icons in Editor Tabs ============
+    const fileIconMap = {
+      'js': { icon: 'JS', color: '#f0db4f' },
+      'jsx': { icon: 'JSX', color: '#61dafb' },
+      'ts': { icon: 'TS', color: '#3178c6' },
+      'tsx': { icon: 'TSX', color: '#3178c6' },
+      'py': { icon: 'PY', color: '#3776ab' },
+      'rb': { icon: 'RB', color: '#cc342d' },
+      'go': { icon: 'GO', color: '#00add8' },
+      'rs': { icon: 'RS', color: '#dea584' },
+      'java': { icon: 'JV', color: '#f89820' },
+      'c': { icon: 'C', color: '#555cb3' },
+      'cpp': { icon: 'C+', color: '#004482' },
+      'cs': { icon: 'C#', color: '#68217a' },
+      'swift': { icon: 'SW', color: '#fa7343' },
+      'kt': { icon: 'KT', color: '#a97bff' },
+      'html': { icon: '◇', color: '#e44d26' },
+      'htm': { icon: '◇', color: '#e44d26' },
+      'css': { icon: '#', color: '#264de4' },
+      'scss': { icon: 'SC', color: '#cf649a' },
+      'less': { icon: 'LS', color: '#1d365d' },
+      'json': { icon: '{}', color: '#5b9a32' },
+      'xml': { icon: '◇', color: '#f56e22' },
+      'yaml': { icon: 'YM', color: '#cb171e' },
+      'yml': { icon: 'YM', color: '#cb171e' },
+      'md': { icon: 'MD', color: '#519aba' },
+      'sql': { icon: 'SQ', color: '#e38c00' },
+      'sh': { icon: '$_', color: '#4eaa25' },
+      'bash': { icon: '$_', color: '#4eaa25' },
+      'zsh': { icon: '$_', color: '#4eaa25' },
+      'php': { icon: 'PH', color: '#777bb3' },
+      'lua': { icon: 'LU', color: '#000080' },
+      'r': { icon: 'R', color: '#276dc3' },
+      'svg': { icon: '◇', color: '#ffb13b' },
+      'vue': { icon: 'VU', color: '#42b883' },
+      'svelte': { icon: 'SV', color: '#ff3e00' },
+      'dockerfile': { icon: '🐳', color: '#2496ed' },
+      'toml': { icon: 'TM', color: '#9c4221' },
+      'ini': { icon: 'IN', color: '#888' },
+      'env': { icon: 'EN', color: '#ecd53f' },
+      'gitignore': { icon: 'GI', color: '#f05032' },
+      'lock': { icon: '🔒', color: '#888' },
+    };
+
+    function getFileIcon(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const dotFile = filename.startsWith('.') ? filename.substring(1).toLowerCase() : '';
+      const info = fileIconMap[ext] || fileIconMap[dotFile];
+      if (info) return `<span class="tab-icon" style="color:${info.color}">${info.icon}</span>`;
+      return '<span class="tab-icon" style="color:#888">●</span>';
+    }
+
+    // ============ Markdown Preview ============
+    let mdPreviewActive = false;
+
+    function simpleMarkdown(text) {
+      let html = text
+        // Code blocks (fenced)
+        .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+        // Inline code
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Headers
+        .replace(/^######\s+(.+)$/gm, '<h6>$1</h6>')
+        .replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>')
+        .replace(/^####\s+(.+)$/gm, '<h4>$1</h4>')
+        .replace(/^###\s+(.+)$/gm, '<h3>$1</h3>')
+        .replace(/^##\s+(.+)$/gm, '<h2>$1</h2>')
+        .replace(/^#\s+(.+)$/gm, '<h1>$1</h1>')
+        // Horizontal rule
+        .replace(/^---+$/gm, '<hr>')
+        // Bold + italic
+        .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+        // Bold
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        // Italic
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        // Strikethrough
+        .replace(/~~(.+?)~~/g, '<del>$1</del>')
+        // Images
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">')
+        // Links
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+        // Blockquotes
+        .replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>')
+        // Unordered lists
+        .replace(/^[\*\-]\s+(.+)$/gm, '<li>$1</li>')
+        // Ordered lists
+        .replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>')
+        // Tables (basic)
+        .replace(/^\|(.+)\|$/gm, (match, content) => {
+          const cells = content.split('|').map(c => c.trim());
+          if (cells.every(c => /^[-:]+$/.test(c))) return '';
+          const tag = 'td';
+          return '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>';
+        })
+        // Wrap consecutive <li> in <ul>
+        .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+        // Wrap consecutive <tr> in <table>
+        .replace(/(<tr>.*<\/tr>\n?)+/g, '<table>$&</table>')
+        // Line breaks (paragraphs)
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+      return '<p>' + html + '</p>';
+    }
+
+    function toggleMdPreview() {
+      mdPreviewActive = !mdPreviewActive;
+      const toggle = document.getElementById('md-preview-toggle');
+      const preview = document.getElementById('md-preview-container');
+      const editor = document.getElementById('editor-container');
+      if (mdPreviewActive) {
+        toggle.classList.add('active');
+        toggle.textContent = '◀ Editor';
+        preview.classList.add('visible');
+        editor.style.display = 'none';
+        updateMdPreview();
+      } else {
+        toggle.classList.remove('active');
+        toggle.textContent = 'Preview ▶';
+        preview.classList.remove('visible');
+        editor.style.display = '';
+      }
+    }
+
+    function updateMdPreview() {
+      if (!mdPreviewActive) return;
+      const preview = document.getElementById('md-preview-container');
+      if (monacoEditor) {
+        preview.innerHTML = simpleMarkdown(monacoEditor.getValue());
+      }
+    }
+
+    // ============ Image Preview Tooltip ============
+    const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'ico'];
+    let imgPreviewTooltip = null;
+    let imgPreviewTimeout = null;
+
+    function showImageTooltip(e, filePath) {
+      clearTimeout(imgPreviewTimeout);
+      imgPreviewTimeout = setTimeout(() => {
+        if (!imgPreviewTooltip) {
+          imgPreviewTooltip = document.createElement('div');
+          imgPreviewTooltip.className = 'file-preview-tooltip';
+          document.body.appendChild(imgPreviewTooltip);
+        }
+        imgPreviewTooltip.innerHTML = `<img src="file://${filePath}">`;
+        imgPreviewTooltip.style.display = 'block';
+        imgPreviewTooltip.style.left = (e.clientX + 12) + 'px';
+        imgPreviewTooltip.style.top = (e.clientY + 12) + 'px';
+      }, 300);
+    }
+
+    function hideImageTooltip() {
+      clearTimeout(imgPreviewTimeout);
+      if (imgPreviewTooltip) {
+        imgPreviewTooltip.style.display = 'none';
+      }
+    }
+
+    // ============ Status Bar ============
+    function updateStatusBar() {
+      // Git branch
+      const branchEl = document.getElementById('sb-branch');
+      const branchName = document.getElementById('git-branch-name');
+      if (branchName && branchName.textContent) {
+        branchEl.textContent = '⎇ ' + branchName.textContent;
+        branchEl.style.display = '';
+      } else {
+        branchEl.style.display = 'none';
+      }
+
+      // Current directory basename
+      const dirEl = document.getElementById('sb-dir');
+      if (currentPath) {
+        dirEl.textContent = '📁 ' + (currentPath.split('/').pop() || '/');
+      }
+
+      // Language
+      const langEl = document.getElementById('sb-lang');
+      if (activeFileIndex >= 0 && openFiles[activeFileIndex]) {
+        const lang = getLanguage(openFiles[activeFileIndex].name);
+        langEl.textContent = lang.charAt(0).toUpperCase() + lang.slice(1);
+      } else {
+        langEl.textContent = '';
+      }
+
+      // Cursor position
+      const cursorEl = document.getElementById('sb-cursor');
+      const titleCursor = document.getElementById('status-line');
+      cursorEl.textContent = titleCursor ? titleCursor.textContent : '';
+
+      // Terminal count
+      const termEl = document.getElementById('sb-terminals');
+      termEl.textContent = terminals.length > 0 ? `⬛ ${terminals.length}` : '';
+    }
+
+    // Update status bar periodically
+    setInterval(updateStatusBar, 2000);
+
+    // Code Runner
+    const runnerMap = {
+      '.js': (f) => `node "${f}"`,
+      '.mjs': (f) => `node "${f}"`,
+      '.cjs': (f) => `node "${f}"`,
+      '.ts': (f) => `npx tsx "${f}"`,
+      '.tsx': (f) => `npx tsx "${f}"`,
+      '.py': (f) => `python3 "${f}"`,
+      '.rb': (f) => `ruby "${f}"`,
+      '.go': (f) => `go run "${f}"`,
+      '.rs': (f) => `cargo run`,
+      '.sh': (f) => `bash "${f}"`,
+      '.zsh': (f) => `zsh "${f}"`,
+      '.php': (f) => `php "${f}"`,
+      '.swift': (f) => `swift "${f}"`,
+      '.c': (f) => `gcc "${f}" -o /tmp/a.out && /tmp/a.out`,
+      '.cpp': (f) => `g++ "${f}" -o /tmp/a.out && /tmp/a.out`,
+      '.java': (f) => { const cls = f.split('/').pop().replace(/\.java$/, ''); return `javac "${f}" && java -cp "$(dirname '${f}')" ${cls}`; },
+      '.pl': (f) => `perl "${f}"`,
+      '.lua': (f) => `lua "${f}"`,
+      '.r': (f) => `Rscript "${f}"`,
+      '.R': (f) => `Rscript "${f}"`,
+    };
+
+    function getRunnerForFile(filePath) {
+      if (!filePath) return null;
+      const ext = '.' + filePath.split('.').pop();
+      return runnerMap[ext] || null;
+    }
+
+    async function runCurrentFile() {
+      if (activeFileIndex < 0 || !openFiles[activeFileIndex]) return;
+      const file = openFiles[activeFileIndex];
+      const runner = getRunnerForFile(file.path);
+      if (!runner) {
+        alert('No runner configured for this file type');
+        return;
+      }
+      // Save first if modified
+      if (file.modified) {
+        await saveCurrentFile();
+      }
+      const command = runner(file.path);
+      const fileCwd = file.path.substring(0, file.path.lastIndexOf('/'));
+      createTerminal(null, fileCwd);
+      // Wait briefly for the terminal to initialize, then write command
+      setTimeout(() => {
+        const t = terminals[terminals.length - 1];
+        if (t) window.api.terminal.write(t.id, command + '\n');
+      }, 300);
+    }
+
+    function runTask(command) {
+      createTerminal(null, currentPath || null);
+      setTimeout(() => {
+        const t = terminals[terminals.length - 1];
+        if (t) window.api.terminal.write(t.id, command + '\n');
+      }, 300);
+    }
+
+    function runCustomCommand() {
+      const input = document.getElementById('runner-custom-cmd');
+      const cmd = input.value.trim();
+      if (!cmd) return;
+      addRecentCommand(cmd);
+      runTask(cmd);
+      input.value = '';
+    }
+
+    async function detectProjectTasks() {
+      const listEl = document.getElementById('runner-tasks-list');
+      if (!currentPath) {
+        listEl.innerHTML = '<div class="runner-empty">Open a project folder to detect tasks</div>';
+        return;
+      }
+      listEl.innerHTML = '<div class="runner-empty">Detecting tasks...</div>';
+      try {
+        const result = await window.api.runner.detectTasks(currentPath);
+        if (!result.tasks || result.tasks.length === 0) {
+          listEl.innerHTML = '<div class="runner-empty">No tasks detected in this project</div>';
+          return;
+        }
+        let html = '';
+        let currentCategory = '';
+        for (const task of result.tasks) {
+          if (task.category && task.category !== currentCategory) {
+            currentCategory = task.category;
+            html += `<div class="runner-task-category">${task.category}</div>`;
+          }
+          const detail = task.detail ? ` title="${task.detail.replace(/"/g, '&quot;')}"` : '';
+          html += `<div class="runner-task-item"${detail} onclick="runTask('${task.command.replace(/'/g, "\\'")}')">
+            <span style="color:#4ec94e;margin-right:6px;">▶</span>${task.name}
+          </div>`;
+        }
+        listEl.innerHTML = html;
+      } catch (e) {
+        listEl.innerHTML = '<div class="runner-empty">Error detecting tasks</div>';
+      }
+    }
+
+    function refreshRunner() {
+      // Update "Run Current File" button state
+      const btn = document.getElementById('runner-run-file-btn');
+      const info = document.getElementById('runner-file-info');
+      if (activeFileIndex >= 0 && openFiles[activeFileIndex]) {
+        const file = openFiles[activeFileIndex];
+        const fileName = file.path.split('/').pop();
+        const runner = getRunnerForFile(file.path);
+        if (runner) {
+          btn.disabled = false;
+          const ext = '.' + file.path.split('.').pop();
+          const runtimeName = {
+            '.js': 'node', '.mjs': 'node', '.cjs': 'node',
+            '.ts': 'tsx', '.tsx': 'tsx',
+            '.py': 'python3', '.rb': 'ruby', '.go': 'go',
+            '.rs': 'cargo', '.sh': 'bash', '.zsh': 'zsh',
+            '.php': 'php', '.swift': 'swift',
+            '.c': 'gcc', '.cpp': 'g++', '.java': 'javac',
+            '.pl': 'perl', '.lua': 'lua', '.r': 'Rscript', '.R': 'Rscript'
+          }[ext] || 'unknown';
+          info.textContent = `${fileName} (${runtimeName})`;
+        } else {
+          btn.disabled = true;
+          info.textContent = `${fileName} — no runner for this type`;
+        }
+      } else {
+        btn.disabled = true;
+        info.textContent = 'No file open in editor';
+      }
+      // Detect project tasks
+      detectProjectTasks();
+      // Setup autocomplete for Quick Run
+      setupRunnerAutocomplete();
+    }
+
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
+      // Cmd+R - Run current file
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key === 'r') {
+        e.preventDefault();
+        runCurrentFile();
+      }
       // Cmd+S - Save
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
@@ -4538,18 +6665,26 @@
           closeEditorTab(activeFileIndex, { stopPropagation: () => {} });
         }
       }
-      // Cmd+B - Toggle sidebar
-      if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+      // Cmd+B - Toggle left panel
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key === 'b') {
         e.preventDefault();
-        const left = document.getElementById('left-panel');
-        const resizer = document.getElementById('left-resizer');
-        if (left.style.display === 'none') {
-          left.style.display = 'flex';
-          resizer.style.display = 'block';
-        } else {
-          left.style.display = 'none';
-          resizer.style.display = 'none';
-        }
+        toggleLeftPanel();
+      }
+      // Cmd+Shift+B removed (no right panel)
+      // Cmd+Shift+F - Focus mode (collapse both panels)
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'f') {
+        e.preventDefault();
+        toggleFocusMode();
+      }
+      // Cmd+\ - Split terminal vertically
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key === '\\') {
+        e.preventDefault();
+        splitTerminal('vertical');
+      }
+      // Cmd+Shift+\ - Split terminal horizontally
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === '\\') {
+        e.preventDefault();
+        splitTerminal('horizontal');
       }
       // Cmd+, - Settings
       if ((e.metaKey || e.ctrlKey) && e.key === ',') {
@@ -4886,8 +7021,132 @@
       if (cloudSyncInterval) { clearInterval(cloudSyncInterval); cloudSyncInterval = null; }
     }
 
+    // Session save/restore
+    async function saveSession() {
+      try {
+        // Gather terminal data
+        const terminalData = [];
+        for (const t of terminals) {
+          const cwd = await window.api.terminal.getCwd(t.id);
+          const shellName = t.name;
+          // Resolve shell path from name
+          const shellPath = shellName === 'zsh' ? '/bin/zsh' : shellName === 'bash' ? '/bin/bash' : settings.shell || '/bin/zsh';
+          // Serialize terminal buffer content (with ANSI escape codes for colors/formatting)
+          let buffer = '';
+          try {
+            if (t.serializeAddon) {
+              buffer = t.serializeAddon.serialize();
+            }
+          } catch (e) {
+            console.warn('Could not serialize terminal buffer:', e);
+          }
+          terminalData.push({ shell: shellPath, cwd: cwd || null, name: shellName, buffer: buffer });
+        }
+
+        // Gather open editor files
+        const editorData = openFiles.filter(f => !f.ftpFile).map(f => ({ path: f.path, name: f.name }));
+
+        // Get browser URL
+        const webview = document.getElementById('mini-browser-frame');
+        const browserUrl = webview ? webview.getURL() : null;
+
+        const session = {
+          terminals: terminalData,
+          editorFiles: editorData,
+          activeFileIndex: activeFileIndex,
+          browserUrl: browserUrl,
+          fileBrowserPath: currentPath,
+          leftPanelCollapsed: document.getElementById('left-panel').classList.contains('collapsed'),
+          leftPanelWidth: leftPanelWidth || document.getElementById('left-panel').offsetWidth || 400,
+          activeLeftTab: activeLeftTab
+        };
+
+        await window.api.session.save(session);
+        // Update last sync time in status bar
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const el = document.getElementById('session-sync-time');
+        if (el) el.textContent = 'Saved ' + timeStr;
+      } catch (e) {
+        console.error('Failed to save session:', e);
+      }
+    }
+
+    async function restoreSession() {
+      try {
+        const session = await window.api.session.load();
+        if (!session) return;
+
+        // Restore file browser path
+        if (session.fileBrowserPath) {
+          currentPath = session.fileBrowserPath;
+          loadFiles();
+        }
+
+        // Restore terminal tabs
+        if (session.terminals && session.terminals.length > 0) {
+          for (const t of session.terminals) {
+            createTerminal(t.shell, t.cwd);
+            // Write saved buffer content back into the terminal
+            if (t.buffer) {
+              const termData = terminals[terminals.length - 1];
+              if (termData && termData.term) {
+                termData.term.write(t.buffer);
+              }
+            }
+          }
+        }
+
+        // Restore editor files
+        if (session.editorFiles && session.editorFiles.length > 0) {
+          for (const f of session.editorFiles) {
+            try {
+              await openFileInEditor({ path: f.path, name: f.name, isFile: true });
+            } catch (e) {
+              console.warn('Could not restore file:', f.path, e);
+            }
+          }
+          // Activate the previously active file
+          if (session.activeFileIndex >= 0 && session.activeFileIndex < openFiles.length) {
+            activateFile(session.activeFileIndex);
+          }
+        }
+
+        // Restore browser URL
+        if (session.browserUrl && session.browserUrl !== 'about:blank') {
+          const webview = document.getElementById('mini-browser-frame');
+          const urlInput = document.getElementById('mini-browser-url');
+          if (webview) webview.src = session.browserUrl;
+          if (urlInput) urlInput.value = session.browserUrl;
+        }
+
+        // Restore panel width and collapsed state
+        if (session.leftPanelWidth) {
+          leftPanelWidth = session.leftPanelWidth;
+          document.getElementById('left-panel').style.width = session.leftPanelWidth + 'px';
+        }
+        if (session.leftPanelCollapsed) {
+          toggleLeftPanel();
+        }
+        // Restore active left tab (handles legacy activeRightTab too)
+        if (session.activeLeftTab) {
+          showLeftTab(session.activeLeftTab);
+        } else if (session.activeRightTab) {
+          showLeftTab(session.activeRightTab);
+        }
+      } catch (e) {
+        console.error('Failed to restore session:', e);
+      }
+    }
+
+    // Auto-save session periodically
+    setInterval(saveSession, 30000);
+
     // Auto-push on window close
     window.addEventListener('beforeunload', () => {
+      // Save session synchronously by sending to main process
+      // (beforeunload can't await, but the IPC call is fire-and-forget here)
+      saveSession();
       if (cloudAccount) {
         pushCloudData();
       }
@@ -4895,8 +7154,10 @@
 
     // Start
     init();
-    initNotes();
+    // initNotes() is called from Monaco onload callback
     showWelcomeScreen();
+    loadSshConnections();
+    updateStatusBar();
   </script>
 </body>
 </html>

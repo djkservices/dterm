@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const pty = require('node-pty');
 const https = require('https');
+const { execSync, exec } = require('child_process');
 
 let mainWindow = null;
 const terminals = new Map();
@@ -43,6 +44,8 @@ function createWindow() {
     width: windowState.width,
     height: windowState.height,
     backgroundColor: '#000000',
+    titleBarStyle: 'hiddenInset',
+    trafficLightPosition: { x: 12, y: 10 },
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -164,6 +167,44 @@ ipcMain.handle('ftpConnections:save', async (_, connections) => {
   return true;
 });
 
+// Session storage
+const sessionPath = path.join(app.getPath('userData'), 'session.json');
+
+ipcMain.handle('session:save', async (_, sessionData) => {
+  await fs.promises.writeFile(sessionPath, JSON.stringify(sessionData, null, 2));
+  return true;
+});
+
+ipcMain.handle('session:load', async () => {
+  try {
+    const data = await fs.promises.readFile(sessionPath, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return null;
+  }
+});
+
+ipcMain.handle('terminal:getCwd', async (_, id) => {
+  const ptyProcess = terminals.get(id);
+  if (!ptyProcess) return null;
+  try {
+    const pid = ptyProcess.pid;
+    const result = execSync(`lsof -a -p ${pid} -d cwd -Fn 2>/dev/null`, {
+      encoding: 'utf-8',
+      timeout: 2000
+    });
+    const lines = result.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('n') && line.length > 1) {
+        return line.substring(1);
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+});
+
 // Notes storage
 const notesPath = path.join(app.getPath('userData'), 'notes.json');
 
@@ -203,14 +244,14 @@ ipcMain.handle('dialog:openFile', async () => {
 });
 
 // Terminal handlers
-ipcMain.handle('terminal:create', (_, id, shell) => {
+ipcMain.handle('terminal:create', (_, id, shell, cwd) => {
   const defaultShell = '/bin/zsh';
 
   const ptyProcess = pty.spawn(shell || defaultShell, [], {
     name: 'xterm-256color',
     cols: 80,
     rows: 24,
-    cwd: app.getPath('home'),
+    cwd: cwd || app.getPath('home'),
     env: {
       ...process.env,
       TERM: 'xterm-256color'
@@ -372,7 +413,6 @@ ipcMain.handle('ftp:disconnect', async () => {
 });
 
 // Git handlers
-const { execSync } = require('child_process');
 
 ipcMain.handle('git:getBranch', async (_, dirPath) => {
   try {
@@ -388,7 +428,6 @@ ipcMain.handle('git:getBranch', async (_, dirPath) => {
 });
 
 // Tools - shell command execution
-const { exec } = require('child_process');
 
 ipcMain.handle('tools:exec', async (_, command) => {
   // Whitelist allowed commands for security
@@ -521,4 +560,232 @@ ipcMain.handle('git:getStatus', async (_, dirPath) => {
   } catch {
     return null;
   }
+});
+
+ipcMain.handle('git:statusPorcelain', async (_, dirPath) => {
+  try {
+    const stdout = execSync('git status --porcelain', { cwd: dirPath, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    return { stdout };
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
+ipcMain.handle('git:commitAll', async (_, dirPath, message) => {
+  try {
+    execSync('git add -A', { cwd: dirPath, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    const stdout = execSync(`git commit -m "${message.replace(/"/g, '\\"')}"`, { cwd: dirPath, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
+    return { stdout };
+  } catch (e) {
+    return { error: e.stderr || e.message };
+  }
+});
+
+ipcMain.handle('git:push', async (_, dirPath) => {
+  try {
+    const stdout = execSync('git push', { cwd: dirPath, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 30000 });
+    return { stdout };
+  } catch (e) {
+    return { error: e.stderr || e.message };
+  }
+});
+
+ipcMain.handle('git:pull', async (_, dirPath) => {
+  try {
+    const stdout = execSync('git pull', { cwd: dirPath, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 30000 });
+    return { stdout };
+  } catch (e) {
+    return { error: e.stderr || e.message };
+  }
+});
+
+ipcMain.handle('search:grep', async (_, dirPath, query, useRegex, caseSensitive) => {
+  try {
+    const caseFlag = caseSensitive ? '' : '-i';
+    const regexFlag = useRegex ? '-E' : '-F';
+    const cmd = `grep -rn ${caseFlag} ${regexFlag} -- "${query.replace(/"/g, '\\"')}" "${dirPath}" 2>/dev/null | head -200`;
+    const stdout = execSync(cmd, { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'], timeout: 15000, maxBuffer: 1024 * 1024 });
+    return { stdout };
+  } catch (e) {
+    if (e.status === 1) return { stdout: '' }; // grep returns 1 for no matches
+    return { error: e.message };
+  }
+});
+
+// Code Runner — detect project tasks
+ipcMain.handle('runner:detectTasks', async (_, dirPath) => {
+  const tasks = [];
+  let projectType = 'unknown';
+  try {
+    // Node.js — package.json
+    const pkgPath = path.join(dirPath, 'package.json');
+    if (fs.existsSync(pkgPath)) {
+      projectType = 'node';
+      try {
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+        if (pkg.scripts) {
+          for (const [name, cmd] of Object.entries(pkg.scripts)) {
+            tasks.push({ name: `npm run ${name}`, command: `npm run ${name}`, category: 'npm scripts', detail: cmd });
+          }
+        }
+      } catch (e) { /* invalid JSON */ }
+    }
+
+    // Makefile
+    const makePath = path.join(dirPath, 'Makefile');
+    if (fs.existsSync(makePath)) {
+      if (projectType === 'unknown') projectType = 'make';
+      try {
+        const content = fs.readFileSync(makePath, 'utf-8');
+        const targets = content.match(/^[a-zA-Z_][a-zA-Z0-9_-]*(?=\s*:)/gm);
+        if (targets) {
+          const unique = [...new Set(targets)];
+          for (const t of unique) {
+            tasks.push({ name: `make ${t}`, command: `make ${t}`, category: 'Makefile' });
+          }
+        }
+      } catch (e) { /* read error */ }
+    }
+
+    // Python — requirements.txt or pyproject.toml
+    if (fs.existsSync(path.join(dirPath, 'requirements.txt'))) {
+      if (projectType === 'unknown') projectType = 'python';
+      tasks.push({ name: 'pip install -r requirements.txt', command: 'pip install -r requirements.txt', category: 'Python' });
+    }
+    if (fs.existsSync(path.join(dirPath, 'pyproject.toml'))) {
+      if (projectType === 'unknown') projectType = 'python';
+      tasks.push({ name: 'pip install -e .', command: 'pip install -e .', category: 'Python' });
+    }
+    if (fs.existsSync(path.join(dirPath, 'manage.py'))) {
+      tasks.push({ name: 'python manage.py runserver', command: 'python3 manage.py runserver', category: 'Django' });
+      tasks.push({ name: 'python manage.py migrate', command: 'python3 manage.py migrate', category: 'Django' });
+    }
+
+    // Rust — Cargo.toml
+    if (fs.existsSync(path.join(dirPath, 'Cargo.toml'))) {
+      projectType = 'rust';
+      tasks.push({ name: 'cargo run', command: 'cargo run', category: 'Cargo' });
+      tasks.push({ name: 'cargo build', command: 'cargo build', category: 'Cargo' });
+      tasks.push({ name: 'cargo test', command: 'cargo test', category: 'Cargo' });
+    }
+
+    // Go — go.mod
+    if (fs.existsSync(path.join(dirPath, 'go.mod'))) {
+      projectType = 'go';
+      tasks.push({ name: 'go run .', command: 'go run .', category: 'Go' });
+      tasks.push({ name: 'go build', command: 'go build', category: 'Go' });
+      tasks.push({ name: 'go test ./...', command: 'go test ./...', category: 'Go' });
+    }
+
+    // Docker
+    if (fs.existsSync(path.join(dirPath, 'Dockerfile'))) {
+      tasks.push({ name: 'docker build .', command: 'docker build -t app .', category: 'Docker' });
+      tasks.push({ name: 'docker run', command: 'docker run --rm app', category: 'Docker' });
+    }
+    if (fs.existsSync(path.join(dirPath, 'docker-compose.yml')) || fs.existsSync(path.join(dirPath, 'compose.yml'))) {
+      tasks.push({ name: 'docker compose up', command: 'docker compose up', category: 'Docker' });
+      tasks.push({ name: 'docker compose down', command: 'docker compose down', category: 'Docker' });
+    }
+
+  } catch (e) { /* directory read error */ }
+  return { type: projectType, tasks };
+});
+
+// ============ Snippets ============
+const snippetsPath = path.join(app.getPath('home'), '.dterm-snippets.json');
+
+ipcMain.handle('snippets:load', async () => {
+  try {
+    return JSON.parse(fs.readFileSync(snippetsPath, 'utf-8'));
+  } catch {
+    return [];
+  }
+});
+
+ipcMain.handle('snippets:save', async (_, snippets) => {
+  fs.writeFileSync(snippetsPath, JSON.stringify(snippets, null, 2));
+});
+
+// ============ Processes / Ports ============
+ipcMain.handle('processes:list', async () => {
+  try {
+    const output = execSync('ps -eo pid,pcpu,pmem,comm --sort=-pcpu 2>/dev/null || ps aux', { encoding: 'utf-8', timeout: 5000 });
+    const lines = output.split('\n').filter(l => l.trim());
+    const header = lines.shift();
+    return { header, processes: lines.slice(0, 100) };
+  } catch (e) {
+    return { header: '', processes: [], error: e.message };
+  }
+});
+
+ipcMain.handle('processes:ports', async () => {
+  try {
+    const output = execSync('lsof -iTCP -sTCP:LISTEN -nP 2>/dev/null || netstat -tlnp 2>/dev/null', { encoding: 'utf-8', timeout: 5000 });
+    const lines = output.split('\n').filter(l => l.trim());
+    return lines;
+  } catch (e) {
+    return [];
+  }
+});
+
+ipcMain.handle('processes:kill', async (_, pid) => {
+  try {
+    process.kill(parseInt(pid), 'SIGTERM');
+    return { success: true };
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+});
+
+// ============ SSH Connections ============
+const sshConnectionsPath = path.join(app.getPath('home'), '.dterm-ssh-connections.json');
+
+ipcMain.handle('sshConnections:load', async () => {
+  try {
+    return JSON.parse(fs.readFileSync(sshConnectionsPath, 'utf-8'));
+  } catch {
+    return [];
+  }
+});
+
+ipcMain.handle('sshConnections:save', async (_, connections) => {
+  fs.writeFileSync(sshConnectionsPath, JSON.stringify(connections, null, 2));
+});
+
+// ============ Workspaces ============
+const workspacesPath = path.join(app.getPath('home'), '.dterm-workspaces.json');
+
+ipcMain.handle('workspaces:list', async () => {
+  try {
+    return JSON.parse(fs.readFileSync(workspacesPath, 'utf-8'));
+  } catch {
+    return [];
+  }
+});
+
+ipcMain.handle('workspaces:save', async (_, name, data) => {
+  let workspaces = [];
+  try { workspaces = JSON.parse(fs.readFileSync(workspacesPath, 'utf-8')); } catch {}
+  const existing = workspaces.findIndex(w => w.name === name);
+  const entry = { name, data, savedAt: new Date().toISOString() };
+  if (existing >= 0) workspaces[existing] = entry;
+  else workspaces.push(entry);
+  fs.writeFileSync(workspacesPath, JSON.stringify(workspaces, null, 2));
+});
+
+ipcMain.handle('workspaces:load', async (_, name) => {
+  try {
+    const workspaces = JSON.parse(fs.readFileSync(workspacesPath, 'utf-8'));
+    return workspaces.find(w => w.name === name) || null;
+  } catch {
+    return null;
+  }
+});
+
+ipcMain.handle('workspaces:delete', async (_, name) => {
+  try {
+    let workspaces = JSON.parse(fs.readFileSync(workspacesPath, 'utf-8'));
+    workspaces = workspaces.filter(w => w.name !== name);
+    fs.writeFileSync(workspacesPath, JSON.stringify(workspaces, null, 2));
+  } catch {}
 });

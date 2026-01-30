@@ -39,10 +39,11 @@ contextBridge.exposeInMainWorld('api', {
     openFile: () => ipcRenderer.invoke('dialog:openFile')
   },
   terminal: {
-    create: (id, shell) => ipcRenderer.invoke('terminal:create', id, shell),
+    create: (id, shell, cwd) => ipcRenderer.invoke('terminal:create', id, shell, cwd),
     write: (id, data) => ipcRenderer.invoke('terminal:write', id, data),
     resize: (id, cols, rows) => ipcRenderer.invoke('terminal:resize', id, cols, rows),
     kill: (id) => ipcRenderer.invoke('terminal:kill', id),
+    getCwd: (id) => ipcRenderer.invoke('terminal:getCwd', id),
     onData: (callback) => {
       const listener = (_, id, data) => callback(id, data);
       ipcRenderer.on('terminal:data', listener);
@@ -54,9 +55,42 @@ contextBridge.exposeInMainWorld('api', {
       return () => ipcRenderer.removeListener('terminal:exit', listener);
     }
   },
+  session: {
+    save: (data) => ipcRenderer.invoke('session:save', data),
+    load: () => ipcRenderer.invoke('session:load')
+  },
   git: {
     getBranch: (path) => ipcRenderer.invoke('git:getBranch', path),
-    getStatus: (path) => ipcRenderer.invoke('git:getStatus', path)
+    getStatus: (path) => ipcRenderer.invoke('git:getStatus', path),
+    statusPorcelain: (path) => ipcRenderer.invoke('git:statusPorcelain', path),
+    commitAll: (path, message) => ipcRenderer.invoke('git:commitAll', path, message),
+    push: (path) => ipcRenderer.invoke('git:push', path),
+    pull: (path) => ipcRenderer.invoke('git:pull', path)
+  },
+  search: {
+    grep: (path, query, useRegex, caseSensitive) => ipcRenderer.invoke('search:grep', path, query, useRegex, caseSensitive)
+  },
+  runner: {
+    detectTasks: (path) => ipcRenderer.invoke('runner:detectTasks', path)
+  },
+  snippets: {
+    load: () => ipcRenderer.invoke('snippets:load'),
+    save: (snippets) => ipcRenderer.invoke('snippets:save', snippets)
+  },
+  processes: {
+    list: () => ipcRenderer.invoke('processes:list'),
+    ports: () => ipcRenderer.invoke('processes:ports'),
+    kill: (pid) => ipcRenderer.invoke('processes:kill', pid)
+  },
+  sshConnections: {
+    load: () => ipcRenderer.invoke('sshConnections:load'),
+    save: (connections) => ipcRenderer.invoke('sshConnections:save', connections)
+  },
+  workspaces: {
+    list: () => ipcRenderer.invoke('workspaces:list'),
+    save: (name, data) => ipcRenderer.invoke('workspaces:save', name, data),
+    load: (name) => ipcRenderer.invoke('workspaces:load', name),
+    delete: (name) => ipcRenderer.invoke('workspaces:delete', name)
   },
   cloud: {
     login: (username, password) => ipcRenderer.invoke('cloud:login', username, password),
