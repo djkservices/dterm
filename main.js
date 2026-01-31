@@ -541,6 +541,15 @@ ipcMain.handle('cloud:getWelcome', async () => {
   } catch { return { error: 'Failed to fetch welcome message' }; }
 });
 
+// --- Collab (Real-time Collaborative Editing) ---
+ipcMain.handle('collab:request', async (_, action, data) => {
+  try {
+    return await cloudRequest('collab.php', { action, ...data });
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
 ipcMain.handle('git:getStatus', async (_, dirPath) => {
   try {
     const status = execSync('git status --porcelain', {

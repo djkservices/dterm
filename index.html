@@ -15,8 +15,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #000000;
-      color: #ccc;
+      background: #0d1117;
+      color: #d1d5db;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -31,68 +31,58 @@
 
     /* Left Panel */
     #left-panel {
-      width: 350px;
-      min-width: 200px;
-      max-width: 600px;
-      background: #0a0a0a;
-      border-right: 1px solid #222;
+      width: 500px;
+      min-width: 0;
+      max-width: 900px;
+      background: #161b22;
+      border-right: 1px solid #30363d;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       flex-shrink: 0;
       overflow: hidden;
     }
 
-    /* Activity Bar */
-    #activity-bar {
-      width: 48px;
-      min-width: 48px;
-      background: #111;
+    /* Top Navigation Tab Bar */
+    #nav-tabs {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      padding: 8px 0;
       gap: 2px;
+      padding: 6px 10px;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
       flex-shrink: 0;
-      border-right: 1px solid #222;
+      overflow-x: auto;
+      -webkit-app-region: no-drag;
     }
-    .activity-icon {
-      width: 40px;
-      height: 40px;
+    #nav-tabs::-webkit-scrollbar { height: 0; }
+    .nav-tab {
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      border-radius: 6px;
-      color: #666;
+      gap: 5px;
+      padding: 5px 10px;
       border: none;
       background: none;
-      position: relative;
+      color: #8b949e;
+      font-size: 11.5px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      cursor: pointer;
+      border-radius: 6px;
+      white-space: nowrap;
       transition: color 0.15s, background 0.15s;
-    }
-    .activity-icon:hover { color: #ccc; background: #1a1a1a; }
-    .activity-icon.active {
-      color: #fff;
-      background: none;
-    }
-    .activity-icon.active::before {
-      content: '';
-      position: absolute;
-      left: -4px;
-      top: 8px;
-      bottom: 8px;
-      width: 2px;
-      background: #0066cc;
-      border-radius: 1px;
-    }
-    .activity-separator {
-      width: 28px;
-      height: 1px;
-      background: #333;
-      margin: 4px 0;
       flex-shrink: 0;
     }
-    .activity-spacer {
-      flex: 1;
+    .nav-tab:hover { color: #d1d5db; background: #21262d; }
+    .nav-tab.active {
+      color: #f0f6fc;
+      background: #0066cc;
+    }
+    .nav-tab svg { flex-shrink: 0; }
+    .nav-tab-separator {
+      width: 1px;
+      height: 16px;
+      background: #30363d;
+      margin: 0 4px;
+      flex-shrink: 0;
     }
 
     /* Left Panel Content */
@@ -113,13 +103,13 @@
       display: flex;
     }
     .left-tab-header {
-      padding: 8px 10px;
+      padding: 10px 12px;
       font-size: 11px;
       font-weight: 600;
-      color: #999;
+      color: #8b949e;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -135,7 +125,7 @@
     }
     #git-commit-area {
       padding: 8px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
     }
     .git-file-item {
       padding: 3px 8px;
@@ -145,11 +135,11 @@
       align-items: center;
       gap: 6px;
     }
-    .git-file-item:hover { background: #1a1a1a; }
+    .git-file-item:hover { background: #21262d; }
     .git-status-m { color: #e2b93d; }
     .git-status-a { color: #4ec94e; }
     .git-status-d { color: #f44; }
-    .git-status-u { color: #888; }
+    .git-status-u { color: #8b949e; }
 
     /* Search Panel */
     #search-panel {
@@ -162,20 +152,20 @@
       padding: 4px 8px;
       font-size: 11px;
       font-weight: 600;
-      color: #ccc;
+      color: #d1d5db;
       cursor: pointer;
     }
-    .search-result-file:hover { background: #1a1a1a; }
+    .search-result-file:hover { background: #21262d; }
     .search-result-line {
       padding: 2px 8px 2px 20px;
       font-size: 11px;
-      color: #888;
+      color: #8b949e;
       cursor: pointer;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .search-result-line:hover { background: #1a1a1a; color: #ccc; }
+    .search-result-line:hover { background: #21262d; color: #d1d5db; }
     .search-result-match { color: #e2b93d; font-weight: 600; }
 
     /* Code Runner Panel */
@@ -190,10 +180,10 @@
       padding: 8px 10px 4px;
       font-size: 10px;
       font-weight: 600;
-      color: #666;
+      color: #6e7681;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
     }
     .runner-run-btn {
       display: flex;
@@ -212,11 +202,11 @@
       text-align: left;
     }
     .runner-run-btn:hover { background: #1177bb; }
-    .runner-run-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+    .runner-run-btn:disabled { background: #30363d; color: #6e7681; cursor: not-allowed; }
     .runner-file-info {
       padding: 0 20px 8px;
       font-size: 11px;
-      color: #666;
+      color: #6e7681;
     }
     .runner-task-item {
       display: flex;
@@ -225,17 +215,17 @@
       padding: 6px 12px;
       cursor: pointer;
       font-size: 12px;
-      color: #ccc;
+      color: #d1d5db;
       border: none;
       background: none;
       width: 100%;
       text-align: left;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
-    .runner-task-item:hover { background: #1a1a1a; }
+    .runner-task-item:hover { background: #21262d; }
     .runner-task-play { color: #4ec94e; font-size: 10px; flex-shrink: 0; }
     .runner-task-name { flex: 1; }
-    .runner-task-detail { color: #555; font-size: 10px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .runner-task-detail { color: #484f58; font-size: 10px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .runner-custom {
       padding: 8px;
       display: flex;
@@ -244,10 +234,10 @@
     .runner-custom input {
       flex: 1;
       padding: 6px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 12px;
       outline: none;
       font-family: 'SF Mono', Monaco, monospace;
@@ -265,24 +255,24 @@
     .runner-custom button:hover { background: #1177bb; }
     .runner-task-category {
       font-size: 10px;
-      color: #666;
+      color: #6e7681;
       text-transform: uppercase;
       padding: 8px 10px 2px;
       letter-spacing: 0.5px;
     }
     .runner-empty {
       padding: 12px;
-      color: #555;
+      color: #484f58;
       font-size: 12px;
       text-align: center;
     }
 
     /* Breadcrumb Path */
     .breadcrumb { display: flex; align-items: center; flex: 1; overflow: hidden; flex-wrap: nowrap; }
-    .breadcrumb-segment { color: #999; cursor: pointer; white-space: nowrap; }
+    .breadcrumb-segment { color: #8b949e; cursor: pointer; white-space: nowrap; }
     .breadcrumb-segment:hover { color: #0066cc; text-decoration: underline; }
-    .breadcrumb-sep { color: #444; margin: 0 2px; white-space: nowrap; }
-    .breadcrumb-segment:last-child { color: #ccc; }
+    .breadcrumb-sep { color: #484f58; margin: 0 2px; white-space: nowrap; }
+    .breadcrumb-segment:last-child { color: #d1d5db; }
 
     /* File Icons in Editor Tabs */
     .tab-icon { margin-right: 4px; font-size: 11px; font-weight: bold; display: inline-block; min-width: 14px; text-align: center; }
@@ -293,39 +283,39 @@
       flex: 1;
       overflow-y: auto;
       padding: 16px 20px;
-      background: #0a0a0a;
-      color: #ccc;
+      background: #161b22;
+      color: #d1d5db;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 1.6;
     }
     #md-preview-container.visible { display: block; }
-    #md-preview-container h1 { font-size: 24px; color: #e6e6e6; border-bottom: 1px solid #333; padding-bottom: 8px; margin: 16px 0 8px; }
-    #md-preview-container h2 { font-size: 20px; color: #e6e6e6; border-bottom: 1px solid #222; padding-bottom: 6px; margin: 14px 0 6px; }
+    #md-preview-container h1 { font-size: 24px; color: #e6e6e6; border-bottom: 1px solid #30363d; padding-bottom: 8px; margin: 16px 0 8px; }
+    #md-preview-container h2 { font-size: 20px; color: #e6e6e6; border-bottom: 1px solid #30363d; padding-bottom: 6px; margin: 14px 0 6px; }
     #md-preview-container h3 { font-size: 16px; color: #e6e6e6; margin: 12px 0 4px; }
-    #md-preview-container h4,#md-preview-container h5,#md-preview-container h6 { font-size: 14px; color: #ccc; margin: 10px 0 4px; }
-    #md-preview-container code { background: #1a1a1a; padding: 2px 6px; border-radius: 3px; font-family: Menlo, Monaco, monospace; font-size: 13px; }
-    #md-preview-container pre { background: #111; padding: 12px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
+    #md-preview-container h4,#md-preview-container h5,#md-preview-container h6 { font-size: 14px; color: #d1d5db; margin: 10px 0 4px; }
+    #md-preview-container code { background: #21262d; padding: 2px 6px; border-radius: 3px; font-family: Menlo, Monaco, monospace; font-size: 13px; }
+    #md-preview-container pre { background: #0d1117; padding: 12px; border-radius: 6px; overflow-x: auto; margin: 12px 0; }
     #md-preview-container pre code { background: none; padding: 0; }
-    #md-preview-container blockquote { border-left: 3px solid #444; padding-left: 12px; color: #888; margin: 8px 0; }
+    #md-preview-container blockquote { border-left: 3px solid #444; padding-left: 12px; color: #8b949e; margin: 8px 0; }
     #md-preview-container a { color: #58a6ff; text-decoration: none; }
     #md-preview-container a:hover { text-decoration: underline; }
     #md-preview-container img { max-width: 100%; border-radius: 6px; }
     #md-preview-container table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    #md-preview-container th, #md-preview-container td { border: 1px solid #333; padding: 6px 10px; text-align: left; }
-    #md-preview-container th { background: #1a1a1a; }
+    #md-preview-container th, #md-preview-container td { border: 1px solid #30363d; padding: 6px 10px; text-align: left; }
+    #md-preview-container th { background: #21262d; }
     #md-preview-container ul, #md-preview-container ol { padding-left: 24px; }
     #md-preview-container li { margin: 4px 0; }
-    #md-preview-container hr { border: none; border-top: 1px solid #333; margin: 16px 0; }
-    #md-preview-toggle { background: none; border: 1px solid #333; color: #888; font-size: 11px; padding: 2px 8px; border-radius: 3px; cursor: pointer; margin-left: auto; margin-right: 6px; white-space: nowrap; }
-    #md-preview-toggle:hover { color: #ccc; border-color: #555; }
+    #md-preview-container hr { border: none; border-top: 1px solid #30363d; margin: 16px 0; }
+    #md-preview-toggle { background: none; border: 1px solid #30363d; color: #8b949e; font-size: 11px; padding: 2px 8px; border-radius: 3px; cursor: pointer; margin-left: auto; margin-right: 6px; white-space: nowrap; }
+    #md-preview-toggle:hover { color: #d1d5db; border-color: #484f58; }
     #md-preview-toggle.active { color: #4ec94e; border-color: #4ec94e; }
 
     /* Image Preview Tooltip */
     .file-preview-tooltip {
       position: fixed;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 6px;
       padding: 4px;
       z-index: 9999;
@@ -338,13 +328,13 @@
     #status-bar {
       display: flex;
       align-items: center;
-      height: 24px;
-      background: #1a1a1a;
-      border-top: 1px solid #222;
+      height: 28px;
+      background: #161b22;
+      border-top: 1px solid #30363d;
       font-size: 11px;
-      color: #888;
-      padding: 0 10px;
-      gap: 2px;
+      color: #8b949e;
+      padding: 0 12px;
+      gap: 4px;
       flex-shrink: 0;
     }
     .status-item {
@@ -357,7 +347,7 @@
       height: 100%;
     }
     .status-item.clickable { cursor: pointer; }
-    .status-item.clickable:hover { background: #2a2a2a; color: #ccc; }
+    .status-item.clickable:hover { background: #30363d; color: #d1d5db; }
     .status-spacer { flex: 1; }
 
     /* Left Terminal */
@@ -370,14 +360,14 @@
     #left-terminal-container {
       flex: 1;
       position: relative;
-      background: #000;
+      background: #0d1117;
       min-height: 0;
     }
 
     /* Panel Resizers */
     .panel-resizer {
       width: 4px;
-      background: #222;
+      background: #30363d;
       cursor: ew-resize;
       flex-shrink: 0;
     }
@@ -386,22 +376,22 @@
     /* Panel Collapse Toggles */
     .panel-toggle {
       width: 16px;
-      background: #111;
+      background: #161b22;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: #555;
+      color: #484f58;
       font-size: 10px;
       padding: 0;
       transition: background 0.15s, color 0.15s;
       user-select: none;
     }
     .panel-toggle:hover {
-      background: #1a1a1a;
-      color: #ccc;
+      background: #21262d;
+      color: #d1d5db;
     }
     .panel-toggle .toggle-icon {
       writing-mode: vertical-rl;
@@ -412,9 +402,10 @@
 
     /* Collapsed panel states */
     #left-panel.collapsed {
-      width: 48px !important;
-      min-width: 48px !important;
+      width: 0 !important;
+      min-width: 0 !important;
       overflow: hidden;
+      border-right: none;
     }
     #left-panel.collapsed #left-panel-content {
       display: none;
@@ -434,7 +425,7 @@
     }
     #resize-ghost.visible { display: block; }
 
-    .activity-icon.dragging { opacity: 0.4; }
+    .nav-tab.dragging { opacity: 0.4; }
 
     /* Smooth transitions for collapse/expand */
     #left-panel {
@@ -444,7 +435,7 @@
     /* File Manager */
     #file-manager {
       flex: 1;
-      background: #0a0a0a;
+      background: #161b22;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -454,42 +445,72 @@
     /* Mini Browser */
     #mini-browser {
       flex: 1;
-      background: #0a0a0a;
+      background: #161b22;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+    }
+
+    /* Browser Device Tabs */
+    #browser-device-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 4px 6px;
+      background: #0d1117;
+      border-bottom: 1px solid #30363d;
+      flex-shrink: 0;
+    }
+    .device-tab {
+      padding: 3px 10px;
+      border: none;
+      background: none;
+      color: #8b949e;
+      font-size: 11px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .device-tab:hover { color: #d1d5db; background: #21262d; }
+    .device-tab.active { color: #f0f6fc; background: #0066cc; }
+    #browser-viewport-label {
+      margin-left: auto;
+      font-size: 10px;
+      color: #6e7681;
+      display: flex;
+      align-items: center;
     }
 
     #mini-browser-toolbar {
       padding: 6px;
       display: flex;
       gap: 4px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
     }
 
     #mini-browser-toolbar button {
       padding: 5px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       cursor: pointer;
       font-size: 11px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     #mini-browser-toolbar button:hover {
-      background: #2a2a2a;
-      border-color: #444;
+      background: #30363d;
+      border-color: #484f58;
     }
 
     #mini-browser-url {
       flex: 1;
       padding: 4px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 11px;
       outline: none;
     }
@@ -512,7 +533,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #666;
+      color: #6e7681;
       font-size: 12px;
       display: none;
     }
@@ -532,7 +553,7 @@
     .loading-spinner {
       width: 20px;
       height: 20px;
-      border: 2px solid #333;
+      border: 2px solid #30363d;
       border-top-color: #0066cc;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
@@ -549,7 +570,7 @@
     #file-list-loading {
       padding: 20px;
       text-align: center;
-      color: #666;
+      color: #6e7681;
       display: none;
     }
 
@@ -559,7 +580,7 @@
 
     #fm-toolbar {
       padding: 6px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
       display: flex;
       gap: 4px;
       flex-wrap: wrap;
@@ -567,10 +588,10 @@
 
     #fm-toolbar button, #fm-bottom-toolbar button {
       padding: 5px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       cursor: pointer;
       font-size: 11px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -578,8 +599,8 @@
     }
 
     #fm-toolbar button:hover, #fm-bottom-toolbar button:hover {
-      background: #2a2a2a;
-      border-color: #444;
+      background: #30363d;
+      border-color: #484f58;
     }
 
     #fm-toolbar button.active {
@@ -591,10 +612,10 @@
       flex: 1;
       min-width: 60px;
       padding: 4px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 11px;
       outline: none;
     }
@@ -604,8 +625,8 @@
     #fm-path {
       padding: 6px 10px;
       font-size: 11px;
-      color: #666;
-      border-bottom: 1px solid #222;
+      color: #6e7681;
+      border-bottom: 1px solid #30363d;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -619,7 +640,7 @@
     #fm-path button {
       background: none;
       border: none;
-      color: #666;
+      color: #6e7681;
       cursor: pointer;
       font-size: 14px;
       padding: 0;
@@ -632,7 +653,7 @@
       display: flex;
       gap: 4px;
       padding: 4px 6px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
       overflow-x: auto;
       flex-shrink: 0;
     }
@@ -641,10 +662,10 @@
 
     .bookmark-item {
       padding: 3px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #888;
+      color: #8b949e;
       cursor: pointer;
       font-size: 10px;
       white-space: nowrap;
@@ -653,7 +674,7 @@
       gap: 4px;
     }
 
-    .bookmark-item:hover { background: #2a2a2a; color: #ccc; }
+    .bookmark-item:hover { background: #30363d; color: #d1d5db; }
 
     .bookmark-item .remove-bookmark {
       opacity: 0;
@@ -668,8 +689,8 @@
       position: absolute;
       top: 100%;
       left: 0;
-      background: #0a0a0a;
-      border: 1px solid #333;
+      background: #161b22;
+      border: 1px solid #30363d;
       border-radius: 6px;
       padding: 4px 0;
       display: none;
@@ -686,7 +707,7 @@
       padding: 6px 12px;
       cursor: pointer;
       font-size: 12px;
-      color: #ccc;
+      color: #d1d5db;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -697,16 +718,16 @@
     #recent-menu .recent-header {
       padding: 4px 12px;
       font-size: 10px;
-      color: #666;
+      color: #6e7681;
       text-transform: uppercase;
     }
 
     #recent-menu .recent-clear {
       padding: 6px 12px;
       font-size: 11px;
-      color: #888;
+      color: #8b949e;
       cursor: pointer;
-      border-top: 1px solid #222;
+      border-top: 1px solid #30363d;
       margin-top: 4px;
     }
 
@@ -717,11 +738,11 @@
     /* Git indicators */
     #git-branch {
       padding: 2px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
       font-size: 10px;
-      color: #888;
+      color: #8b949e;
       display: none;
       align-items: center;
       gap: 4px;
@@ -733,7 +754,7 @@
     .file-item.git-modified .file-name { color: #f90; }
     .file-item.git-added .file-name { color: #0f0; }
     .file-item.git-deleted .file-name { color: #f44; text-decoration: line-through; }
-    .file-item.git-untracked .file-name { color: #888; }
+    .file-item.git-untracked .file-name { color: #8b949e; }
 
     .git-indicator {
       font-size: 10px;
@@ -744,7 +765,7 @@
 
     .git-indicator.modified { color: #f90; }
     .git-indicator.added { color: #0f0; }
-    .git-indicator.untracked { color: #888; }
+    .git-indicator.untracked { color: #8b949e; }
 
     #file-list {
       flex: 1;
@@ -775,19 +796,19 @@
       opacity: 0.5;
     }
 
-    .file-item:hover { background: #1a1a1a; }
+    .file-item:hover { background: #21262d; }
     .file-item.selected { background: #0066cc; }
     .file-item.cut { opacity: 0.5; }
 
     .file-item .file-info {
       margin-left: auto;
       font-size: 10px;
-      color: #666;
+      color: #6e7681;
     }
 
     #fm-bottom-toolbar {
       padding: 6px;
-      border-top: 1px solid #222;
+      border-top: 1px solid #30363d;
       display: flex;
       gap: 4px;
     }
@@ -806,7 +827,7 @@
     #editor-area {
       display: none;
       flex-direction: column;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
     }
 
     #editor-area.visible {
@@ -816,8 +837,8 @@
     }
 
     #editor-tabs {
-      background: #0a0a0a;
-      border-bottom: 1px solid #222;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
       display: flex;
       align-items: center;
       overflow-x: auto;
@@ -842,13 +863,13 @@
     #terminal-area.with-editor {
       flex: 2;
       min-height: 150px;
-      border-top: 1px solid #222;
+      border-top: 1px solid #30363d;
     }
 
     /* Tabs */
     #terminal-tabs {
-      background: #0a0a0a;
-      border-bottom: 1px solid #222;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
       display: flex;
       align-items: center;
     }
@@ -860,12 +881,12 @@
       align-items: center;
       gap: 8px;
       font-size: 13px;
-      border-right: 1px solid #222;
+      border-right: 1px solid #30363d;
     }
 
-    .tab.active { background: #000000; }
+    .tab.active { background: #0d1117; }
     .tab-label { max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tab:hover:not(.active) { background: #1a1a1a; }
+    .tab:hover:not(.active) { background: #21262d; }
     .tab.modified span:first-child::before { content: '● '; color: #0af; }
 
     .tab-close {
@@ -879,12 +900,12 @@
       padding: 8px 12px;
       background: none;
       border: none;
-      color: #666;
+      color: #6e7681;
       cursor: pointer;
       font-size: 14px;
     }
 
-    #new-term-btn:hover, .term-profile-btn:hover { color: #ccc; }
+    #new-term-btn:hover, .term-profile-btn:hover { color: #d1d5db; }
 
     /* Terminal search bar */
     #terminal-search {
@@ -892,8 +913,8 @@
       position: absolute;
       top: 8px;
       right: 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 6px;
       padding: 6px 8px;
       z-index: 100;
@@ -906,10 +927,10 @@
     #terminal-search input {
       width: 200px;
       padding: 4px 8px;
-      background: #000;
-      border: 1px solid #333;
+      background: #0d1117;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 12px;
       outline: none;
     }
@@ -918,33 +939,33 @@
 
     #terminal-search button {
       padding: 4px 8px;
-      background: #333;
+      background: #30363d;
       border: none;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       cursor: pointer;
       font-size: 11px;
     }
 
-    #terminal-search button:hover { background: #444; }
+    #terminal-search button:hover { background: #3d444d; }
 
     #terminal-search .search-count {
       font-size: 10px;
-      color: #666;
+      color: #6e7681;
       min-width: 40px;
     }
 
     .term-profiles {
       display: flex;
       margin-left: auto;
-      border-left: 1px solid #222;
+      border-left: 1px solid #30363d;
     }
 
     /* Terminal Container */
     #terminal-container {
       flex: 1;
       position: relative;
-      background: #000000;
+      background: #0d1117;
       min-height: 0;
       overflow: hidden;
       display: flex;
@@ -962,13 +983,13 @@
     .split-pane.horizontal { flex-direction: column; }
     .split-divider-v {
       width: 4px;
-      background: #222;
+      background: #30363d;
       cursor: col-resize;
       flex-shrink: 0;
     }
     .split-divider-h {
       height: 4px;
-      background: #222;
+      background: #30363d;
       cursor: row-resize;
       flex-shrink: 0;
     }
@@ -992,23 +1013,23 @@
 
     /* AI Select (in left panel header) */
     #ai-select {
-      background: #1a1a1a;
-      color: #ccc;
-      border: 1px solid #333;
+      background: #21262d;
+      color: #d1d5db;
+      border: 1px solid #30363d;
       border-radius: 4px;
       padding: 5px 8px;
       font-size: 12px;
       cursor: pointer;
       outline: none;
     }
-    #ai-select:hover { background: #2a2a2a; }
+    #ai-select:hover { background: #30363d; }
 
     #ai-frame {
       flex: 1;
       width: 100%;
       height: 100%;
       border: none;
-      background: #000;
+      background: #0d1117;
       min-height: 0;
     }
 
@@ -1041,13 +1062,13 @@
     }
 
     .tools-category {
-      color: #888;
+      color: #8b949e;
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 8px 4px 4px;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #30363d;
       margin-bottom: 4px;
     }
 
@@ -1062,7 +1083,7 @@
       padding: 6px 8px;
       background: none;
       border: none;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 12px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       cursor: pointer;
@@ -1070,7 +1091,7 @@
     }
 
     .tool-btn:hover {
-      background: #1a1a1a;
+      background: #21262d;
       color: #fff;
     }
 
@@ -1092,9 +1113,9 @@
       align-items: center;
       gap: 8px;
       padding: 8px;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #30363d;
       flex-shrink: 0;
-      background: #111;
+      background: #0d1117;
     }
 
     .tool-back-btn {
@@ -1109,7 +1130,7 @@
     .tool-back-btn:hover { color: #44aaff; }
 
     .tool-title {
-      color: #ccc;
+      color: #d1d5db;
       font-size: 13px;
       font-weight: 600;
     }
@@ -1122,7 +1143,7 @@
 
     .tool-body label {
       display: block;
-      color: #888;
+      color: #8b949e;
       font-size: 11px;
       margin-bottom: 3px;
       margin-top: 8px;
@@ -1134,10 +1155,10 @@
       width: 100%;
       box-sizing: border-box;
       padding: 6px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 12px;
       font-family: 'SF Mono', Monaco, monospace;
       outline: none;
@@ -1149,10 +1170,10 @@
       width: 100%;
       box-sizing: border-box;
       padding: 6px 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 12px;
       font-family: 'SF Mono', Monaco, monospace;
       outline: none;
@@ -1180,26 +1201,26 @@
     }
 
     .tool-run-btn:hover { background: #0077ee; }
-    .tool-run-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+    .tool-run-btn:disabled { background: #30363d; color: #6e7681; cursor: not-allowed; }
 
     .tool-secondary-btn {
       padding: 6px 14px;
-      background: #333;
+      background: #30363d;
       border: none;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 12px;
       cursor: pointer;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    .tool-secondary-btn:hover { background: #444; }
+    .tool-secondary-btn:hover { background: #3d444d; }
 
     .tool-output {
       margin-top: 10px;
       padding: 8px;
-      background: #0a0a0a;
-      border: 1px solid #333;
+      background: #161b22;
+      border: 1px solid #30363d;
       border-radius: 4px;
       color: #0f0;
       font-size: 11px;
@@ -1221,14 +1242,14 @@
 
     .tool-result-table td, .tool-result-table th {
       padding: 4px 6px;
-      border: 1px solid #333;
-      color: #ccc;
+      border: 1px solid #30363d;
+      color: #d1d5db;
       text-align: left;
     }
 
     .tool-result-table th {
-      background: #1a1a1a;
-      color: #888;
+      background: #21262d;
+      color: #8b949e;
       font-weight: 600;
     }
 
@@ -1238,7 +1259,7 @@
       width: 1%;
     }
 
-    .tool-status { font-size: 11px; color: #888; margin-top: 6px; }
+    .tool-status { font-size: 11px; color: #8b949e; margin-top: 6px; }
     .tool-status.ok { color: #4c4; }
     .tool-status.warn { color: #cc4; }
     .tool-status.fail { color: #f55; }
@@ -1251,7 +1272,7 @@
       overflow-y: auto;
     }
     #ftp-bar {
-      background: #0a0a0a;
+      background: #161b22;
       padding: 12px;
       flex-shrink: 0;
     }
@@ -1268,10 +1289,10 @@
       width: 100%;
       padding: 8px;
       margin-bottom: 8px;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 12px;
       outline: none;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -1322,21 +1343,21 @@
     #ftp-disconnect-btn:hover { background: #dd4444; }
 
     #ftp-save-btn {
-      background: #333;
-      color: #ccc;
+      background: #30363d;
+      color: #d1d5db;
     }
-    #ftp-save-btn:hover { background: #444; }
+    #ftp-save-btn:hover { background: #3d444d; }
 
     #ftp-delete-saved-btn {
-      background: #333;
+      background: #30363d;
       color: #f44;
     }
-    #ftp-delete-saved-btn:hover { background: #444; }
+    #ftp-delete-saved-btn:hover { background: #3d444d; }
 
     #ftp-status {
       font-size: 11px;
-      color: #666;
-      border-bottom: 1px solid #222;
+      color: #6e7681;
+      border-bottom: 1px solid #30363d;
     }
 
     .terminal-panel {
@@ -1351,8 +1372,8 @@
     /* Context Menu */
     #context-menu {
       position: fixed;
-      background: #0a0a0a;
-      border: 1px solid #222;
+      background: #161b22;
+      border: 1px solid #30363d;
       border-radius: 6px;
       padding: 4px 0;
       display: none;
@@ -1366,7 +1387,7 @@
       padding: 8px 16px;
       background: none;
       border: none;
-      color: #ccc;
+      color: #d1d5db;
       text-align: left;
       cursor: pointer;
       font-size: 13px;
@@ -1378,8 +1399,8 @@
     /* Terminal Context Menu */
     #terminal-context-menu {
       position: fixed;
-      background: #0a0a0a;
-      border: 1px solid #222;
+      background: #161b22;
+      border: 1px solid #30363d;
       border-radius: 6px;
       padding: 4px 0;
       display: none;
@@ -1393,7 +1414,7 @@
       padding: 8px 16px;
       background: none;
       border: none;
-      color: #ccc;
+      color: #d1d5db;
       text-align: left;
       cursor: pointer;
       font-size: 13px;
@@ -1409,8 +1430,8 @@
       transform: translateX(-50%);
       width: 500px;
       max-width: 90%;
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 8px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.6);
       display: none;
@@ -1426,7 +1447,7 @@
       padding: 12px 16px;
       background: transparent;
       border: none;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #30363d;
       color: #fff;
       font-size: 14px;
       outline: none;
@@ -1450,14 +1471,14 @@
 
     .command-item .command-icon { font-size: 16px; opacity: 0.7; }
     .command-item .command-name { flex: 1; }
-    .command-item .command-shortcut { font-size: 11px; color: #888; }
+    .command-item .command-shortcut { font-size: 11px; color: #8b949e; }
 
-    .command-item.selected .command-shortcut { color: #ccc; }
+    .command-item.selected .command-shortcut { color: #d1d5db; }
 
     /* Resizer */
     #resizer {
       height: 4px;
-      background: #222;
+      background: #30363d;
       cursor: ns-resize;
     }
     #resizer:hover { background: #0066cc; }
@@ -1498,7 +1519,7 @@
 
     #file-preview-name {
       margin-top: 12px;
-      color: #888;
+      color: #8b949e;
       font-size: 12px;
     }
 
@@ -1508,7 +1529,7 @@
       right: 20px;
       background: none;
       border: none;
-      color: #888;
+      color: #8b949e;
       font-size: 24px;
       cursor: pointer;
     }
@@ -1527,8 +1548,8 @@
     }
 
     #settings-panel {
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 8px;
       padding: 20px;
       width: 400px;
@@ -1550,16 +1571,16 @@
       display: block;
       margin-bottom: 6px;
       font-size: 12px;
-      color: #888;
+      color: #8b949e;
     }
 
     .settings-group input, .settings-group select {
       width: 100%;
       padding: 8px;
-      background: #000;
-      border: 1px solid #333;
+      background: #0d1117;
+      border: 1px solid #30363d;
       border-radius: 4px;
-      color: #ccc;
+      color: #d1d5db;
       font-size: 13px;
       outline: none;
     }
@@ -1589,8 +1610,8 @@
     }
 
     #settings-panel button.secondary {
-      background: #333;
-      color: #ccc;
+      background: #30363d;
+      color: #d1d5db;
     }
 
     /* Shortcuts Panel */
@@ -1605,8 +1626,8 @@
     }
 
     #shortcuts-panel {
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: #21262d;
+      border: 1px solid #30363d;
       border-radius: 8px;
       padding: 20px;
       width: 450px;
@@ -1624,12 +1645,12 @@
       display: flex;
       justify-content: space-between;
       padding: 8px 0;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #30363d;
       font-size: 13px;
     }
 
     .shortcut-key {
-      background: #333;
+      background: #30363d;
       padding: 2px 8px;
       border-radius: 4px;
       font-family: monospace;
@@ -1639,15 +1660,15 @@
     /* Status Bar */
     /* Title Bar */
     #title-bar {
-      height: 38px;
-      background: #1a1a1a;
-      border-bottom: 1px solid #222;
+      height: 42px;
+      background: #0d1117;
+      border-bottom: 1px solid #30363d;
       display: flex;
       align-items: center;
-      padding: 0 12px 0 80px; /* 80px left padding for macOS traffic lights */
-      font-size: 11px;
-      color: #888;
-      gap: 8px;
+      padding: 0 14px 0 80px; /* 80px left padding for macOS traffic lights */
+      font-size: 12px;
+      color: #8b949e;
+      gap: 10px;
       flex-shrink: 0;
       -webkit-app-region: drag;
       user-select: none;
@@ -1664,7 +1685,7 @@
     .title-center {
       flex: 1;
       text-align: center;
-      color: #555;
+      color: #484f58;
       font-size: 12px;
       font-weight: 500;
     }
@@ -1674,13 +1695,13 @@
     #title-bar button {
       background: none;
       border: none;
-      color: #888;
+      color: #8b949e;
       cursor: pointer;
       font-size: 11px;
       padding: 3px 8px;
       border-radius: 4px;
     }
-    #title-bar button:hover { background: #2a2a2a; color: #ccc; }
+    #title-bar button:hover { background: #30363d; color: #d1d5db; }
 
     /* FTP mode indicator */
     #ftp-mode-badge {
@@ -1695,6 +1716,29 @@
 
     #ftp-mode-badge.visible { display: inline-block; }
 
+    /* Collab Panel */
+    #collab-panel { padding: 12px; display: flex; flex-direction: column; gap: 12px; height: 100%; }
+    #collab-panel .collab-section { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px; }
+    #collab-panel .collab-section h3 { font-size: 12px; color: #f0f6fc; margin-bottom: 8px; font-weight: 600; }
+    #collab-panel .collab-section p { font-size: 11px; color: #8b949e; margin-bottom: 8px; line-height: 1.4; }
+    #collab-panel input[type="text"] { width: 100%; padding: 6px 10px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #d1d5db; font-size: 12px; margin-bottom: 6px; }
+    #collab-panel .btn-collab { padding: 6px 14px; border-radius: 6px; border: none; font-size: 12px; cursor: pointer; font-weight: 500; transition: background 0.15s; }
+    #collab-panel .btn-collab-primary { background: #238636; color: #fff; }
+    #collab-panel .btn-collab-primary:hover { background: #2ea043; }
+    #collab-panel .btn-collab-danger { background: #da3633; color: #fff; }
+    #collab-panel .btn-collab-danger:hover { background: #f85149; }
+    #collab-panel .btn-collab-secondary { background: #30363d; color: #d1d5db; }
+    #collab-panel .btn-collab-secondary:hover { background: #484f58; }
+    #collab-code-display { font-family: 'SF Mono', Menlo, monospace; font-size: 22px; font-weight: 700; color: #58a6ff; letter-spacing: 4px; text-align: center; padding: 10px; background: #0d1117; border: 1px dashed #30363d; border-radius: 6px; margin: 8px 0; user-select: all; }
+    #collab-users-list { list-style: none; padding: 0; margin: 0; }
+    #collab-users-list li { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; color: #d1d5db; }
+    #collab-users-list li .user-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    #collab-status-bar { font-size: 11px; color: #8b949e; padding: 4px 0; display: flex; align-items: center; gap: 6px; }
+    #collab-status-bar .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #238636; animation: pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .collab-active-indicator { display: none; width: 6px; height: 6px; border-radius: 50%; background: #238636; margin-left: 4px; }
+    .collab-active-indicator.visible { display: inline-block; }
+
     /* Welcome / Cloud Account Overlay */
     #welcome-overlay {
       position: fixed;
@@ -1708,8 +1752,8 @@
     }
     #welcome-overlay.hidden { display: none; }
     #welcome-box {
-      background: #1e1e1e;
-      border: 1px solid #333;
+      background: #161b22;
+      border: 1px solid #30363d;
       border-radius: 12px;
       padding: 40px;
       max-width: 420px;
@@ -1718,20 +1762,20 @@
     }
     #welcome-box h1 { font-size: 28px; margin-bottom: 8px; color: #fff; }
     #welcome-box .brand { color: #569cd6; font-family: 'SF Mono', Monaco, monospace; }
-    #welcome-box .welcome-msg { color: #888; font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+    #welcome-box .welcome-msg { color: #8b949e; font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
     #welcome-box .form-group { margin-bottom: 14px; text-align: left; }
-    #welcome-box .form-group label { display: block; font-size: 12px; color: #888; margin-bottom: 4px; }
-    #welcome-box .form-group input { width: 100%; padding: 10px 12px; background: #2d2d2d; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 14px; }
+    #welcome-box .form-group label { display: block; font-size: 12px; color: #8b949e; margin-bottom: 4px; }
+    #welcome-box .form-group input { width: 100%; padding: 10px 12px; background: #21262d; border: 1px solid #30363d; border-radius: 6px; color: #fff; font-size: 14px; }
     #welcome-box .form-group input:focus { outline: none; border-color: #569cd6; }
     #welcome-box .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 8px; }
     #welcome-box .btn-primary { background: #0e639c; color: #fff; }
     #welcome-box .btn-primary:hover { background: #1177bb; }
-    #welcome-box .btn-secondary { background: #333; color: #ccc; }
-    #welcome-box .btn-secondary:hover { background: #444; }
+    #welcome-box .btn-secondary { background: #30363d; color: #d1d5db; }
+    #welcome-box .btn-secondary:hover { background: #3d444d; }
     #welcome-box .toggle-link { color: #569cd6; cursor: pointer; font-size: 13px; margin-top: 16px; display: inline-block; }
     #welcome-box .error-msg { color: #f48771; font-size: 13px; margin-top: 8px; }
-    #welcome-box .skip-link { color: #666; cursor: pointer; font-size: 12px; margin-top: 16px; display: inline-block; }
-    #welcome-box .skip-link:hover { color: #888; }
+    #welcome-box .skip-link { color: #6e7681; cursor: pointer; font-size: 12px; margin-top: 16px; display: inline-block; }
+    #welcome-box .skip-link:hover { color: #8b949e; }
 
     /* Cloud account badge in status bar */
     #cloud-badge {
@@ -1807,7 +1851,7 @@
     <div class="title-section title-left">
       <span id="ftp-mode-badge">FTP</span>
       <span id="status-file">No file open</span>
-      <span id="status-line" style="color:#555;">Ln 1, Col 1</span>
+      <span id="status-line" style="color:#484f58;">Ln 1, Col 1</span>
     </div>
     <div class="title-center">dTerm</div>
     <div class="title-section title-right">
@@ -1816,58 +1860,75 @@
         <span id="cloud-badge-text">Not signed in</span>
       </span>
       <button id="cloud-sync-btn" onclick="manualSync()" style="display:none;" title="Sync Now">&#8635; Sync</button>
-      <span id="session-sync-time" style="color:#555;font-size:11px;" title="Last session save"></span>
+      <span id="session-sync-time" style="color:#484f58;font-size:11px;" title="Last session save"></span>
       <button onclick="showShortcuts()">Shortcuts</button>
       <button onclick="showSettings()">Settings</button>
     </div>
+  </div>
+
+  <!-- Top Navigation Tabs -->
+  <div id="nav-tabs">
+    <button class="nav-tab active" data-panel="files" onclick="showLeftTab('files')" title="Explorer">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+      Files
+    </button>
+    <button class="nav-tab" data-panel="browser" onclick="showLeftTab('browser')" title="Browser">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+      Browser
+    </button>
+    <button class="nav-tab" data-panel="git" onclick="showLeftTab('git')" title="Source Control">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 009 9"/></svg>
+      Git
+    </button>
+    <button class="nav-tab" data-panel="search" onclick="showLeftTab('search')" title="Search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search
+    </button>
+    <button class="nav-tab" data-panel="terminal" onclick="showLeftTab('terminal')" title="Terminal">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      Terminal
+    </button>
+    <div class="nav-tab-separator"></div>
+    <button class="nav-tab" data-panel="runner" onclick="showLeftTab('runner')" title="Code Runner">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Run
+    </button>
+    <button class="nav-tab" data-panel="notes" onclick="showLeftTab('notes')" title="Notes">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Notes
+    </button>
+    <button class="nav-tab" data-panel="snippets" onclick="showLeftTab('snippets')" title="Snippets">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+      Snippets
+    </button>
+    <button class="nav-tab" data-panel="processes" onclick="showLeftTab('processes')" title="Processes">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+      Procs
+    </button>
+    <button class="nav-tab" data-panel="tools" onclick="showLeftTab('tools')" title="Tools">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+      Tools
+    </button>
+    <button class="nav-tab" data-panel="ai" onclick="showLeftTab('ai')" title="AI Chat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      AI
+    </button>
+    <button class="nav-tab" data-panel="ftp" onclick="showLeftTab('ftp')" title="FTP">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+      FTP
+    </button>
+    <div class="nav-tab-separator"></div>
+    <button class="nav-tab" data-panel="collab" onclick="showLeftTab('collab')" title="Collaborate">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Collab
+      <span class="collab-active-indicator" id="collab-nav-dot"></span>
+    </button>
   </div>
 
   <!-- App Container -->
   <div id="app-container">
   <!-- Left Panel -->
   <div id="left-panel">
-    <!-- Activity Bar -->
-    <div id="activity-bar">
-      <button class="activity-icon active" data-panel="files" onclick="showLeftTab('files')" title="Explorer">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="browser" onclick="showLeftTab('browser')" title="Browser">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="git" onclick="showLeftTab('git')" title="Source Control">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 009 9"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="search" onclick="showLeftTab('search')" title="Search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="terminal" onclick="showLeftTab('terminal')" title="Terminal">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-      </button>
-      <div class="activity-separator"></div>
-      <button class="activity-icon" data-panel="runner" onclick="showLeftTab('runner')" title="Code Runner">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="notes" onclick="showLeftTab('notes')" title="Notes">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="snippets" onclick="showLeftTab('snippets')" title="Snippets">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="processes" onclick="showLeftTab('processes')" title="Processes">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="tools" onclick="showLeftTab('tools')" title="Tools">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
-      </button>
-      <button class="activity-icon" data-panel="ai" onclick="showLeftTab('ai')" title="AI Chat">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      </button>
-      <div class="activity-spacer"></div>
-      <button class="activity-icon" data-panel="ftp" onclick="showLeftTab('ftp')" title="FTP">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-      </button>
-    </div>
-
     <!-- Left Panel Content -->
     <div id="left-panel-content">
       <!-- Files Tab -->
@@ -1904,6 +1965,12 @@
             <input type="text" id="mini-browser-url" placeholder="Enter URL..." value="" onkeydown="if(event.key==='Enter')miniBrowserGo()">
             <button onclick="miniBrowserGo()">Go</button>
           </div>
+          <div id="browser-device-tabs">
+            <button class="device-tab active" data-device="desktop" onclick="setBrowserDevice('desktop')">Desktop</button>
+            <button class="device-tab" data-device="tablet" onclick="setBrowserDevice('tablet')">Tablet</button>
+            <button class="device-tab" data-device="mobile" onclick="setBrowserDevice('mobile')">Mobile</button>
+            <span id="browser-viewport-label">100%</span>
+          </div>
           <div id="mini-browser-content">
             <div id="mini-browser-loading"><span class="loading-spinner"></span>Loading...</div>
             <webview id="mini-browser-frame" allowpopups></webview>
@@ -1916,14 +1983,14 @@
         <div id="git-panel">
           <div class="left-tab-header">Source Control</div>
           <div id="git-commit-area">
-            <input type="text" id="git-commit-msg" placeholder="Commit message..." style="width:100%;padding:6px 8px;background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;margin-bottom:6px;">
+            <input type="text" id="git-commit-msg" placeholder="Commit message..." style="width:100%;padding:6px 8px;background:#21262d;border:1px solid #30363d;border-radius:4px;color:#d1d5db;font-size:12px;margin-bottom:6px;">
             <div style="display:flex;gap:4px;">
               <button onclick="gitCommitAll()" style="flex:1;padding:4px 8px;background:#0e639c;border:none;border-radius:4px;color:#fff;cursor:pointer;font-size:11px;">Commit All</button>
-              <button onclick="gitPush()" style="padding:4px 8px;background:#333;border:none;border-radius:4px;color:#ccc;cursor:pointer;font-size:11px;">Push</button>
-              <button onclick="gitPull()" style="padding:4px 8px;background:#333;border:none;border-radius:4px;color:#ccc;cursor:pointer;font-size:11px;">Pull</button>
+              <button onclick="gitPush()" style="padding:4px 8px;background:#30363d;border:none;border-radius:4px;color:#d1d5db;cursor:pointer;font-size:11px;">Push</button>
+              <button onclick="gitPull()" style="padding:4px 8px;background:#30363d;border:none;border-radius:4px;color:#d1d5db;cursor:pointer;font-size:11px;">Pull</button>
             </div>
           </div>
-          <div class="left-tab-header" style="margin-top:8px;font-size:11px;color:#888;">Changes <button onclick="loadGitStatus()" style="background:none;border:none;color:#888;cursor:pointer;font-size:11px;">↻</button></div>
+          <div class="left-tab-header" style="margin-top:8px;font-size:11px;color:#8b949e;">Changes <button onclick="loadGitStatus()" style="background:none;border:none;color:#8b949e;cursor:pointer;font-size:11px;">↻</button></div>
           <div id="git-changes-list" style="flex:1;overflow-y:auto;padding:4px 8px;font-size:12px;font-family:monospace;"></div>
         </div>
       </div>
@@ -1933,8 +2000,8 @@
         <div id="search-panel">
           <div class="left-tab-header">Search Files</div>
           <div style="padding:0 8px 8px;">
-            <input type="text" id="global-search-input" placeholder="Search in files..." style="width:100%;padding:6px 8px;background:#1a1a1a;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;margin-bottom:6px;" onkeydown="if(event.key==='Enter')globalSearch()">
-            <div style="display:flex;gap:8px;font-size:11px;color:#888;margin-bottom:6px;">
+            <input type="text" id="global-search-input" placeholder="Search in files..." style="width:100%;padding:6px 8px;background:#21262d;border:1px solid #30363d;border-radius:4px;color:#d1d5db;font-size:12px;margin-bottom:6px;" onkeydown="if(event.key==='Enter')globalSearch()">
+            <div style="display:flex;gap:8px;font-size:11px;color:#8b949e;margin-bottom:6px;">
               <label><input type="checkbox" id="search-regex"> Regex</label>
               <label><input type="checkbox" id="search-case"> Case sensitive</label>
             </div>
@@ -1947,7 +2014,7 @@
       <!-- Terminal Tab -->
       <div id="left-tab-terminal" class="left-tab-content">
         <div id="left-terminal-area">
-          <div class="left-tab-header">Terminal <button onclick="createLeftTerminal()" style="background:none;border:none;color:#888;cursor:pointer;font-size:13px;">+</button></div>
+          <div class="left-tab-header">Terminal <button onclick="createLeftTerminal()" style="background:none;border:none;color:#8b949e;cursor:pointer;font-size:13px;">+</button></div>
           <div id="left-terminal-container"></div>
         </div>
       </div>
@@ -1955,7 +2022,7 @@
       <!-- Code Runner Tab -->
       <div id="left-tab-runner" class="left-tab-content">
         <div id="runner-panel">
-          <div class="left-tab-header">Code Runner <button onclick="refreshRunner()" style="background:none;border:none;color:#888;cursor:pointer;font-size:11px;">↻</button></div>
+          <div class="left-tab-header">Code Runner <button onclick="refreshRunner()" style="background:none;border:none;color:#8b949e;cursor:pointer;font-size:11px;">↻</button></div>
           <button class="runner-run-btn" id="runner-run-file-btn" onclick="runCurrentFile()" disabled>
             <span style="color:#4ec94e;">▶</span> Run Current File
           </button>
@@ -1989,9 +2056,9 @@
       <!-- Processes Tab -->
       <div id="left-tab-processes" class="left-tab-content">
         <div style="display:flex;flex-direction:column;height:100%;">
-          <div class="left-tab-header">Processes <button onclick="refreshProcesses()" style="background:none;border:none;color:#888;cursor:pointer;font-size:11px;">↻</button></div>
+          <div class="left-tab-header">Processes <button onclick="refreshProcesses()" style="background:none;border:none;color:#8b949e;cursor:pointer;font-size:11px;">↻</button></div>
           <div style="padding:4px 8px;">
-            <input type="text" id="process-search" placeholder="Search processes..." style="width:100%;padding:4px 8px;background:#111;border:1px solid #333;border-radius:3px;color:#ccc;font-size:11px;" oninput="filterProcessList()">
+            <input type="text" id="process-search" placeholder="Search processes..." style="width:100%;padding:4px 8px;background:#0d1117;border:1px solid #30363d;border-radius:3px;color:#d1d5db;font-size:11px;" oninput="filterProcessList()">
           </div>
           <div class="runner-section">Listening Ports</div>
           <div id="ports-list" style="overflow-y:auto;max-height:200px;padding:4px;"></div>
@@ -2096,6 +2163,57 @@
           </div>
         </div>
       </div>
+
+      <!-- Collab Tab -->
+      <div id="left-tab-collab" class="left-tab-content">
+        <div id="collab-panel">
+          <div class="left-tab-header">Live Collaboration</div>
+
+          <!-- Not in session -->
+          <div id="collab-lobby">
+            <div class="collab-section">
+              <h3>Start a Session</h3>
+              <p>Share your current file for real-time collaborative editing. Others can join with the access code.</p>
+              <input type="text" id="collab-display-name" placeholder="Your display name" spellcheck="false">
+              <button class="btn-collab btn-collab-primary" onclick="collabCreateRoom()" style="width:100%;">Share Current File</button>
+            </div>
+
+            <div class="collab-section">
+              <h3>Join a Session</h3>
+              <p>Enter an access code to join someone else's editing session.</p>
+              <input type="text" id="collab-join-code" placeholder="Access code (e.g., ABC123)" spellcheck="false" style="text-transform:uppercase; letter-spacing:2px; text-align:center; font-weight:600;">
+              <button class="btn-collab btn-collab-secondary" onclick="collabJoinRoom()" style="width:100%;">Join Session</button>
+            </div>
+          </div>
+
+          <!-- Active session -->
+          <div id="collab-session" style="display:none;">
+            <div class="collab-section">
+              <h3>Access Code</h3>
+              <div id="collab-code-display"></div>
+              <button class="btn-collab btn-collab-secondary" onclick="collabCopyCode()" style="width:100%; margin-top:4px;">Copy Code</button>
+            </div>
+
+            <div class="collab-section">
+              <h3>File</h3>
+              <div id="collab-filename" style="font-size:12px; color:#d1d5db; word-break:break-all;"></div>
+              <div id="collab-status-bar">
+                <span class="status-dot"></span>
+                <span id="collab-status-text">Connected</span>
+              </div>
+            </div>
+
+            <div class="collab-section" style="flex:1;">
+              <h3>Collaborators</h3>
+              <ul id="collab-users-list"></ul>
+            </div>
+
+            <button class="btn-collab btn-collab-danger" onclick="collabLeaveRoom()" style="width:100%;">Leave Session</button>
+          </div>
+
+          <div id="collab-error" style="color:#f85149; font-size:11px; padding:4px 0; display:none;"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2104,6 +2222,10 @@
   <!-- Left Panel Toggle -->
   <div class="panel-toggle" id="left-toggle" onclick="toggleLeftPanel()" title="Toggle left panel">
     <span class="toggle-icon">◀</span>
+  </div>
+  <!-- Swap Panel Sizes Button -->
+  <div class="panel-toggle" id="swap-toggle" onclick="swapPanelSizes()" title="Swap panel sizes (⌘⇧S)">
+    <span class="toggle-icon">⇄</span>
   </div>
 
   <!-- Main Area -->
@@ -2176,7 +2298,7 @@
     <button onclick="terminalPaste()">Paste</button>
     <button onclick="terminalSelectAll()">Select All</button>
     <button onclick="terminalClear()">Clear</button>
-    <hr style="border:none;border-top:1px solid #333;margin:4px 0;">
+    <hr style="border:none;border-top:1px solid #30363d;margin:4px 0;">
     <button onclick="splitFromMenu('vertical')">Split Right</button>
     <button onclick="splitFromMenu('horizontal')">Split Down</button>
   </div>
@@ -2195,11 +2317,11 @@
 
   <!-- Input Dialog -->
   <div id="input-dialog" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:#1a1a1a; padding:20px; border-radius:8px; border:1px solid #333; min-width:300px;">
-      <div id="input-dialog-title" style="margin-bottom:12px; font-size:14px; color:#ccc;"></div>
-      <input type="text" id="input-dialog-input" style="width:100%; padding:8px; background:#000; border:1px solid #333; border-radius:4px; color:#ccc; font-size:14px; outline:none;">
+    <div style="background:#21262d; padding:20px; border-radius:8px; border:1px solid #30363d; min-width:300px;">
+      <div id="input-dialog-title" style="margin-bottom:12px; font-size:14px; color:#d1d5db;"></div>
+      <input type="text" id="input-dialog-input" style="width:100%; padding:8px; background:#0d1117; border:1px solid #30363d; border-radius:4px; color:#d1d5db; font-size:14px; outline:none;">
       <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
-        <button onclick="closeInputDialog()" style="padding:6px 12px; background:#333; border:none; border-radius:4px; color:#ccc; cursor:pointer;">Cancel</button>
+        <button onclick="closeInputDialog()" style="padding:6px 12px; background:#30363d; border:none; border-radius:4px; color:#d1d5db; cursor:pointer;">Cancel</button>
         <button onclick="confirmInputDialog()" style="padding:6px 12px; background:#0066cc; border:none; border-radius:4px; color:#fff; cursor:pointer;">OK</button>
       </div>
     </div>
@@ -2234,7 +2356,7 @@
       </div>
       <div class="settings-group">
         <label>Browser Home Page</label>
-        <input type="text" id="setting-browser-home" value="https://duckduckgo.com" placeholder="https://duckduckgo.com" style="width:100%; padding:6px 8px; background:#1a1a1a; border:1px solid #333; border-radius:4px; color:#ccc; font-size:12px;">
+        <input type="text" id="setting-browser-home" value="https://duckduckgo.com" placeholder="https://duckduckgo.com" style="width:100%; padding:6px 8px; background:#21262d; border:1px solid #30363d; border-radius:4px; color:#d1d5db; font-size:12px;">
       </div>
       <div class="btn-row">
         <button class="secondary" onclick="closeSettings()">Cancel</button>
@@ -2253,7 +2375,8 @@
       <div class="shortcut-row"><span>Find in file</span><span class="shortcut-key">⌘F</span></div>
       <div class="shortcut-row"><span>Go to line</span><span class="shortcut-key">⌘G</span></div>
       <div class="shortcut-row"><span>Command palette</span><span class="shortcut-key">⌘⇧P</span></div>
-      <div class="shortcut-row"><span>Toggle sidebar</span><span class="shortcut-key">⌘B</span></div>
+      <div class="shortcut-row"><span>Toggle sidebar</span><span class="shortcut-key">⌘⇧B</span></div>
+      <div class="shortcut-row"><span>Swap panel sizes</span><span class="shortcut-key">⌘⇧X</span></div>
       <div class="shortcut-row"><span>Focus mode</span><span class="shortcut-key">⌘⇧F</span></div>
       <div class="shortcut-row"><span>Split terminal vertical</span><span class="shortcut-key">⌘\</span></div>
       <div class="shortcut-row"><span>Split terminal horizontal</span><span class="shortcut-key">⌘⇧\</span></div>
@@ -2264,27 +2387,27 @@
       <div class="shortcut-row"><span>Cut file</span><span class="shortcut-key">⌘X</span></div>
       <div class="shortcut-row"><span>Paste file</span><span class="shortcut-key">⌘V</span></div>
       <div style="margin-top:16px; text-align:center;">
-        <button class="secondary" onclick="closeShortcuts()" style="padding:8px 20px; background:#333; border:none; border-radius:4px; color:#ccc; cursor:pointer;">Close</button>
+        <button class="secondary" onclick="closeShortcuts()" style="padding:8px 20px; background:#30363d; border:none; border-radius:4px; color:#d1d5db; cursor:pointer;">Close</button>
       </div>
     </div>
   </div>
 
   <!-- SSH Connection Dialog -->
   <div id="ssh-dialog" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:10000;display:none;align-items:center;justify-content:center;" onclick="if(event.target===this)closeSshDialog()">
-    <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:20px;width:350px;">
-      <h3 style="margin:0 0 12px;font-size:14px;color:#ccc;">SSH Connection</h3>
+    <div style="background:#21262d;border:1px solid #30363d;border-radius:8px;padding:20px;width:350px;">
+      <h3 style="margin:0 0 12px;font-size:14px;color:#d1d5db;">SSH Connection</h3>
       <div id="ssh-saved-list" style="margin-bottom:12px;"></div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <input type="text" id="ssh-host" placeholder="Host (e.g. 192.168.1.1)" style="padding:6px 8px;background:#111;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;">
+        <input type="text" id="ssh-host" placeholder="Host (e.g. 192.168.1.1)" style="padding:6px 8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#d1d5db;font-size:12px;">
         <div style="display:flex;gap:8px;">
-          <input type="number" id="ssh-port" value="22" placeholder="Port" style="width:70px;padding:6px 8px;background:#111;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;">
-          <input type="text" id="ssh-user" placeholder="Username" style="flex:1;padding:6px 8px;background:#111;border:1px solid #333;border-radius:4px;color:#ccc;font-size:12px;">
+          <input type="number" id="ssh-port" value="22" placeholder="Port" style="width:70px;padding:6px 8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#d1d5db;font-size:12px;">
+          <input type="text" id="ssh-user" placeholder="Username" style="flex:1;padding:6px 8px;background:#0d1117;border:1px solid #30363d;border-radius:4px;color:#d1d5db;font-size:12px;">
         </div>
-        <label style="font-size:11px;color:#888;display:flex;align-items:center;gap:6px;">
+        <label style="font-size:11px;color:#8b949e;display:flex;align-items:center;gap:6px;">
           <input type="checkbox" id="ssh-save-conn"> Save this connection
         </label>
         <div style="display:flex;gap:8px;margin-top:4px;">
-          <button onclick="closeSshDialog()" style="flex:1;padding:6px;background:#333;border:none;border-radius:4px;color:#ccc;cursor:pointer;">Cancel</button>
+          <button onclick="closeSshDialog()" style="flex:1;padding:6px;background:#30363d;border:none;border-radius:4px;color:#d1d5db;cursor:pointer;">Cancel</button>
           <button onclick="connectSsh()" style="flex:1;padding:6px;background:#0066cc;border:none;border-radius:4px;color:#fff;cursor:pointer;">Connect</button>
         </div>
       </div>
@@ -2317,6 +2440,10 @@
     let terminals = [];
     let openFiles = [];
     let activeFileIndex = -1;
+    // Collab state (declared early for editor callback access)
+    let collabState = null;
+    let collabPushPending = false;
+    let collabIgnoreNextChange = false;
     let showHidden = false;
     let allFiles = [];
     let clipboard = { file: null, action: null };
@@ -2465,6 +2592,7 @@
       const urlInput = document.getElementById('mini-browser-url');
       if (webview) webview.src = settings.browserHome;
       if (urlInput) urlInput.value = settings.browserHome;
+      syncNow();
       closeSettings();
     }
 
@@ -2474,8 +2602,8 @@
         document.body.style.color = '#333';
         if (monacoReady) monaco.editor.setTheme('vs');
       } else {
-        document.body.style.background = '#000000';
-        document.body.style.color = '#ccc';
+        document.body.style.background = '#0d1117';
+        document.body.style.color = '#d1d5db';
         if (monacoReady) monaco.editor.setTheme('vs-dark');
       }
     }
@@ -2533,6 +2661,7 @@
       recentFolders.unshift(path);
       if (recentFolders.length > MAX_RECENT) recentFolders.pop();
       localStorage.setItem('dterm-recent-folders', JSON.stringify(recentFolders));
+      syncNow();
     }
 
     function addRecentFile(path) {
@@ -2540,6 +2669,7 @@
       recentFiles.unshift(path);
       if (recentFiles.length > MAX_RECENT) recentFiles.pop();
       localStorage.setItem('dterm-recent-files', JSON.stringify(recentFiles));
+      syncNow();
     }
 
     function showRecentMenu(e) {
@@ -2635,6 +2765,7 @@
       }
       localStorage.setItem('dterm-bookmarks', JSON.stringify(bookmarks));
       loadBookmarks();
+      syncNow();
     }
 
     function removeBookmark(index, e) {
@@ -2642,6 +2773,7 @@
       bookmarks.splice(index, 1);
       localStorage.setItem('dterm-bookmarks', JSON.stringify(bookmarks));
       loadBookmarks();
+      syncNow();
     }
 
     function goToBookmark(path) {
@@ -2982,7 +3114,7 @@
 
       if (!monacoReady) {
         // Fallback to textarea if Monaco not loaded
-        container.innerHTML = `<textarea id="editor-fallback" style="width:100%;height:100%;background:#000;color:#ccc;border:none;outline:none;resize:none;font-family:Menlo,Monaco,monospace;font-size:13px;padding:10px;">${content}</textarea>`;
+        container.innerHTML = `<textarea id="editor-fallback" style="width:100%;height:100%;background:#0d1117;color:#d1d5db;border:none;outline:none;resize:none;font-family:Menlo,Monaco,monospace;font-size:13px;padding:10px;">${content}</textarea>`;
         return;
       }
 
@@ -3003,6 +3135,7 @@
       });
 
       monacoEditor.onDidChangeModelContent(() => {
+        if (collabIgnoreNextChange) return;
         if (activeFileIndex >= 0) {
           openFiles[activeFileIndex].modified = true;
           openFiles[activeFileIndex].content = monacoEditor.getValue();
@@ -3012,6 +3145,10 @@
             clearTimeout(window._mdPreviewTimer);
             window._mdPreviewTimer = setTimeout(updateMdPreview, 300);
           }
+        }
+        // Mark collab push pending
+        if (collabState) {
+          collabPushPending = true;
         }
       });
 
@@ -3220,7 +3357,7 @@
 
       if (isCollapsed) {
         panel.classList.remove('collapsed');
-        panel.style.width = (leftPanelWidth || 400) + 'px';
+        panel.style.width = (leftPanelWidth || 500) + 'px';
         resizer.style.display = '';
       } else {
         leftPanelWidth = panel.offsetWidth;
@@ -3233,6 +3370,34 @@
 
     // Right panel removed — toggleRightPanel kept as no-op for compat
     function toggleRightPanel() { toggleLeftPanel(); }
+
+    let swapSavedWidth = null;
+
+    function swapPanelSizes() {
+      const leftPanel = document.getElementById('left-panel');
+      const appContainer = document.getElementById('app-container');
+      if (leftPanel.classList.contains('collapsed')) return;
+
+      const totalW = appContainer.offsetWidth;
+
+      if (swapSavedWidth) {
+        // Restore original size
+        leftPanel.style.width = swapSavedWidth + 'px';
+        leftPanelWidth = swapSavedWidth;
+        swapSavedWidth = null;
+      } else {
+        // Save current width, then expand to 75% of total
+        swapSavedWidth = leftPanel.offsetWidth;
+        const expandedW = Math.round(totalW * 0.75);
+        leftPanel.style.width = expandedW + 'px';
+        leftPanelWidth = expandedW;
+      }
+
+      setTimeout(() => {
+        terminals.forEach(t => t.fitAddon.fit());
+        if (monacoEditor) monacoEditor.layout();
+      }, 250);
+    }
 
     function updateToggleIcons() {
       const leftPanel = document.getElementById('left-panel');
@@ -3334,12 +3499,58 @@
       document.getElementById('mini-browser-url').value = settings.browserHome;
     }
 
-    // Load saved home page immediately and update URL bar on navigation
-    (function() {
-      const saved = localStorage.getItem('dterm-settings');
-      const homePage = saved ? (JSON.parse(saved).browserHome || 'https://duckduckgo.com') : 'https://duckduckgo.com';
+    const devicePresets = {
+      desktop: { width: '100%', userAgent: null, label: '100%' },
+      tablet: { width: '768px', userAgent: 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1', label: '768px' },
+      mobile: { width: '375px', userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1', label: '375px' }
+    };
+
+    function setBrowserDevice(device) {
+      const webview = document.getElementById('mini-browser-frame');
+      const preset = devicePresets[device];
+      if (!webview || !preset) return;
+
+      document.querySelectorAll('.device-tab').forEach(el => el.classList.remove('active'));
+      const btn = document.querySelector(`.device-tab[data-device="${device}"]`);
+      if (btn) btn.classList.add('active');
+
+      document.getElementById('browser-viewport-label').textContent = preset.label;
+
+      if (preset.width === '100%') {
+        webview.style.width = '100%';
+        webview.style.maxWidth = '';
+        webview.style.margin = '';
+      } else {
+        webview.style.width = preset.width;
+        webview.style.maxWidth = preset.width;
+        webview.style.margin = '0 auto';
+      }
+
+      if (preset.userAgent) {
+        webview.setUserAgent(preset.userAgent);
+      } else {
+        webview.setUserAgent('');
+      }
+
+      webview.reload();
+    }
+
+    // Load saved home page — but defer to session restore if a session exists
+    (async function() {
       const webview = document.getElementById('mini-browser-frame');
       const urlInput = document.getElementById('mini-browser-url');
+      // Check if session has a saved browser URL
+      try {
+        const session = await window.api.session.load();
+        if (session && session.browserUrl && session.browserUrl !== 'about:blank') {
+          if (webview) webview.src = session.browserUrl;
+          if (urlInput) urlInput.value = session.browserUrl;
+          return;
+        }
+      } catch (e) {}
+      // No session URL — use home page
+      const saved = localStorage.getItem('dterm-settings');
+      const homePage = saved ? (JSON.parse(saved).browserHome || 'https://duckduckgo.com') : 'https://duckduckgo.com';
       if (webview) webview.src = homePage;
       if (urlInput) urlInput.value = homePage;
     })();
@@ -3459,7 +3670,8 @@
       { name: 'New Folder', icon: '📁', action: () => newFolder() },
       { name: 'Open Folder', icon: '📂', action: () => openFolder() },
       { name: 'Save File', icon: '💾', action: () => saveCurrentFile(), shortcut: '⌘S' },
-      { name: 'Toggle Sidebar', icon: '◀', action: () => toggleLeftPanel(), shortcut: '⌘B' },
+      { name: 'Toggle Sidebar', icon: '◀', action: () => toggleLeftPanel(), shortcut: '⌘⇧B' },
+      { name: 'Swap Panel Sizes', icon: '⇄', action: () => swapPanelSizes(), shortcut: '⌘⇧X' },
       { name: 'Focus Mode', icon: '⊞', action: () => toggleFocusMode(), shortcut: '⌘⇧F' },
       { name: 'Split Terminal Vertical', icon: '▏', action: () => splitTerminal('vertical'), shortcut: '⌘\\' },
       { name: 'Split Terminal Horizontal', icon: '▁', action: () => splitTerminal('horizontal'), shortcut: '⌘⇧\\' },
@@ -3962,7 +4174,7 @@
       const term = new Terminal({
         fontSize: 13,
         fontFamily: 'Menlo, Monaco, monospace',
-        theme: { background: '#000000', foreground: '#cccccc', cursor: '#ffffff', cursorAccent: '#000000', selectionBackground: '#0066cc' },
+        theme: { background: '#0d1117', foreground: '#d1d5db', cursor: '#ffffff', cursorAccent: '#0d1117', selectionBackground: '#0066cc' },
         cursorBlink: true
       });
       const fitAddon = new FitAddon.FitAddon();
@@ -4093,10 +4305,10 @@
         fontSize: 13,
         fontFamily: 'Menlo, Monaco, monospace',
         theme: {
-          background: '#000000',
-          foreground: '#cccccc',
+          background: '#0d1117',
+          foreground: '#d1d5db',
           cursor: '#ffffff',
-          cursorAccent: '#000000',
+          cursorAccent: '#0d1117',
           selectionBackground: '#0066cc'
         },
         cursorBlink: true
@@ -4251,11 +4463,11 @@
     function showLeftTab(tab) {
       activeLeftTab = tab;
       document.querySelectorAll('.left-tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.activity-icon').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
 
       const panel = document.getElementById('left-tab-' + tab);
       if (panel) panel.classList.add('active');
-      const icon = document.querySelector(`.activity-icon[data-panel="${tab}"]`);
+      const icon = document.querySelector(`.nav-tab[data-panel="${tab}"]`);
       if (icon) icon.classList.add('active');
 
       // Expand left panel if collapsed
@@ -4316,10 +4528,10 @@
         fontSize: 13,
         fontFamily: 'Menlo, Monaco, monospace',
         theme: {
-          background: '#000000',
-          foreground: '#cccccc',
+          background: '#0d1117',
+          foreground: '#d1d5db',
           cursor: '#ffffff',
-          cursorAccent: '#000000',
+          cursorAccent: '#0d1117',
           selectionBackground: '#0066cc'
         },
         cursorBlink: true
@@ -4342,11 +4554,11 @@
     // Git panel functions
     async function loadGitStatus() {
       const resultsEl = document.getElementById('git-changes-list');
-      resultsEl.innerHTML = '<span style="color:#888;font-size:11px;padding:4px;">Loading...</span>';
+      resultsEl.innerHTML = '<span style="color:#8b949e;font-size:11px;padding:4px;">Loading...</span>';
       try {
         const result = await window.api.git.statusPorcelain(currentPath);
         if (!result || result.error || !result.stdout) {
-          resultsEl.innerHTML = '<span style="color:#888;font-size:11px;padding:4px;">Not a git repository or no changes</span>';
+          resultsEl.innerHTML = '<span style="color:#8b949e;font-size:11px;padding:4px;">Not a git repository or no changes</span>';
           return;
         }
         const lines = result.stdout.trim().split('\n').filter(l => l);
@@ -4397,13 +4609,13 @@
       const query = document.getElementById('global-search-input').value.trim();
       if (!query) return;
       const resultsEl = document.getElementById('search-results');
-      resultsEl.innerHTML = '<span style="color:#888;font-size:11px;">Searching...</span>';
+      resultsEl.innerHTML = '<span style="color:#8b949e;font-size:11px;">Searching...</span>';
       const useRegex = document.getElementById('search-regex').checked;
       const caseSensitive = document.getElementById('search-case').checked;
       try {
         const result = await window.api.search.grep(currentPath, query, useRegex, caseSensitive);
         if (!result || result.error || !result.stdout || !result.stdout.trim()) {
-          resultsEl.innerHTML = '<span style="color:#888;font-size:11px;">No results found</span>';
+          resultsEl.innerHTML = '<span style="color:#8b949e;font-size:11px;">No results found</span>';
           return;
         }
         const lines = result.stdout.trim().split('\n');
@@ -4426,7 +4638,7 @@
             html += `<div class="search-result-line" onclick="openFileInEditor({path:'${safePath}',name:'${safeName}',isFile:true})">${m.line}: ${escaped}</div>`;
           });
           if (matches.length > 5) {
-            html += `<div class="search-result-line" style="color:#555;">... ${matches.length - 5} more</div>`;
+            html += `<div class="search-result-line" style="color:#484f58;">... ${matches.length - 5} more</div>`;
           }
         }
         resultsEl.innerHTML = html;
@@ -4595,10 +4807,10 @@
           <label>Length</label><input class="tool-input" id="t-pwgen-len" type="number" value="16">
           <label>Options</label>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
-            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-upper" checked> A-Z</label>
-            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-lower" checked> a-z</label>
-            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-digits" checked> 0-9</label>
-            <label style="margin:0;color:#ccc;font-size:12px;"><input type="checkbox" id="t-pwgen-symbols" checked> !@#$</label>
+            <label style="margin:0;color:#d1d5db;font-size:12px;"><input type="checkbox" id="t-pwgen-upper" checked> A-Z</label>
+            <label style="margin:0;color:#d1d5db;font-size:12px;"><input type="checkbox" id="t-pwgen-lower" checked> a-z</label>
+            <label style="margin:0;color:#d1d5db;font-size:12px;"><input type="checkbox" id="t-pwgen-digits" checked> 0-9</label>
+            <label style="margin:0;color:#d1d5db;font-size:12px;"><input type="checkbox" id="t-pwgen-symbols" checked> !@#$</label>
           </div>
           <div class="tool-row"><button class="tool-run-btn" onclick="toolRunPwGen()">Generate</button><button class="tool-secondary-btn" onclick="toolCopyPw()">Copy</button></div>
           <div class="tool-output" id="t-pwgen-out" style="display:none;font-size:14px;"></div></div>`;
@@ -4764,14 +4976,14 @@
         el.innerHTML = toolHeader('Markdown Preview') + `<div class="tool-body">
           <label>Markdown</label><textarea class="tool-textarea" id="t-md-input" style="min-height:120px;" placeholder="# Hello World"></textarea>
           <div class="tool-row"><button class="tool-run-btn" onclick="toolRunMarkdown()">Preview</button></div>
-          <div id="t-md-out" style="margin-top:10px;padding:8px;background:#1a1a1a;border-radius:4px;color:#ccc;font-size:12px;"></div></div>`;
+          <div id="t-md-out" style="margin-top:10px;padding:8px;background:#21262d;border-radius:4px;color:#d1d5db;font-size:12px;"></div></div>`;
       },
 
       'lorem-ipsum': (el) => {
         el.innerHTML = toolHeader('Lorem Ipsum') + `<div class="tool-body">
           <label>Paragraphs</label><input class="tool-input" id="t-lorem-count" type="number" value="3" min="1" max="20">
           <div class="tool-row"><button class="tool-run-btn" onclick="toolRunLorem()">Generate</button><button class="tool-secondary-btn" onclick="toolCopyLorem()">Copy</button></div>
-          <div class="tool-output" id="t-lorem-out" style="display:none;color:#ccc;"></div></div>`;
+          <div class="tool-output" id="t-lorem-out" style="display:none;color:#d1d5db;"></div></div>`;
       },
 
       'qr-generator': (el) => {
@@ -5497,7 +5709,7 @@
       html = html.replace(/^# (.+)$/gm, '<h1 style="color:#fff;margin:8px 0 4px;">$1</h1>');
       html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
       html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-      html = html.replace(/`(.+?)`/g, '<code style="background:#333;padding:1px 4px;border-radius:3px;">$1</code>');
+      html = html.replace(/`(.+?)`/g, '<code style="background:#30363d;padding:1px 4px;border-radius:3px;">$1</code>');
       html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
       html = html.replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>');
       html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color:#0088ff;">$1</a>');
@@ -5580,7 +5792,7 @@
     async function loadEnvVars() {
       const out = document.getElementById('t-env-list');
       if (!out) return;
-      out.innerHTML = '<div style="color:#888;font-size:11px;">Loading...</div>';
+      out.innerHTML = '<div style="color:#8b949e;font-size:11px;">Loading...</div>';
       try {
         const result = await window.api.tools.exec('env | sort');
         const lines = (result.stdout || '').split('\n').filter(l => l.includes('='));
@@ -5598,7 +5810,7 @@
       const out = document.getElementById('t-env-list');
       if (!out) return;
       if (vars.length === 0) {
-        out.innerHTML = '<div style="color:#888;font-size:11px;">No matching variables</div>';
+        out.innerHTML = '<div style="color:#8b949e;font-size:11px;">No matching variables</div>';
         return;
       }
       out.innerHTML = '<table class="tool-result-table">' +
@@ -5675,6 +5887,7 @@
     async function saveConnectionsToFile(connections) {
       cachedConnections = connections;
       await window.api.ftpConnections.save(connections);
+      syncNow();
     }
 
     async function renderSavedConnections() {
@@ -5781,6 +5994,7 @@
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(() => {
           window.api.notes.save({ content: notesEditor.getValue() });
+          syncNow();
         }, 500);
       });
     }
@@ -5794,6 +6008,7 @@
           bookmarks.push(selectedFile.path);
           localStorage.setItem('dterm-bookmarks', JSON.stringify(bookmarks));
           loadBookmarks();
+          syncNow();
         }
       } else {
         const fileBookmarks = JSON.parse(localStorage.getItem('dterm-file-bookmarks') || '[]');
@@ -5801,6 +6016,7 @@
           fileBookmarks.push(selectedFile.path);
           localStorage.setItem('dterm-file-bookmarks', JSON.stringify(fileBookmarks));
           loadBookmarks();
+          syncNow();
         }
       }
     }
@@ -5811,6 +6027,7 @@
       fileBookmarks.splice(index, 1);
       localStorage.setItem('dterm-file-bookmarks', JSON.stringify(fileBookmarks));
       loadBookmarks();
+      syncNow();
     }
 
     async function openFileByPath(filePath) {
@@ -5878,7 +6095,7 @@
       // Add close button
       const closeBtn = document.createElement('button');
       closeBtn.textContent = '✕ Close Diff';
-      closeBtn.style.cssText = 'position:absolute;top:4px;right:8px;z-index:10;background:#333;color:#ccc;border:1px solid #555;padding:2px 8px;border-radius:3px;cursor:pointer;font-size:11px;';
+      closeBtn.style.cssText = 'position:absolute;top:4px;right:8px;z-index:10;background:#30363d;color:#d1d5db;border:1px solid #555;padding:2px 8px;border-radius:3px;cursor:pointer;font-size:11px;';
       closeBtn.onclick = closeDiffView;
       container.style.position = 'relative';
       container.appendChild(closeBtn);
@@ -5924,7 +6141,7 @@
         dropdown = document.createElement('div');
         dropdown.id = 'runner-autocomplete';
         dropdown.className = 'autocomplete-dropdown';
-        dropdown.style.cssText = 'display:none;position:absolute;background:#1a1a1a;border:1px solid #333;border-radius:4px;max-height:200px;overflow-y:auto;z-index:100;width:calc(100% - 20px);left:10px;';
+        dropdown.style.cssText = 'display:none;position:absolute;background:#21262d;border:1px solid #30363d;border-radius:4px;max-height:200px;overflow-y:auto;z-index:100;width:calc(100% - 20px);left:10px;';
         input.parentElement.style.position = 'relative';
         input.parentElement.appendChild(dropdown);
       }
@@ -5935,7 +6152,7 @@
         const suggestions = getAutocompleteSuggestions(val);
         if (suggestions.length === 0) { dropdown.style.display = 'none'; autocompleteVisible = false; return; }
         dropdown.innerHTML = suggestions.map(s =>
-          `<div style="padding:4px 8px;cursor:pointer;font-size:12px;color:#ccc;" onmousedown="selectAutocomplete('${s.replace(/'/g, "\\'")}')" onmouseenter="this.style.background='#2a2a2a'" onmouseleave="this.style.background=''">${s}</div>`
+          `<div style="padding:4px 8px;cursor:pointer;font-size:12px;color:#d1d5db;" onmousedown="selectAutocomplete('${s.replace(/'/g, "\\'")}')" onmouseenter="this.style.background='#2a2a2a'" onmouseleave="this.style.background=''">${s}</div>`
         ).join('');
         dropdown.style.display = 'block';
         autocompleteVisible = true;
@@ -5976,6 +6193,7 @@
       recentCommands.unshift(cmd);
       if (recentCommands.length > 20) recentCommands.pop();
       localStorage.setItem('dterm-recent-commands', JSON.stringify(recentCommands));
+      syncNow();
     }
 
     // ============ Environment Variable Viewer ============
@@ -5993,18 +6211,18 @@
       const list = document.getElementById('snippets-list');
       if (!list) return;
       if (snippetsData.length === 0) {
-        list.innerHTML = '<div style="padding:12px;color:#555;font-size:12px;text-align:center;">No snippets yet. Click + New to create one.</div>';
+        list.innerHTML = '<div style="padding:12px;color:#484f58;font-size:12px;text-align:center;">No snippets yet. Click + New to create one.</div>';
         return;
       }
       list.innerHTML = snippetsData.map((s, i) => `
         <div style="padding:6px 8px;border-bottom:1px solid #1a1a1a;cursor:pointer;" onmouseenter="this.style.background='#1a1a1a'" onmouseleave="this.style.background=''">
           <div style="display:flex;align-items:center;gap:6px;">
-            <span style="flex:1;font-size:12px;color:#ccc;" onclick="insertSnippet(${i})">${escHtml(s.name)}</span>
-            <span style="font-size:10px;color:#555;background:#1a1a1a;padding:1px 4px;border-radius:2px;">${s.language || 'text'}</span>
-            <span style="font-size:10px;color:#666;cursor:pointer;" onclick="editSnippet(${i})">✎</span>
+            <span style="flex:1;font-size:12px;color:#d1d5db;" onclick="insertSnippet(${i})">${escHtml(s.name)}</span>
+            <span style="font-size:10px;color:#484f58;background:#21262d;padding:1px 4px;border-radius:2px;">${s.language || 'text'}</span>
+            <span style="font-size:10px;color:#6e7681;cursor:pointer;" onclick="editSnippet(${i})">✎</span>
             <span style="font-size:10px;color:#f44;cursor:pointer;" onclick="deleteSnippet(${i})">✕</span>
           </div>
-          <div style="font-size:10px;color:#555;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" onclick="insertSnippet(${i})">${escHtml(s.code.substring(0, 80))}</div>
+          <div style="font-size:10px;color:#484f58;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" onclick="insertSnippet(${i})">${escHtml(s.code.substring(0, 80))}</div>
         </div>
       `).join('');
     }
@@ -6018,6 +6236,7 @@
       snippetsData.push({ name, language, code });
       window.api.snippets.save(snippetsData);
       renderSnippets();
+      syncNow();
     }
 
     function insertSnippet(index) {
@@ -6041,6 +6260,7 @@
       snippetsData[index] = { name, language: language || 'text', code };
       window.api.snippets.save(snippetsData);
       renderSnippets();
+      syncNow();
     }
 
     function deleteSnippet(index) {
@@ -6048,6 +6268,7 @@
       snippetsData.splice(index, 1);
       window.api.snippets.save(snippetsData);
       renderSnippets();
+      syncNow();
     }
 
     // ============ Process / Port Manager ============
@@ -6061,7 +6282,7 @@
     async function loadProcessList() {
       const list = document.getElementById('process-list');
       if (!list) return;
-      list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">Loading...</div>';
+      list.innerHTML = '<div style="color:#8b949e;font-size:11px;padding:4px;">Loading...</div>';
       try {
         const result = await window.api.processes.list();
         processesData = result.processes || [];
@@ -6075,7 +6296,7 @@
       const list = document.getElementById('process-list');
       if (!list) return;
       if (procs.length === 0) {
-        list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">No processes found</div>';
+        list.innerHTML = '<div style="color:#8b949e;font-size:11px;padding:4px;">No processes found</div>';
         return;
       }
       list.innerHTML = procs.map(line => {
@@ -6084,7 +6305,7 @@
         const rest = parts.slice(1).join(' ');
         return `<div style="display:flex;align-items:center;gap:4px;padding:2px 4px;font-size:11px;border-bottom:1px solid #111;" onmouseenter="this.style.background='#1a1a1a'" onmouseleave="this.style.background=''">
           <span style="color:#58a6ff;min-width:50px;">${pid}</span>
-          <span style="flex:1;color:#ccc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(rest)}</span>
+          <span style="flex:1;color:#d1d5db;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escHtml(rest)}</span>
           <span style="color:#f44;cursor:pointer;font-size:10px;" onclick="killProcess('${pid}')" title="Kill process">✕</span>
         </div>`;
       }).join('');
@@ -6107,17 +6328,17 @@
     async function loadPortsList() {
       const list = document.getElementById('ports-list');
       if (!list) return;
-      list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">Loading...</div>';
+      list.innerHTML = '<div style="color:#8b949e;font-size:11px;padding:4px;">Loading...</div>';
       try {
         const lines = await window.api.processes.ports();
         portsData = lines;
         if (lines.length <= 1) {
-          list.innerHTML = '<div style="color:#888;font-size:11px;padding:4px;">No listening ports</div>';
+          list.innerHTML = '<div style="color:#8b949e;font-size:11px;padding:4px;">No listening ports</div>';
           return;
         }
         list.innerHTML = lines.slice(1).map(line => {
           const parts = line.trim().split(/\s+/);
-          return `<div style="padding:2px 4px;font-size:10px;color:#ccc;border-bottom:1px solid #111;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(line)}">${escHtml(line)}</div>`;
+          return `<div style="padding:2px 4px;font-size:10px;color:#d1d5db;border-bottom:1px solid #111;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escHtml(line)}">${escHtml(line)}</div>`;
         }).join('');
       } catch (e) {
         list.innerHTML = '<div style="color:#f44;font-size:11px;padding:4px;">Error loading ports</div>';
@@ -6152,9 +6373,9 @@
         list.innerHTML = '';
         return;
       }
-      list.innerHTML = '<div style="font-size:11px;color:#666;margin-bottom:4px;">Saved connections:</div>' +
+      list.innerHTML = '<div style="font-size:11px;color:#6e7681;margin-bottom:4px;">Saved connections:</div>' +
         sshConnections.map((c, i) => `
-          <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:#111;border-radius:3px;margin-bottom:3px;cursor:pointer;" onclick="quickSshConnect(${i})" onmouseenter="this.style.background='#222'" onmouseleave="this.style.background='#111'">
+          <div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:#0d1117;border-radius:3px;margin-bottom:3px;cursor:pointer;" onclick="quickSshConnect(${i})" onmouseenter="this.style.background='#222'" onmouseleave="this.style.background='#111'">
             <span style="flex:1;font-size:12px;color:#58a6ff;">${c.user}@${c.host}:${c.port}</span>
             <span style="font-size:10px;color:#f44;cursor:pointer;" onclick="event.stopPropagation();deleteSshConnection(${i})">✕</span>
           </div>
@@ -6181,6 +6402,7 @@
         if (!exists) {
           sshConnections.push({ host, port, user });
           window.api.sshConnections.save(sshConnections);
+          syncNow();
         }
       }
 
@@ -6206,6 +6428,7 @@
       sshConnections.splice(index, 1);
       await window.api.sshConnections.save(sshConnections);
       renderSshSaved();
+      syncNow();
     }
 
     // ============ Workspaces ============
@@ -6221,6 +6444,7 @@
         leftPanelCollapsed: document.getElementById('left-panel').classList.contains('collapsed')
       };
       await window.api.workspaces.save(name, data);
+      syncNow();
     }
 
     async function loadWorkspace() {
@@ -6281,6 +6505,7 @@
       if (idx < 0 || idx >= workspaces.length) return;
       if (!confirm(`Delete workspace "${workspaces[idx].name}"?`)) return;
       await window.api.workspaces.delete(workspaces[idx].name);
+      syncNow();
     }
 
     // ============ Breadcrumb Path Bar ============
@@ -6665,10 +6890,15 @@
           closeEditorTab(activeFileIndex, { stopPropagation: () => {} });
         }
       }
-      // Cmd+B - Toggle left panel
-      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key === 'b') {
+      // Cmd+Shift+B - Toggle left panel
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'b') {
         e.preventDefault();
         toggleLeftPanel();
+      }
+      // Cmd+Shift+X - Swap panel sizes
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'x') {
+        e.preventDefault();
+        swapPanelSizes();
       }
       // Cmd+Shift+B removed (no right panel)
       // Cmd+Shift+F - Focus mode (collapse both panels)
@@ -6865,6 +7095,9 @@
         text.textContent = cloudAccount.user.username;
         syncBtn.style.display = '';
         startAutoSync();
+        // Pre-fill collab display name
+        const collabNameInput = document.getElementById('collab-display-name');
+        if (collabNameInput && !collabNameInput.value) collabNameInput.value = cloudAccount.user.username;
       } else {
         text.textContent = 'Not signed in';
         syncBtn.style.display = 'none';
@@ -6909,6 +7142,27 @@
           if (result.data.ftp_connections && result.data.ftp_connections.data_json) {
             await window.api.ftpConnections.save(JSON.parse(result.data.ftp_connections.data_json));
           }
+          if (result.data.file_bookmarks && result.data.file_bookmarks.data_json) {
+            localStorage.setItem('dterm-file-bookmarks', result.data.file_bookmarks.data_json);
+          }
+          if (result.data.recent_commands && result.data.recent_commands.data_json) {
+            localStorage.setItem('dterm-recent-commands', result.data.recent_commands.data_json);
+          }
+          if (result.data.snippets && result.data.snippets.data_json) {
+            await window.api.snippets.save(JSON.parse(result.data.snippets.data_json));
+          }
+          if (result.data.ssh_connections && result.data.ssh_connections.data_json) {
+            await window.api.sshConnections.save(JSON.parse(result.data.ssh_connections.data_json));
+          }
+          if (result.data.workspaces && result.data.workspaces.data_json) {
+            const cloudWorkspaces = JSON.parse(result.data.workspaces.data_json);
+            for (const ws of cloudWorkspaces) {
+              await window.api.workspaces.save(ws.name, ws.data);
+            }
+          }
+          if (result.data.session && result.data.session.data_json) {
+            await window.api.session.save(JSON.parse(result.data.session.data_json));
+          }
         }
       } catch (e) { console.error('Pull failed:', e); }
     }
@@ -6931,12 +7185,31 @@
         const recentFiles = localStorage.getItem('dterm-recent-files');
         if (recentFiles) await window.api.cloud.push('recent_files', recentFiles);
 
+        const fileBookmarks = localStorage.getItem('dterm-file-bookmarks');
+        if (fileBookmarks) await window.api.cloud.push('file_bookmarks', fileBookmarks);
+
+        const recentCommands = localStorage.getItem('dterm-recent-commands');
+        if (recentCommands) await window.api.cloud.push('recent_commands', recentCommands);
+
         // Push file-based items
         const notes = await window.api.notes.load();
         await window.api.cloud.push('notes', JSON.stringify(notes));
 
         const ftpConns = await window.api.ftpConnections.load();
         await window.api.cloud.push('ftp_connections', JSON.stringify(ftpConns));
+
+        const snippets = await window.api.snippets.load();
+        await window.api.cloud.push('snippets', JSON.stringify(snippets));
+
+        const sshConns = await window.api.sshConnections.load();
+        await window.api.cloud.push('ssh_connections', JSON.stringify(sshConns));
+
+        const workspaces = await window.api.workspaces.list();
+        await window.api.cloud.push('workspaces', JSON.stringify(workspaces));
+
+        // Push session state
+        const session = await window.api.session.load();
+        if (session) await window.api.cloud.push('session', JSON.stringify(session));
       } catch (e) { console.error('Push failed:', e); }
       if (syncIcon) syncIcon.classList.remove('syncing');
     }
@@ -7009,13 +7282,23 @@
       btn.disabled = false;
     }
 
-    // Auto-sync every 5 minutes
+    // Auto-sync every 10 seconds
     let cloudSyncInterval = null;
     function startAutoSync() {
       stopAutoSync();
       cloudSyncInterval = setInterval(() => {
         if (cloudAccount) pushCloudData();
       }, 10 * 1000);
+    }
+
+    // Push to cloud whenever session saves (piggyback on the 30s session save)
+    let lastPushTime = 0;
+    function syncNow() {
+      if (!cloudAccount) return;
+      const now = Date.now();
+      if (now - lastPushTime < 5000) return; // debounce 5s
+      lastPushTime = now;
+      pushCloudData();
     }
     function stopAutoSync() {
       if (cloudSyncInterval) { clearInterval(cloudSyncInterval); cloudSyncInterval = null; }
@@ -7043,30 +7326,84 @@
           terminalData.push({ shell: shellPath, cwd: cwd || null, name: shellName, buffer: buffer });
         }
 
-        // Gather open editor files
-        const editorData = openFiles.filter(f => !f.ftpFile).map(f => ({ path: f.path, name: f.name }));
+        // Gather open editor files with cursor/scroll state
+        const editorData = openFiles.filter(f => !f.ftpFile).map((f, i) => {
+          const fileData = { path: f.path, name: f.name, modified: f.modified || false };
+          // Save unsaved content if modified
+          if (f.modified && f.content) {
+            fileData.unsavedContent = f.content;
+          }
+          // Save cursor and scroll position for active file
+          if (i === activeFileIndex && monacoEditor) {
+            const pos = monacoEditor.getPosition();
+            const scroll = monacoEditor.getScrollTop();
+            if (pos) fileData.cursorLine = pos.lineNumber;
+            if (pos) fileData.cursorColumn = pos.column;
+            fileData.scrollTop = scroll;
+          }
+          return fileData;
+        });
+
+        // Save left terminal state
+        const leftTermState = leftTerminalData ? {
+          exists: true,
+          cwd: await window.api.terminal.getCwd(leftTerminalData.id).catch(() => null)
+        } : null;
 
         // Get browser URL
         const webview = document.getElementById('mini-browser-frame');
         const browserUrl = webview ? webview.getURL() : null;
+
+        // Get active browser device tab
+        const activeDeviceTab = document.querySelector('.device-tab.active');
+        const browserDevice = activeDeviceTab ? activeDeviceTab.dataset.device : 'desktop';
+
+        // Get editor area height ratio
+        const editorArea = document.getElementById('editor-area');
+        const mainArea = document.getElementById('main-area');
+        const editorRatio = (editorArea && mainArea && editorArea.classList.contains('visible'))
+          ? editorArea.offsetHeight / mainArea.offsetHeight : null;
+
+        // Get showHidden state
+        const hiddenState = typeof showHidden !== 'undefined' ? showHidden : false;
 
         const session = {
           terminals: terminalData,
           editorFiles: editorData,
           activeFileIndex: activeFileIndex,
           browserUrl: browserUrl,
+          browserDevice: browserDevice,
           fileBrowserPath: currentPath,
           leftPanelCollapsed: document.getElementById('left-panel').classList.contains('collapsed'),
-          leftPanelWidth: leftPanelWidth || document.getElementById('left-panel').offsetWidth || 400,
-          activeLeftTab: activeLeftTab
+          leftPanelWidth: leftPanelWidth || document.getElementById('left-panel').offsetWidth || 500,
+          activeLeftTab: activeLeftTab,
+          editorHeightRatio: editorRatio,
+          showHidden: hiddenState,
+          // FTP state
+          appMode: appMode,
+          ftpRemoteHost: ftpRemoteHost,
+          ftpCurrentPath: ftpCurrentPath,
+          ftpConnected: ftpConnected,
+          // Left terminal
+          leftTerminal: leftTermState,
+          // Active tool in tools panel
+          activeToolName: activeToolName,
+          // Markdown preview state
+          mdPreviewActive: mdPreviewActive,
+          // Selected file path
+          selectedFilePath: selectedFile ? selectedFile.path : null,
+          // Editor visible state
+          editorVisible: document.getElementById('editor-area').classList.contains('visible')
         };
 
         await window.api.session.save(session);
+        // Also push to cloud
+        syncNow();
         // Update last sync time in status bar
         const now = new Date();
         const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const el = document.getElementById('session-sync-time');
-        if (el) el.textContent = 'Saved ' + timeStr;
+        if (el) el.textContent = 'Synced ' + timeStr;
       } catch (e) {
         console.error('Failed to save session:', e);
       }
@@ -7102,13 +7439,39 @@
           for (const f of session.editorFiles) {
             try {
               await openFileInEditor({ path: f.path, name: f.name, isFile: true });
+              // Restore unsaved content if file was modified
+              const idx = openFiles.length - 1;
+              if (f.unsavedContent && idx >= 0) {
+                openFiles[idx].content = f.unsavedContent;
+                openFiles[idx].modified = true;
+              }
             } catch (e) {
               console.warn('Could not restore file:', f.path, e);
             }
           }
-          // Activate the previously active file
+          // Activate the previously active file and restore cursor
           if (session.activeFileIndex >= 0 && session.activeFileIndex < openFiles.length) {
             activateFile(session.activeFileIndex);
+            const af = session.editorFiles[session.activeFileIndex];
+            if (af && monacoEditor) {
+              // Restore unsaved content for active file
+              if (af.unsavedContent) {
+                monacoEditor.setValue(af.unsavedContent);
+                openFiles[session.activeFileIndex].modified = true;
+                // Mark tab as modified
+                const tabEl = document.querySelector(`#editor-tabs .tab:nth-child(${session.activeFileIndex + 1})`);
+                if (tabEl) tabEl.classList.add('modified');
+              }
+              // Restore cursor position
+              if (af.cursorLine) {
+                monacoEditor.setPosition({ lineNumber: af.cursorLine, column: af.cursorColumn || 1 });
+                monacoEditor.revealLineInCenter(af.cursorLine);
+              }
+              // Restore scroll position
+              if (af.scrollTop) {
+                setTimeout(() => monacoEditor.setScrollTop(af.scrollTop), 100);
+              }
+            }
           }
         }
 
@@ -7120,10 +7483,23 @@
           if (urlInput) urlInput.value = session.browserUrl;
         }
 
+        // Restore browser device mode
+        if (session.browserDevice && session.browserDevice !== 'desktop') {
+          setBrowserDevice(session.browserDevice);
+        }
+
+        // Restore showHidden state
+        if (session.showHidden) {
+          showHidden = true;
+          const btn = document.getElementById('hidden-toggle');
+          if (btn) btn.classList.add('active');
+          loadFiles();
+        }
+
         // Restore panel width and collapsed state
         if (session.leftPanelWidth) {
-          leftPanelWidth = session.leftPanelWidth;
-          document.getElementById('left-panel').style.width = session.leftPanelWidth + 'px';
+          leftPanelWidth = Math.max(session.leftPanelWidth, 500);
+          document.getElementById('left-panel').style.width = leftPanelWidth + 'px';
         }
         if (session.leftPanelCollapsed) {
           toggleLeftPanel();
@@ -7134,8 +7510,291 @@
         } else if (session.activeRightTab) {
           showLeftTab(session.activeRightTab);
         }
+
+        // Restore FTP state
+        if (session.appMode === 'ftp' && session.ftpRemoteHost) {
+          appMode = 'ftp';
+          ftpRemoteHost = session.ftpRemoteHost;
+          ftpCurrentPath = session.ftpCurrentPath || '/';
+          // Note: FTP connection itself can't persist — user must reconnect
+          // But we restore the mode and path so they know where they were
+          const badge = document.getElementById('ftp-mode-badge');
+          if (badge) badge.classList.add('visible');
+        }
+
+        // Restore left terminal
+        if (session.leftTerminal && session.leftTerminal.exists && typeof createLeftTerminal === 'function') {
+          createLeftTerminal();
+        }
+
+        // Restore active tool
+        if (session.activeToolName && typeof showTool === 'function') {
+          try { showTool(session.activeToolName); } catch (e) {}
+        }
+
+        // Restore markdown preview state
+        if (session.mdPreviewActive) {
+          mdPreviewActive = true;
+          const toggleBtn = document.getElementById('md-preview-toggle');
+          if (toggleBtn) toggleBtn.classList.add('active');
+          const previewContainer = document.getElementById('md-preview-container');
+          if (previewContainer) previewContainer.classList.add('visible');
+        }
+
+        // Restore editor height ratio
+        if (session.editorHeightRatio && session.editorVisible) {
+          const editorArea = document.getElementById('editor-area');
+          const mainArea = document.getElementById('main-area');
+          if (editorArea && mainArea) {
+            editorArea.style.flex = '0 0 ' + Math.round(session.editorHeightRatio * 100) + '%';
+          }
+        }
       } catch (e) {
         console.error('Failed to restore session:', e);
+      }
+    }
+
+    // ==========================================
+    // COLLABORATIVE EDITING
+    // ==========================================
+
+    function collabShowError(msg) {
+      const el = document.getElementById('collab-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+
+    function collabGetDisplayName() {
+      let name = document.getElementById('collab-display-name').value.trim();
+      if (!name && cloudAccount && cloudAccount.user) name = cloudAccount.user.username;
+      if (!name) name = 'Anonymous';
+      return name;
+    }
+
+    async function collabCreateRoom() {
+      if (collabState) { collabShowError('Already in a session. Leave first.'); return; }
+      if (!openFiles.length || activeFileIndex < 0) { collabShowError('Open a file first to share it.'); return; }
+
+      const file = openFiles[activeFileIndex];
+      const content = monacoEditor ? monacoEditor.getValue() : (file.content || '');
+      const name = collabGetDisplayName();
+
+      try {
+        const result = await window.api.collab.request('create_room', {
+          username: name,
+          filename: file.name,
+          content: content,
+          language: file.language || 'plaintext'
+        });
+        if (result.error) { collabShowError(result.error); return; }
+
+        collabState = {
+          code: result.code,
+          userId: result.userId,
+          version: result.version,
+          filename: file.name,
+          language: file.language || 'plaintext',
+          isOwner: true,
+          lastContent: content,
+          username: name
+        };
+
+        collabShowSession();
+        collabStartPolling();
+      } catch (e) {
+        collabShowError('Failed to create session: ' + e.message);
+      }
+    }
+
+    async function collabJoinRoom() {
+      if (collabState) { collabShowError('Already in a session. Leave first.'); return; }
+
+      const code = document.getElementById('collab-join-code').value.trim().toUpperCase();
+      if (!code || code.length < 4) { collabShowError('Enter a valid access code.'); return; }
+
+      const name = collabGetDisplayName();
+
+      try {
+        const result = await window.api.collab.request('join_room', { code, username: name });
+        if (result.error) { collabShowError(result.error); return; }
+
+        collabState = {
+          code: result.code,
+          userId: result.userId,
+          version: result.version,
+          filename: result.filename,
+          language: result.language || 'plaintext',
+          isOwner: false,
+          lastContent: result.content,
+          username: name
+        };
+
+        // Open the shared file content in editor
+        const tempName = result.filename || 'collab-file.txt';
+        // Create a virtual file in the editor
+        const lang = result.language || 'plaintext';
+        openFiles.push({ name: tempName, path: '__collab__/' + tempName, content: result.content, language: lang, modified: false, isCollab: true });
+        activeFileIndex = openFiles.length - 1;
+        setEditorContent(result.content, tempName);
+        updateEditorTabs();
+        showEditor();
+
+        collabShowSession();
+        collabUpdateUsers(result.users);
+        collabStartPolling();
+      } catch (e) {
+        collabShowError('Failed to join session: ' + e.message);
+      }
+    }
+
+    async function collabLeaveRoom() {
+      if (!collabState) return;
+      try {
+        await window.api.collab.request('leave_room', { code: collabState.code, userId: collabState.userId });
+      } catch (e) { /* ignore */ }
+      collabStopPolling();
+      collabState = null;
+      collabShowLobby();
+      document.getElementById('collab-nav-dot').classList.remove('visible');
+    }
+
+    function collabShowSession() {
+      document.getElementById('collab-lobby').style.display = 'none';
+      document.getElementById('collab-session').style.display = 'flex';
+      document.getElementById('collab-session').style.flexDirection = 'column';
+      document.getElementById('collab-session').style.gap = '12px';
+      document.getElementById('collab-code-display').textContent = collabState.code;
+      document.getElementById('collab-filename').textContent = collabState.filename;
+      document.getElementById('collab-nav-dot').classList.add('visible');
+    }
+
+    function collabShowLobby() {
+      document.getElementById('collab-lobby').style.display = 'block';
+      document.getElementById('collab-session').style.display = 'none';
+    }
+
+    function collabCopyCode() {
+      if (collabState) {
+        navigator.clipboard.writeText(collabState.code);
+        const btn = event.target;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy Code'; }, 2000);
+      }
+    }
+
+    function collabUpdateUsers(users) {
+      const list = document.getElementById('collab-users-list');
+      list.innerHTML = '';
+      if (!users) return;
+      for (const [uid, user] of Object.entries(users)) {
+        const li = document.createElement('li');
+        const dot = document.createElement('span');
+        dot.className = 'user-dot';
+        dot.style.background = user.color || '#61afef';
+        li.appendChild(dot);
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = user.name + (uid === collabState.userId ? ' (you)' : '');
+        li.appendChild(nameSpan);
+        if (user.cursor) {
+          const cursorInfo = document.createElement('span');
+          cursorInfo.style.cssText = 'color:#6e7681; font-size:10px; margin-left:auto;';
+          cursorInfo.textContent = 'Ln ' + user.cursor.line;
+          li.appendChild(cursorInfo);
+        }
+        list.appendChild(li);
+      }
+    }
+
+
+    function collabStartPolling() {
+      if (!collabState) return;
+      collabState.pollTimer = setInterval(collabPoll, 1500);
+    }
+
+    function collabStopPolling() {
+      if (collabState && collabState.pollTimer) {
+        clearInterval(collabState.pollTimer);
+        collabState.pollTimer = null;
+      }
+    }
+
+    async function collabPoll() {
+      if (!collabState) return;
+
+      const cursor = monacoEditor ? monacoEditor.getPosition() : null;
+      const cursorData = cursor ? { line: cursor.lineNumber, col: cursor.column } : null;
+
+      try {
+        if (collabPushPending && monacoEditor) {
+          // Push our changes
+          collabPushPending = false;
+          const content = monacoEditor.getValue();
+          if (content !== collabState.lastContent) {
+            const result = await window.api.collab.request('push_changes', {
+              code: collabState.code,
+              userId: collabState.userId,
+              content: content,
+              version: collabState.version,
+              cursor: cursorData,
+              username: collabState.username
+            });
+            if (result.error) {
+              document.getElementById('collab-status-text').textContent = 'Error: ' + result.error;
+              return;
+            }
+            collabState.version = result.version;
+            collabState.lastContent = content;
+            collabUpdateUsers(result.users);
+            document.getElementById('collab-status-text').textContent = 'Synced';
+          }
+        } else {
+          // Pull changes
+          const result = await window.api.collab.request('pull_changes', {
+            code: collabState.code,
+            userId: collabState.userId,
+            version: collabState.version
+          });
+          if (result.error) {
+            if (result.error === 'Room not found') {
+              collabShowError('Session ended by host.');
+              collabStopPolling();
+              collabState = null;
+              collabShowLobby();
+              document.getElementById('collab-nav-dot').classList.remove('visible');
+              return;
+            }
+            document.getElementById('collab-status-text').textContent = 'Error: ' + result.error;
+            return;
+          }
+
+          collabUpdateUsers(result.users);
+
+          if (result.hasChanges && result.content !== undefined && monacoEditor) {
+            const currentContent = monacoEditor.getValue();
+            if (result.content !== currentContent) {
+              // Save cursor position
+              const pos = monacoEditor.getPosition();
+              const scrollTop = monacoEditor.getScrollTop();
+
+              collabIgnoreNextChange = true;
+              monacoEditor.setValue(result.content);
+              collabIgnoreNextChange = false;
+
+              // Restore cursor position (best effort)
+              if (pos) monacoEditor.setPosition(pos);
+              monacoEditor.setScrollTop(scrollTop);
+
+              collabState.lastContent = result.content;
+              document.getElementById('collab-status-text').textContent = 'Updated by ' + (result.lastEditBy || 'collaborator');
+            }
+            collabState.version = result.version;
+          } else {
+            document.getElementById('collab-status-text').textContent = 'Connected';
+          }
+        }
+      } catch (e) {
+        document.getElementById('collab-status-text').textContent = 'Connection error';
       }
     }
 
@@ -7144,6 +7803,10 @@
 
     // Auto-push on window close
     window.addEventListener('beforeunload', () => {
+      // Leave collab session
+      if (collabState) {
+        window.api.collab.request('leave_room', { code: collabState.code, userId: collabState.userId });
+      }
       // Save session synchronously by sending to main process
       // (beforeunload can't await, but the IPC call is fire-and-forget here)
       saveSession();

@@ -101,5 +101,8 @@ contextBridge.exposeInMainWorld('api', {
     logout: () => ipcRenderer.invoke('cloud:logout'),
     getAccount: () => ipcRenderer.invoke('cloud:getAccount'),
     getWelcome: () => ipcRenderer.invoke('cloud:getWelcome')
+  },
+  collab: {
+    request: (action, data) => ipcRenderer.invoke('collab:request', action, data)
   }
 });
